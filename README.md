@@ -4,6 +4,10 @@
 
 This project is an interactive web application designed to help aspiring Kubernetes security professionals prepare for certification exams. It features a comprehensive mock exam with 150 questions covering various aspects of Kubernetes security.
 
+## Live Version
+
+You can access the live version of this app [here](https://kubernetes-security-kcsa-mock.vercel.app/).
+
 ## Features
 
 - 150 carefully crafted questions on Kubernetes security topics
