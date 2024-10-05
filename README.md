@@ -1,70 +1,102 @@
-# Getting Started with Create React App
+# Kubernetes Security KCNA Mock Exam
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+This project is an interactive web application designed to help aspiring Kubernetes security professionals prepare for certification exams. It features a comprehensive mock exam with 150 questions covering various aspects of Kubernetes security.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- 150 carefully crafted questions on Kubernetes security topics
+- Randomized question order for each exam session
+- Configurable number of questions per exam
+- Interactive exam interface with one question displayed per page
+- Navigation menu to easily move between questions
+- Option to flag questions for later review
+- Countdown timer for the entire exam
+- Auto-scoring upon submission
+- Detailed results page with correct answers and explanations
+- Responsive design for compatibility with various devices
+- Progress saving to handle page refreshes or accidental closures
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Getting Started
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Prerequisites
 
-### `npm test`
+- Node.js (v14 or later)
+- npm (v6 or later)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Installation
 
-### `npm run build`
+1. Clone the repository:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Navigate to the project directory:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    '''
+    cd kubernetes-security-mock-exam
+    '''
 
-### `npm run eject`
+3. Install dependencies:
+    
+    '''
+    npm install
+    '''
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+4. Start the development server:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    '''
+    npm start
+    '''
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+5. Open your browser and visit `http://localhost:3000` to use the application.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Usage
 
-## Learn More
+1. Set the number of questions you want in your exam session.
+2. Click "Start Exam" to begin.
+3. Answer each question and use the navigation buttons to move between questions.
+4. Flag questions for review if needed.
+5. Submit the exam when you're finished or when the timer runs out.
+6. Review your results and learn from the explanations provided.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Contributing
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Contributions to improve the question bank, add features, or fix bugs are welcome. Please feel free to submit pull requests or open issues to discuss potential changes.
 
-### Code Splitting
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Analyzing the Bundle Size
+## Acknowledgments
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Special thanks to Henry Khosashi and Mark Wilson for their encouragement and support in studying hard for Kubernetes certification.
+- To all aspiring Kubestronauts out there - keep pushing forward! This mock exam is here to help you on your journey.
+- The Kubernetes community for their continuous efforts in improving cloud-native technologies and security practices.
+- v0, the AI assistant from Vercel, for its invaluable help in building and refining this project.
+- ChatGPT-4 for providing the initial architecture and generating the questions and answers in JSON format.
 
-### Making a Progressive Web App
+## Disclaimer
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+This mock exam is created for educational purposes and is not officially affiliated with or endorsed by the Cloud Native Computing Foundation (CNCF) or any specific Kubernetes certification program. The questions are based on publicly available information and best practices in Kubernetes security.
 
-### Advanced Configuration
+## Technical Details
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+This project was built using:
+- React for the frontend
+- JSON for storing question data
+- Modern web development practices including responsive design and local storage for progress saving
 
-### Deployment
+## Future Improvements
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+We're always looking to improve this mock exam. Some ideas for future enhancements include:
+- Expanding the question bank
+- Adding more detailed analytics on user performance
+- Implementing a spaced repetition system for better learning retention
 
-### `npm run build` fails to minify
+## Feedback
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Your feedback is crucial for improving this mock exam. If you have suggestions, find errors in questions, or want to contribute new questions, please open an issue on our GitHub repository.
+
+---
+
+Remember, with dedication and practice, you too can become a Kubestronaut! Good luck with your studies and certification journey!
