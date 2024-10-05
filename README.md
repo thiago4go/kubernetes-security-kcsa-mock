@@ -33,24 +33,27 @@ You can access the live version of this app [here](https://kubernetes-security-k
 
 1. Clone the repository:
 
+    ```bash
+    git clone https://github.com/thiago4go/kubernetes-security-kcsa-mock.git
+    ```
 
 2. Navigate to the project directory:
 
-    '''
+    ```bash
     cd kubernetes-security-mock-exam
-    '''
+    ```
 
 3. Install dependencies:
-    
-    '''
+
+    ```bash
     npm install
-    '''
+    ```
 
 4. Start the development server:
 
-    '''
+    ```bash
     npm start
-    '''
+    ```
 
 5. Open your browser and visit `http://localhost:3000` to use the application.
 
@@ -86,6 +89,7 @@ This mock exam is created for educational purposes and is not officially affilia
 ## Technical Details
 
 This project was built using:
+
 - React for the frontend
 - JSON for storing question data
 - Modern web development practices including responsive design and local storage for progress saving
@@ -93,6 +97,7 @@ This project was built using:
 ## Future Improvements
 
 We're always looking to improve this mock exam. Some ideas for future enhancements include:
+
 - Expanding the question bank
 - Adding more detailed analytics on user performance
 - Implementing a spaced repetition system for better learning retention
