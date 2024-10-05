@@ -99,7 +99,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Kubernetes Security Mock Exam</h1>
+      <h1>Kubernetes Security KCSA Mock Exam</h1>
       {!examStarted && !examFinished && !reviewingFlagged && (
         <div>
           <label>
