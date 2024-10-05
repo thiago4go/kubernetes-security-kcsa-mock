@@ -1,4 +1,4 @@
-# Kubernetes Security KCNA Mock Exam
+# Kubernetes Security KCSA Mock Exam
 
 ## Overview
 
