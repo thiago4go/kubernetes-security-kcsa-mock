@@ -5,7 +5,6 @@ body {
   padding: 20px;
   background-color: #f4f4f4;
 }
-
 .App {
   max-width: 800px;
   margin: 0 auto;
@@ -253,4 +252,53 @@ input[type="number"] {
   .creator-header, .community-header {
     padding: 12px;
   }
+}
+
+.about-container {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.about-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.about-content {
+  margin-bottom: 20px;
+}
+
+.about-text {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.about-footer {
+  text-align: center;
+}
+
+.github-link {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.github-link:hover {
+  background-color: #0056b3;
 }

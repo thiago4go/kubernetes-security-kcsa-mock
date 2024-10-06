@@ -24,7 +24,34 @@ function HomePage({ numQuestions, setNumQuestions, startExam, maxQuestions }) {
             Start Exam
           </button>
         </div>
-        
+
+        {/* ADD A SECTION ABOUT THE APP AND HOW TO USE IT */}
+        <div className="about-container">
+          <div className="about-header">
+            <h2 className="section-title">About the App</h2>
+          </div>
+          <div className="about-content">
+            <p className="about-text">
+              This app is a mock exam for the Kubernetes Security (KCSA) certification. It consists of multiple-choice questions to test your knowledge of Kubernetes security concepts.
+            </p>
+            <p className="about-text">
+              The exam is timed, and you will have 1 minute per question. You can flag questions to review later. Once you finish the exam, you can review your answers and see explanations for each question.
+            </p>
+          </div>
+          {/* Invite people to contribute to the project on GitHub. */}
+          <div className="about-footer">
+            <p className="about-text">
+              If you'd like to contribute to this project, please visit the GitHub repository.
+            </p>
+            <a
+              href="https://github.com/thiago4go/kubernetes-security-kcsa-mock"
+              className="github-link"
+            >
+              GitHub Repository
+            </a>
+          </div>
+        </div>
+
         <div className="creator-container">
           <div className="creator-header">
             <h2 className="section-title">About the Creator</h2>
