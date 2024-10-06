@@ -2100,7 +2100,1409 @@ export const questions = [
               "correct_answers": [1],
               "explanation": "The 'envFrom' field in a pod spec allows injecting environment variables from a ConfigMap.",
               "question_type": "single-choice"
-            }
-                    
+            },
+            
+              {
+                "id": 151,
+                "question": "Which command allows you to list all the nodes in a Kubernetes cluster?",
+                "options": [
+                  "kubectl get nodes",
+                  "kubectl describe cluster",
+                  "kubectl list nodes",
+                  "kubectl cluster-info",
+                  "kubectl get cluster-nodes"
+                ],
+                "correct_answers": [0],
+                "explanation": "The 'kubectl get nodes' command lists all the nodes in the cluster.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 152,
+                "question": "When configuring etcd encryption for secrets, which Kubernetes component's configuration must be updated?",
+                "options": [
+                  "kube-scheduler",
+                  "kube-controller-manager",
+                  "kubelet",
+                  "kube-apiserver",
+                  "etcd"
+                ],
+                "correct_answers": [3],
+                "explanation": "The kube-apiserver's configuration must be updated to include the encryption configuration file.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 153,
+                "question": "Which field in the Pod spec is used to specify the container runtime class?",
+                "options": [
+                  "runtime",
+                  "runtimeClassName",
+                  "containerRuntime",
+                  "runtimeClass",
+                  "containerRuntimeClass"
+                ],
+                "correct_answers": [1],
+                "explanation": "The 'runtimeClassName' field specifies which RuntimeClass to use for the Pod.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 154,
+                "question": "What is the purpose of the 'allowPrivilegeEscalation' securityContext field?",
+                "options": [
+                  "Allows the container to run as root",
+                  "Prevents the container from gaining more privileges than its parent process",
+                  "Enables privileged mode for the container",
+                  "Allows mounting of host directories",
+                  "Disables all capabilities for the container"
+                ],
+                "correct_answers": [1],
+                "explanation": "Setting 'allowPrivilegeEscalation' to false prevents processes from gaining more privileges than the parent.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 155,
+                "question": "Which Kubernetes object is used to define network traffic rules for Pods?",
+                "options": [
+                  "NetworkPolicy",
+                  "Ingress",
+                  "Service",
+                  "Endpoint",
+                  "FirewallRule"
+                ],
+                "correct_answers": [0],
+                "explanation": "A 'NetworkPolicy' defines how Pods are allowed to communicate with each other and other network endpoints.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 156,
+                "question": "To block access to the cloud metadata API from Pods, which IP address should be blocked in the NetworkPolicy?",
+                "options": [
+                  "0.0.0.0/0",
+                  "127.0.0.1/32",
+                  "169.254.169.254/32",
+                  "255.255.255.255/32",
+                  "192.168.0.1/32"
+                ],
+                "correct_answers": [2],
+                "explanation": "The cloud metadata service is accessible at 169.254.169.254, so blocking this IP prevents access.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 157,
+                "question": "Which command can be used to create a new Role in Kubernetes?",
+                "options": [
+                  "kubectl apply role",
+                  "kubectl create role",
+                  "kubectl generate role",
+                  "kubectl new role",
+                  "kubectl init role"
+                ],
+                "correct_answers": [1],
+                "explanation": "The 'kubectl create role' command is used to create a new Role.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 158,
+                "question": "In Kubernetes RBAC, which object binds a ClusterRole to all authenticated users?",
+                "options": [
+                  "ClusterRoleBinding",
+                  "RoleBinding",
+                  "ClusterRole",
+                  "ServiceAccount",
+                  "GroupBinding"
+                ],
+                "correct_answers": [0],
+                "explanation": "A 'ClusterRoleBinding' can bind a ClusterRole to all authenticated users or groups.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 159,
+                "question": "Which admission controller can be used to restrict the use of certain host namespaces in Pods?",
+                "options": [
+                  "NamespaceLifecycle",
+                  "PodSecurityPolicy",
+                  "LimitRanger",
+                  "ResourceQuota",
+                  "NodeRestriction"
+                ],
+                "correct_answers": [1],
+                "explanation": "The 'PodSecurityPolicy' admission controller can enforce restrictions on Pod security settings.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 160,
+                "question": "Which command would you use to encode the string 'admin' to base64?",
+                "options": [
+                  "echo 'admin' | base64",
+                  "echo 'admin' | encode base64",
+                  "echo 'admin' | base64encode",
+                  "base64 'admin'",
+                  "encode --base64 'admin'"
+                ],
+                "correct_answers": [0],
+                "explanation": "The command 'echo 'admin' | base64' encodes the string to base64.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 161,
+                "question": "Which Kubernetes resource is used to define external access to services, typically HTTP?",
+                "options": [
+                  "Ingress",
+                  "Service",
+                  "Endpoint",
+                  "NetworkPolicy",
+                  "LoadBalancer"
+                ],
+                "correct_answers": [0],
+                "explanation": "An 'Ingress' resource exposes HTTP and HTTPS routes from outside the cluster to services within the cluster.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 162,
+                "question": "To secure an Ingress with TLS, which type of Kubernetes secret is required?",
+                "options": [
+                  "Opaque",
+                  "TLS",
+                  "Docker Registry",
+                  "Basic Auth",
+                  "SSH Key"
+                ],
+                "correct_answers": [1],
+                "explanation": "A 'TLS' type secret contains a certificate and key for TLS encryption.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 163,
+                "question": "Which command can be used to create a TLS secret named 'tls-secret' using files 'tls.crt' and 'tls.key'?",
+                "options": [
+                  "kubectl create secret generic tls-secret --from-file=tls.crt --from-file=tls.key",
+                  "kubectl create secret tls tls-secret --cert=tls.crt --key=tls.key",
+                  "kubectl create secret docker-registry tls-secret --docker-server=tls.crt --docker-username=tls.key",
+                  "kubectl create tls-secret tls-secret --cert=tls.crt --key=tls.key",
+                  "kubectl create secret tls-secret --type=tls --cert=tls.crt --key=tls.key"
+                ],
+                "correct_answers": [1],
+                "explanation": "The 'kubectl create secret tls tls-secret --cert=tls.crt --key=tls.key' command creates a TLS secret.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 164,
+                "question": "Which tool can be used to perform static analysis of Kubernetes manifests for security issues?",
+                "options": [
+                  "kube-bench",
+                  "kube-hunter",
+                  "kube-score",
+                  "kubectl describe",
+                  "kubesec"
+                ],
+                "correct_answers": [4],
+                "explanation": "Kubesec is a tool for static analysis of Kubernetes manifests to find security issues.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 165,
+                "question": "Which field in the Pod spec allows you to specify Linux capabilities for a container?",
+                "options": [
+                  "securityContext.capabilities",
+                  "spec.capabilities",
+                  "container.securityContext.capabilities",
+                  "podSecurityContext.capabilities",
+                  "linuxOptions.capabilities"
+                ],
+                "correct_answers": [2],
+                "explanation": "The 'securityContext.capabilities' field under the container spec allows you to add or drop capabilities.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 166,
+                "question": "To drop all Linux capabilities in a container, which configuration should be used?",
+                "options": [
+                  "capabilities: {drop: ['ALL']}",
+                  "capabilities: {add: ['NONE']}",
+                  "privileged: false",
+                  "allowPrivilegeEscalation: false",
+                  "runAsNonRoot: true"
+                ],
+                "correct_answers": [0],
+                "explanation": "Setting 'capabilities: {drop: ['ALL']}' removes all capabilities from the container.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 167,
+                "question": "Which admission controller ensures that kubelets can only modify their own Node and Pod objects?",
+                "options": [
+                  "NodeRestriction",
+                  "LimitRanger",
+                  "NamespaceLifecycle",
+                  "ResourceQuota",
+                  "PodSecurityPolicy"
+                ],
+                "correct_answers": [0],
+                "explanation": "The 'NodeRestriction' admission controller restricts kubelets to only modify their own Node and Pod objects.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 168,
+                "question": "What is the purpose of the 'namespaceSelector' in a NetworkPolicy?",
+                "options": [
+                  "To select namespaces where the policy is applied",
+                  "To select Pods in specific namespaces for ingress or egress rules",
+                  "To label namespaces",
+                  "To deny traffic to certain namespaces",
+                  "To enforce policies across all namespaces"
+                ],
+                "correct_answers": [1],
+                "explanation": "The 'namespaceSelector' selects Pods in namespaces that match certain labels for applying ingress or egress rules.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 169,
+                "question": "Which Kubernetes resource can be used to limit the resource consumption (CPU, memory) of Pods in a namespace?",
+                "options": [
+                  "ResourceQuota",
+                  "LimitRange",
+                  "PodSecurityPolicy",
+                  "NetworkPolicy",
+                  "HorizontalPodAutoscaler"
+                ],
+                "correct_answers": [0],
+                "explanation": "A 'ResourceQuota' can limit the total resource consumption in a namespace.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 170,
+                "question": "Which Kubernetes object allows you to set default resource requests and limits for Pods in a namespace?",
+                "options": [
+                  "LimitRange",
+                  "ResourceQuota",
+                  "PodPreset",
+                  "PodSecurityPolicy",
+                  "AdmissionController"
+                ],
+                "correct_answers": [0],
+                "explanation": "A 'LimitRange' sets default resource requests and limits for Pods in a namespace.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 171,
+                "question": "Which command can be used to view the audit logs if they are written to '/var/log/kubernetes/audit.log'?",
+                "options": [
+                  "kubectl logs audit",
+                  "sudo tail -f /var/log/kubernetes/audit.log",
+                  "kubectl get events --audit",
+                  "journalctl -u kube-apiserver",
+                  "kubectl describe audit-logs"
+                ],
+                "correct_answers": [1],
+                "explanation": "Using 'sudo tail -f /var/log/kubernetes/audit.log' allows you to view the audit logs in real-time.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 172,
+                "question": "Which of the following are common steps in hardening the Kubernetes API server? (Select all that apply)",
+                "options": [
+                  "Disable anonymous authentication",
+                  "Enable RBAC authorization",
+                  "Allow all admission controllers",
+                  "Enable etcd encryption for secrets",
+                  "Use insecure port for API communication"
+                ],
+                "correct_answers": [0, 1, 3],
+                "explanation": "Disabling anonymous auth, enabling RBAC, and using etcd encryption are best practices. Allowing all admission controllers and using insecure ports are not recommended.",
+                "question_type": "multiple-choice"
+              },
+              {
+                "id": 173,
+                "question": "Which component is responsible for scheduling Pods onto nodes?",
+                "options": [
+                  "kube-controller-manager",
+                  "kube-scheduler",
+                  "kube-apiserver",
+                  "kubelet",
+                  "etcd"
+                ],
+                "correct_answers": [1],
+                "explanation": "The kube-scheduler is responsible for assigning Pods to nodes.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 174,
+                "question": "Which Kubernetes resource can be used to set up a Pod with multiple containers that share the same network namespace?",
+                "options": [
+                  "Deployment",
+                  "DaemonSet",
+                  "Pod",
+                  "Service",
+                  "StatefulSet"
+                ],
+                "correct_answers": [2],
+                "explanation": "Containers within the same Pod share the same network namespace.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 175,
+                "question": "Which field in a container's securityContext prevents processes from gaining elevated privileges?",
+                "options": [
+                  "runAsUser: 0",
+                  "privileged: false",
+                  "allowPrivilegeEscalation: false",
+                  "runAsNonRoot: false",
+                  "readOnlyRootFilesystem: true"
+                ],
+                "correct_answers": [2],
+                "explanation": "Setting 'allowPrivilegeEscalation: false' prevents processes from gaining more privileges.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 176,
+                "question": "Which of the following are considered sensitive Kubernetes resources that should be audited carefully? (Select all that apply)",
+                "options": [
+                  "Secrets",
+                  "ConfigMaps",
+                  "Pods",
+                  "ServiceAccounts",
+                  "PersistentVolumes"
+                ],
+                "correct_answers": [0, 1, 3],
+                "explanation": "Secrets, ConfigMaps, and ServiceAccounts can contain sensitive data and should be audited.",
+                "question_type": "multiple-choice"
+              },
+              {
+                "id": 177,
+                "question": "Which admission controller is deprecated and replaced by Pod Security Admission in Kubernetes 1.25?",
+                "options": [
+                  "PodSecurityPolicy",
+                  "NodeRestriction",
+                  "AlwaysPullImages",
+                  "NamespaceLifecycle",
+                  "LimitRanger"
+                ],
+                "correct_answers": [0],
+                "explanation": "PodSecurityPolicy is deprecated and replaced by Pod Security Admission.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 178,
+                "question": "Which Kubernetes object should you use to define a set of rules for validating or mutating admission requests?",
+                "options": [
+                  "ValidatingWebhookConfiguration",
+                  "MutatingWebhookConfiguration",
+                  "AdmissionController",
+                  "CustomResourceDefinition",
+                  "WebhookPolicy"
+                ],
+                "correct_answers": [0, 1],
+                "explanation": "ValidatingWebhookConfiguration and MutatingWebhookConfiguration are used for admission webhooks.",
+                "question_type": "multiple-choice"
+              },
+              {
+                "id": 179,
+                "question": "Which field in the Pod spec can you use to disable privilege escalation for all containers in the Pod?",
+                "options": [
+                  "securityContext.allowPrivilegeEscalation: false",
+                  "spec.containers.securityContext.allowPrivilegeEscalation: false",
+                  "podSecurityContext.allowPrivilegeEscalation: false",
+                  "spec.securityContext.allowPrivilegeEscalation: false",
+                  "metadata.securityContext.allowPrivilegeEscalation: false"
+                ],
+                "correct_answers": [3],
+                "explanation": "Setting 'spec.securityContext.allowPrivilegeEscalation: false' applies to all containers in the Pod.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 180,
+                "question": "Which command would you use to label a namespace 'production' with 'env=prod'?",
+                "options": [
+                  "kubectl label namespace env=prod production",
+                  "kubectl label namespace production env=prod",
+                  "kubectl annotate namespace production env=prod",
+                  "kubectl label namespaces env=prod production",
+                  "kubectl set label namespace production env=prod"
+                ],
+                "correct_answers": [1],
+                "explanation": "The correct command is 'kubectl label namespace production env=prod'.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 181,
+                "question": "In a NetworkPolicy, which selector is used to apply the policy to specific Pods?",
+                "options": [
+                  "podSelector",
+                  "namespaceSelector",
+                  "policySelector",
+                  "matchLabels",
+                  "appSelector"
+                ],
+                "correct_answers": [0],
+                "explanation": "The 'podSelector' field selects the Pods to which the policy applies.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 182,
+                "question": "Which field in the NetworkPolicy spec defines allowed egress destinations?",
+                "options": [
+                  "ingress",
+                  "egress",
+                  "to",
+                  "from",
+                  "destinations"
+                ],
+                "correct_answers": [1],
+                "explanation": "The 'egress' field defines the egress rules in a NetworkPolicy.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 183,
+                "question": "Which of the following are valid components of a Kubernetes auditing policy? (Select all that apply)",
+                "options": [
+                  "Rules",
+                  "Levels",
+                  "Stages",
+                  "Users",
+                  "Verbs"
+                ],
+                "correct_answers": [0, 2, 3, 4],
+                "explanation": "An audit policy can specify 'rules' that include 'stages', 'users', and 'verbs'. 'Levels' are specified per rule.",
+                "question_type": "multiple-choice"
+              },
+              {
+                "id": 184,
+                "question": "Which 'level' in an audit policy would log metadata but not request bodies?",
+                "options": [
+                  "None",
+                  "Metadata",
+                  "Request",
+                  "RequestResponse",
+                  "Minimal"
+                ],
+                "correct_answers": [1],
+                "explanation": "'Metadata' level logs metadata about the request but not the request body.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 185,
+                "question": "Which tool can be used to benchmark a Kubernetes cluster against CIS best practices?",
+                "options": [
+                  "kube-bench",
+                  "kube-hunter",
+                  "kubesec",
+                  "kube-score",
+                  "kube-linter"
+                ],
+                "correct_answers": [0],
+                "explanation": "kube-bench checks Kubernetes clusters against the CIS benchmarks.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 186,
+                "question": "Which Kubernetes resource allows you to configure automatic scaling based on CPU utilization?",
+                "options": [
+                  "HorizontalPodAutoscaler",
+                  "VerticalPodAutoscaler",
+                  "ResourceQuota",
+                  "LimitRange",
+                  "Deployment"
+                ],
+                "correct_answers": [0],
+                "explanation": "The 'HorizontalPodAutoscaler' adjusts the number of replicas based on CPU utilization.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 187,
+                "question": "Which command would you use to approve a CertificateSigningRequest named 'user1'?",
+                "options": [
+                  "kubectl certificate approve user1",
+                  "kubectl csr approve user1",
+                  "kubectl approve csr user1",
+                  "kubectl sign csr user1",
+                  "kubectl certificate sign user1"
+                ],
+                "correct_answers": [0],
+                "explanation": "The 'kubectl certificate approve user1' command approves the CSR.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 188,
+                "question": "Which securityContext setting ensures that a container runs with a non-root user?",
+                "options": [
+                  "runAsUser: 0",
+                  "runAsNonRoot: true",
+                  "runAsGroup: 0",
+                  "allowPrivilegeEscalation: false",
+                  "privileged: false"
+                ],
+                "correct_answers": [1],
+                "explanation": "Setting 'runAsNonRoot: true' ensures the container does not run as UID 0.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 189,
+                "question": "Which command can be used to list all ServiceAccounts in the 'dev' namespace?",
+                "options": [
+                  "kubectl get sa -n dev",
+                  "kubectl get serviceaccount -A",
+                  "kubectl get serviceaccounts --namespace=dev",
+                  "kubectl describe serviceaccounts -n dev",
+                  "kubectl list sa dev"
+                ],
+                "correct_answers": [0, 2],
+                "explanation": "Both 'kubectl get sa -n dev' and 'kubectl get serviceaccounts --namespace=dev' list ServiceAccounts in 'dev' namespace.",
+                "question_type": "multiple-choice"
+              },
+              {
+                "id": 190,
+                "question": "Which field in the Pod spec allows you to specify a ServiceAccount to use?",
+                "options": [
+                  "serviceAccount",
+                  "serviceAccountName",
+                  "accountName",
+                  "saName",
+                  "serviceAccountSpec"
+                ],
+                "correct_answers": [1],
+                "explanation": "The 'serviceAccountName' field specifies the ServiceAccount for the Pod.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 191,
+                "question": "Which of the following are valid Kubernetes admission controllers? (Select all that apply)",
+                "options": [
+                  "AlwaysPullImages",
+                  "PodSecurityPolicy",
+                  "ResourceQuota",
+                  "LimitRanger",
+                  "ImagePolicyWebhook"
+                ],
+                "correct_answers": [0, 1, 2, 3, 4],
+                "explanation": "All listed options are valid admission controllers in Kubernetes.",
+                "question_type": "multiple-choice"
+              },
+              {
+                "id": 192,
+                "question": "Which Kubernetes object defines cluster-wide roles?",
+                "options": [
+                  "Role",
+                  "ClusterRole",
+                  "RoleBinding",
+                  "ClusterRoleBinding",
+                  "ServiceAccount"
+                ],
+                "correct_answers": [1],
+                "explanation": "'ClusterRole' defines cluster-wide permissions.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 193,
+                "question": "Which command would you use to delete all pods in a namespace 'test'?",
+                "options": [
+                  "kubectl delete pods --all -n test",
+                  "kubectl delete pod -A",
+                  "kubectl delete pods -n test",
+                  "kubectl remove pods --namespace=test",
+                  "kubectl delete pods * -n test"
+                ],
+                "correct_answers": [0],
+                "explanation": "'kubectl delete pods --all -n test' deletes all pods in the 'test' namespace.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 194,
+                "question": "Which kubelet configuration setting can restrict the use of dangerous host paths in volumes?",
+                "options": [
+                  "ProtectKernelDefaults",
+                  "MakeIPTablesUtilChains",
+                  "AllowedUnsafeSysctls",
+                  "VolumePluginDir",
+                  "ReadOnlyPort"
+                ],
+                "correct_answers": [2],
+                "explanation": "The 'AllowedUnsafeSysctls' setting can restrict sysctls, but for volumes, PodSecurityPolicy or admission controllers are used.",
+                    "question_type": "single-choice"
+              },
+              {
+                "id": 195,
+                "question": "Which of the following are common security contexts applied at the Pod level? (Select all that apply)",
+                "options": [
+                  "runAsUser",
+                  "fsGroup",
+                  "privileged",
+                  "capabilities",
+                  "seLinuxOptions"
+                ],
+                "correct_answers": [0, 1, 4],
+                "explanation": "'runAsUser', 'fsGroup', and 'seLinuxOptions' are commonly applied at the Pod level.",
+                "question_type": "multiple-choice"
+              },
+              {
+                "id": 196,
+                "question": "Which command can be used to get detailed information about a Kubernetes node?",
+                "options": [
+                  "kubectl get node <node-name>",
+                  "kubectl describe node <node-name>",
+                  "kubectl inspect node <node-name>",
+                  "kubectl info node <node-name>",
+                  "kubectl logs node <node-name>"
+                ],
+                "correct_answers": [1],
+                "explanation": "'kubectl describe node <node-name>' provides detailed information about the node.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 197,
+                "question": "Which flag can be used with 'kubectl run' to generate a Pod manifest YAML file without creating the resource?",
+                "options": [
+                  "--dry-run=server",
+                  "--dry-run=client -o yaml",
+                  "--output=yaml",
+                  "--generate-only",
+                  "--no-create"
+                ],
+                "correct_answers": [1],
+                "explanation": "'--dry-run=client -o yaml' outputs the manifest without creating the resource.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 198,
+                "question": "Which Kubernetes object can be used to persist data across the lifecycle of a Pod?",
+                "options": [
+                  "PersistentVolume",
+                  "ConfigMap",
+                  "Secret",
+                  "PersistentVolumeClaim",
+                  "EmptyDir"
+                ],
+                "correct_answers": [3],
+                "explanation": "A 'PersistentVolumeClaim' allows a Pod to request persistent storage.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 199,
+                "question": "Which command can be used to apply a configuration change to a resource defined in 'deployment.yaml'?",
+                "options": [
+                  "kubectl create -f deployment.yaml",
+                  "kubectl apply -f deployment.yaml",
+                  "kubectl set -f deployment.yaml",
+                  "kubectl update -f deployment.yaml",
+                  "kubectl replace -f deployment.yaml"
+                ],
+                "correct_answers": [1],
+                "explanation": "'kubectl apply -f deployment.yaml' applies the changes to the resource.",
+                "question_type": "single-choice"
+              },
+              {
+                "id": 200,
+                "question": "Which field in a container's securityContext allows you to add specific Linux capabilities?",
+                "options": [
+                  "addCapabilities",
+                  "linuxCapabilities",
+                  "capabilities.add",
+                  "securityOptions",
+                  "privilegedCaps"
+                ],
+                "correct_answers": [2],
+                "explanation": "The 'capabilities' field under 'securityContext' has 'add' and 'drop' lists for capabilities.",
+                "question_type": "single-choice"
+              },
+              
+              {
+                  "id": 201,
+                  "question": "Which command would you use to check the status of the Kubernetes API server components?",
+                  "options": [
+                    "kubectl get pods -n kube-system",
+                    "kubectl get componentstatuses",
+                    "kubectl describe nodes",
+                    "kubectl cluster-info",
+                    "kubectl get apiserver"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "The 'kubectl get componentstatuses' command displays the status of the cluster components, including the API server.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 202,
+                  "question": "If the API server is not responding, which file should you check for possible misconfigurations?",
+                  "options": [
+                    "/var/log/kube-apiserver.log",
+                    "/etc/kubernetes/manifests/kube-scheduler.yaml",
+                    "/etc/kubernetes/manifests/kube-apiserver.yaml",
+                    "/etc/kubernetes/config/apiserver.conf",
+                    "/var/lib/kubelet/config.yaml"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "The API server's static pod manifest is located at '/etc/kubernetes/manifests/kube-apiserver.yaml', and misconfigurations there can prevent it from starting.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 203,
+                  "question": "Which annotation is used in a Pod manifest to specify an AppArmor profile for a container named 'nginx'?",
+                  "options": [
+                    "apparmor.security.beta.kubernetes.io/nginx: 'localhost/nginx-profile'",
+                    "security.alpha.kubernetes.io/apparmor/nginx: 'localhost/nginx-profile'",
+                    "container.apparmor.security.beta.kubernetes.io/nginx: 'localhost/nginx-profile'",
+                    "nginx.apparmor.kubernetes.io/profile: 'localhost/nginx-profile'",
+                    "securityContext.apparmorProfile: 'localhost/nginx-profile'"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "The correct annotation is 'container.apparmor.security.beta.kubernetes.io/<container_name>: <profile>', where '<container_name>' is 'nginx'.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 204,
+                  "question": "To enable audit logging in Kubernetes, which flag must be added to the API server configuration?",
+                  "options": [
+                    "--audit-log-path",
+                    "--enable-audit",
+                    "--audit-policy",
+                    "--audit-log-file",
+                    "--enable-admission-plugins=Audit"
+                  ],
+                  "correct_answers": [0],
+                  "explanation": "The '--audit-log-path' flag specifies the path where audit logs are written, enabling audit logging.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 205,
+                  "question": "Which of the following are steps to enable audit logging in Kubernetes? (Select all that apply)",
+                  "options": [
+                    "Create an audit policy file",
+                    "Configure the kubelet with audit flags",
+                    "Add '--audit-policy-file' flag to API server",
+                    "Restart the kube-controller-manager",
+                    "Specify '--audit-log-path' in the API server configuration"
+                  ],
+                  "correct_answers": [0, 2, 4],
+                  "explanation": "To enable audit logging, you need to create an audit policy file and configure the API server with '--audit-policy-file' and '--audit-log-path' flags.",
+                  "question_type": "multiple-choice"
+                },
+                {
+                  "id": 206,
+                  "question": "Which command is used to generate a private key for a new Kubernetes user?",
+                  "options": [
+                    "openssl genrsa -out user.key 2048",
+                    "openssl rsa -in user.key -out user.key",
+                    "openssl req -newkey rsa:2048 -nodes -keyout user.key -out user.csr",
+                    "kubectl create secret tls user.key",
+                    "ssh-keygen -t rsa -b 2048 -f user.key"
+                  ],
+                  "correct_answers": [0],
+                  "explanation": "The command 'openssl genrsa -out user.key 2048' generates a 2048-bit RSA private key.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 207,
+                  "question": "After generating a CSR and signing it with the cluster CA, how do you configure kubectl to use the new certificate for user 'alice'?",
+                  "options": [
+                    "kubectl config set-credentials alice --client-certificate=alice.crt --client-key=alice.key",
+                    "kubectl create secret tls alice --cert=alice.crt --key=alice.key",
+                    "kubectl config set-context alice-context --cluster=kubernetes --user=alice",
+                    "kubectl apply -f alice.crt",
+                    "kubectl certificate approve alice"
+                  ],
+                  "correct_answers": [0],
+                  "explanation": "You set the user credentials in kubectl using 'kubectl config set-credentials' with the client certificate and key.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 208,
+                  "question": "According to the CIS Kubernetes Benchmark, which of the following settings should be disabled on the kube-apiserver for security?",
+                  "options": [
+                    "Anonymous authentication",
+                    "RBAC authorization",
+                    "TLS encryption",
+                    "Admission controllers",
+                    "Audit logging"
+                  ],
+                  "correct_answers": [0],
+                  "explanation": "Anonymous authentication should be disabled for security as per CIS Benchmarks.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 209,
+                  "question": "Which flag disables anonymous authentication in the kube-apiserver?",
+                  "options": [
+                    "--disable-anonymous-auth",
+                    "--anonymous-auth=false",
+                    "--enable-auth=false",
+                    "--no-anonymous",
+                    "--deny-anonymous"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "The '--anonymous-auth=false' flag disables anonymous requests to the API server.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 210,
+                  "question": "Which of the following are best practices for container image hardening? (Select all that apply)",
+                  "options": [
+                    "Use a minimal base image",
+                    "Run processes as root",
+                    "Remove unnecessary packages",
+                    "Expose all ports for flexibility",
+                    "Regularly scan images for vulnerabilities"
+                  ],
+                  "correct_answers": [0, 2, 4],
+                  "explanation": "Best practices include using minimal base images, removing unnecessary packages, and scanning for vulnerabilities. Running as root and exposing all ports are not recommended.",
+                  "question_type": "multiple-choice"
+                },
+                {
+                  "id": 211,
+                  "question": "In a Dockerfile, which instruction can be used to ensure the application runs as a non-root user?",
+                  "options": [
+                    "FROM nonroot",
+                    "USER nobody",
+                    "RUN chmod 777 /app",
+                    "EXPOSE 80",
+                    "ENTRYPOINT [\"/app\"]"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "The 'USER' instruction sets the user to 'nobody', ensuring the application does not run as root.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 212,
+                  "question": "Which command scans a Docker image 'myapp:latest' for HIGH and CRITICAL vulnerabilities using Trivy?",
+                  "options": [
+                    "trivy myapp:latest",
+                    "trivy image --severity HIGH,CRITICAL myapp:latest",
+                    "trivy scan --critical myapp:latest",
+                    "trivy image --vulnerabilities HIGH,CRITICAL myapp:latest",
+                    "trivy inspect myapp:latest"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "The correct command is 'trivy image --severity HIGH,CRITICAL myapp:latest'.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 213,
+                  "question": "After identifying a vulnerable image in your cluster, what is the recommended immediate action?",
+                  "options": [
+                    "Ignore the vulnerability",
+                    "Update the image tag to 'latest'",
+                    "Delete the pod using the image",
+                    "Restart the Kubernetes cluster",
+                    "Rebuild the image without changes"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "The recommended action is to delete the pod running the vulnerable image to mitigate the risk.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 214,
+                  "question": "Which Kubernetes object is used to grant permissions to a user or group within a namespace?",
+                  "options": [
+                    "ClusterRole",
+                    "Role",
+                    "ClusterRoleBinding",
+                    "RoleBinding",
+                    "ServiceAccount"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "A 'Role' defines permissions within a namespace.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 215,
+                  "question": "What is the correct 'kind' value for an object that associates a Role with a user?",
+                  "options": [
+                    "RoleBinding",
+                    "ClusterRole",
+                    "User",
+                    "Group",
+                    "RoleAssignment"
+                  ],
+                  "correct_answers": [0],
+                  "explanation": "A 'RoleBinding' binds a Role to a user or group within a namespace.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 216,
+                  "question": "Which flag allows you to run a Docker container sharing the PID namespace with another container named 'container1'?",
+                  "options": [
+                    "--pid=host",
+                    "--pid=container1",
+                    "--pid=container:container1",
+                    "--net=container:container1",
+                    "--namespace=pid:container1"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "The '--pid=container:container1' flag allows sharing the PID namespace with 'container1'.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 217,
+                  "question": "What is the effect of sharing the PID namespace between two Docker containers?",
+                  "options": [
+                    "They share the same network interfaces",
+                    "They can see and signal each other's processes",
+                    "They share the same filesystem",
+                    "They can access each other's environment variables",
+                    "They share the same memory space"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "Sharing the PID namespace allows containers to see and interact with each other's processes.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 218,
+                  "question": "Why is it recommended to use image digests instead of tags in Kubernetes manifests?",
+                  "options": [
+                    "Digests are shorter than tags",
+                    "Tags can be mutable, but digests ensure image immutability",
+                    "Using digests is required by Kubernetes",
+                    "Tags are not supported in private registries",
+                    "Digests allow for automatic updates"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "Tags can point to different images over time, but digests refer to a specific image, ensuring immutability.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 219,
+                  "question": "How do you obtain the digest of an image 'nginx:1.19'?",
+                  "options": [
+                    "docker images nginx:1.19 --digests",
+                    "docker inspect nginx:1.19 --format='{{.Id}}'",
+                    "docker pull nginx@sha256",
+                    "docker inspect --format='{{index .RepoDigests 0}}' nginx:1.19",
+                    "docker tag nginx:1.19 nginx:sha256"
+                  ],
+                  "correct_answers": [3],
+                  "explanation": "The command 'docker inspect --format='{{index .RepoDigests 0}}' nginx:1.19' returns the image digest.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 220,
+                  "question": "Which securityContext field makes a container's root filesystem read-only?",
+                  "options": [
+                    "readOnlyFileSystem",
+                    "readOnlyRootFilesystem",
+                    "immutableRoot",
+                    "filesystemReadonly",
+                    "noWriteFilesystem"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "The 'readOnlyRootFilesystem' field in the container's securityContext makes the root filesystem read-only.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 221,
+                  "question": "What is the primary benefit of making a container's root filesystem read-only?",
+                  "options": [
+                    "Improved performance",
+                    "Reduced image size",
+                    "Enhanced security by preventing writes to the filesystem",
+                    "Allows containers to share files",
+                    "Simplifies application deployment"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "Making the root filesystem read-only prevents unauthorized writes, enhancing security.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 222,
+                  "question": "Which command would you use to list all loaded AppArmor profiles on a node?",
+                  "options": [
+                    "sudo apparmor_status",
+                    "sudo aa-enforce",
+                    "sudo apparmor_parser -L",
+                    "sudo aa-status",
+                    "sudo systemctl status apparmor"
+                  ],
+                  "correct_answers": [3],
+                  "explanation": "The 'sudo aa-status' command displays the status of AppArmor profiles.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 223,
+                  "question": "In Kubernetes, how do you apply an AppArmor profile to all containers in a Pod?",
+                  "options": [
+                    "Set the profile in the Pod's securityContext",
+                    "Annotate each container with the AppArmor profile",
+                    "Use the 'apparmorProfile' field in the container spec",
+                    "Specify the profile in the Deployment's metadata",
+                    "Set the profile in the node's AppArmor configuration"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "You annotate each container in the Pod with the AppArmor profile to apply it.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 224,
+                  "question": "Which NetworkPolicy policyTypes value is used to create a default deny egress policy?",
+                  "options": [
+                    "Ingress",
+                    "Egress",
+                    "Ingress, Egress",
+                    "DenyAll",
+                    "AllowNone"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "Setting 'policyTypes' to 'Egress' and not specifying any 'egress' rules creates a default deny egress policy.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 225,
+                  "question": "To create a default deny all traffic NetworkPolicy, what should the 'podSelector' field be set to?",
+                  "options": [
+                    "An empty selector '{}'",
+                    "Select all pods with '*'",
+                    "Select no pods by omitting 'podSelector'",
+                    "Set 'podSelector' to 'null'",
+                    "Specify 'podSelector: denyAll'"
+                  ],
+                  "correct_answers": [0],
+                  "explanation": "An empty 'podSelector' applies the policy to all pods in the namespace.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 226,
+                  "question": "Which field in the securityContext marks a container as privileged?",
+                  "options": [
+                    "allowPrivilegeEscalation: true",
+                    "runAsPrivileged: true",
+                    "privileged: true",
+                    "privileges: high",
+                    "capabilities: privileged"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "The 'privileged: true' field in the container's securityContext marks it as privileged.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 227,
+                  "question": "What is a potential risk of running a privileged container?",
+                  "options": [
+                    "Increased memory usage",
+                    "Limited network access",
+                    "Container can access host resources, leading to security risks",
+                    "Reduced application performance",
+                    "Inability to use persistent volumes"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "Privileged containers have full access to the host's resources, which can pose security risks.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 228,
+                  "question": "How do you prevent a Pod from automatically mounting a ServiceAccount token?",
+                  "options": [
+                    "Set 'mountServiceAccountToken: false' in the Pod spec",
+                    "Set 'automountServiceAccountToken: false' in the Pod spec",
+                    "Remove the ServiceAccount from the Pod spec",
+                    "Set 'serviceAccountName: null' in the Pod spec",
+                    "Set 'tokenMount: false' in the ServiceAccount"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "Setting 'automountServiceAccountToken: false' in the Pod spec prevents the token from being mounted.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 229,
+                  "question": "Why might you disable automounting of ServiceAccount tokens in a Pod?",
+                  "options": [
+                    "To reduce memory usage",
+                    "To prevent unauthorized API access from the Pod",
+                    "To improve application performance",
+                    "To enable network policies",
+                    "To allow multiple ServiceAccounts"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "Disabling the automounting of ServiceAccount tokens prevents potential unauthorized access to the Kubernetes API from the Pod.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 230,
+                  "question": "Which API server flag enables the ImagePolicyWebhook admission controller?",
+                  "options": [
+                    "--enable-admission-plugins=ImagePolicyWebhook",
+                    "--admission-control=ImagePolicyWebhook",
+                    "--admission-plugins=ImagePolicyWebhook",
+                    "--enable-image-policy",
+                    "--image-policy-webhook=true"
+                  ],
+                  "correct_answers": [0],
+                  "explanation": "The '--enable-admission-plugins=ImagePolicyWebhook' flag enables the ImagePolicyWebhook admission controller.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 231,
+                  "question": "What is the purpose of the ImagePolicyWebhook admission controller?",
+                  "options": [
+                    "To scan images for vulnerabilities at runtime",
+                    "To enforce policies on container images during admission",
+                    "To provide caching for container images",
+                    "To update images automatically",
+                    "To log image pull requests"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "The ImagePolicyWebhook admission controller enforces policies on container images before they are admitted to the cluster.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 232,
+                  "question": "In an audit policy, which level should be set to log the content of requests and responses?",
+                  "options": [
+                    "None",
+                    "Metadata",
+                    "Request",
+                    "RequestResponse",
+                    "Content"
+                  ],
+                  "correct_answers": [3],
+                  "explanation": "The 'RequestResponse' level logs the metadata and the content of requests and responses.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 233,
+                  "question": "How do you specify in an audit policy to log events for all resources in a specific namespace?",
+                  "options": [
+                    "Set 'namespace: <namespace>' in the policy rule",
+                    "Use 'namespaces: [\"<namespace>\"]' under the rule's 'namespaces' field",
+                    "Add 'resourceNames: [\"<namespace>\"]' to the rule",
+                    "Set 'level: Namespace' in the policy",
+                    "Specify 'namespaceSelector: {matchNames: [\"<namespace>\"]}'"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "In the audit policy, the 'namespaces' field is an array specifying which namespaces the rule applies to.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 234,
+                  "question": "Which command creates a generic secret named 'db-secret' with the key 'password' and value 'S3cr3t!'?",
+                  "options": [
+                    "kubectl create secret generic db-secret --password='S3cr3t!'",
+                    "kubectl create secret db-secret --from-literal='password=S3cr3t!'",
+                    "kubectl create secret generic db-secret --from-literal=password=S3cr3t!",
+                    "kubectl create secret tls db-secret --key='S3cr3t!'",
+                    "kubectl create secret docker-registry db-secret --password='S3cr3t!'"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "The correct command is 'kubectl create secret generic db-secret --from-literal=password=S3cr3t!'.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 235,
+                  "question": "To read the value of a secret key 'username' from secret 'db-secret' in namespace 'prod', which command can you use?",
+                  "options": [
+                    "kubectl get secret db-secret -n prod -o jsonpath='{.data.username}' | base64 --decode",
+                    "kubectl describe secret db-secret -n prod",
+                    "kubectl get secret db-secret -n prod -o yaml",
+                    "kubectl read secret db-secret -n prod --key=username",
+                    "kubectl decode secret db-secret -n prod --field=username"
+                  ],
+                  "correct_answers": [0],
+                  "explanation": "The command uses 'jsonpath' to extract the base64-encoded value and decodes it.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 236,
+                  "question": "Which Kubernetes resource is used to request a certificate signing via the Kubernetes API?",
+                  "options": [
+                    "CertificateRequest",
+                    "CertificateSigningRequest",
+                    "CertificateApproval",
+                    "CertificateSigning",
+                    "Certificate"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "'CertificateSigningRequest' is the resource used to request certificate signing via the API.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 237,
+                  "question": "After creating a CSR object in Kubernetes, which command is used to approve it?",
+                  "options": [
+                    "kubectl sign csr <csr-name>",
+                    "kubectl create csr <csr-name>",
+                    "kubectl approve csr <csr-name>",
+                    "kubectl certificate approve <csr-name>",
+                    "kubectl csr approve <csr-name>"
+                  ],
+                  "correct_answers": [3],
+                  "explanation": "The command 'kubectl certificate approve <csr-name>' approves the CSR.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 238,
+                  "question": "Which Kubernetes resource allows you to specify the use of a custom runtime like gVisor?",
+                  "options": [
+                    "Runtime",
+                    "RuntimeClass",
+                    "PodSecurityPolicy",
+                    "SecurityContext",
+                    "ContainerRuntime"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "'RuntimeClass' is the Kubernetes resource used to specify the container runtime to use.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 239,
+                  "question": "In a Pod spec, how do you specify that it should use the gVisor runtime class?",
+                  "options": [
+                    "Set 'runtime: gvisor'",
+                    "Set 'securityContext: {runtimeClassName: \"gvisor\"}'",
+                    "Set 'runtimeClassName: \"gvisor\"' at the Pod spec level",
+                    "Set 'containerRuntime: \"gvisor\"' in the container spec",
+                    "Annotate the Pod with 'runtimeClass: gvisor'"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "The 'runtimeClassName' field at the Pod spec level specifies which RuntimeClass to use.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 240,
+                  "question": "Which command lists all processes listening on TCP and UDP ports?",
+                  "options": [
+                    "sudo netstat -tulpn",
+                    "sudo lsof -i",
+                    "sudo ss -tulw",
+                    "sudo ps aux | grep LISTEN",
+                    "sudo netstat -an"
+                  ],
+                  "correct_answers": [0],
+                  "explanation": "The 'sudo netstat -tulpn' command lists all listening TCP and UDP ports along with the processes using them.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 241,
+                  "question": "After identifying an unwanted process listening on a port, which command can you use to stop it?",
+                  "options": [
+                    "killall <process-name>",
+                    "sudo stop <process-name>",
+                    "sudo systemctl disable <process-name>",
+                    "sudo kill <pid>",
+                    "sudo service <process-name> remove"
+                  ],
+                  "correct_answers": [3],
+                  "explanation": "The 'sudo kill <pid>' command terminates the process with the specified PID.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 242,
+                  "question": "Which command can be used to remove an unwanted package 'apache2' from a Debian-based system?",
+                  "options": [
+                    "sudo apt-get install apache2",
+                    "sudo yum remove apache2",
+                    "sudo apt-get remove apache2",
+                    "sudo rpm -e apache2",
+                    "sudo dnf erase apache2"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "On Debian-based systems, 'sudo apt-get remove apache2' removes the package.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 243,
+                  "question": "Which command lists all installed packages on a system using apt?",
+                  "options": [
+                    "apt list --installed",
+                    "dpkg -l",
+                    "rpm -qa",
+                    "yum list installed",
+                    "pkg info"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "The 'dpkg -l' command lists all installed packages on Debian-based systems.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 244,
+                  "question": "Which strace option summarizes the time spent in each system call?",
+                  "options": [
+                    "-c",
+                    "-p",
+                    "-t",
+                    "-e trace=%time",
+                    "-s"
+                  ],
+                  "correct_answers": [0],
+                  "explanation": "The '-c' option in strace produces a summary of system calls and time spent in each.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 245,
+                  "question": "To trace system calls made by a running process with PID 1234, which command would you use?",
+                  "options": [
+                    "strace 1234",
+                    "strace -p 1234",
+                    "strace -c 1234",
+                    "sudo trace -pid 1234",
+                    "strace --process 1234"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "The 'strace -p 1234' command attaches to the process with PID 1234.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 246,
+                  "question": "Which command computes the SHA256 checksum of the file '/usr/bin/kubelet'?",
+                  "options": [
+                    "sha1sum /usr/bin/kubelet",
+                    "md5sum /usr/bin/kubelet",
+                    "checksum -sha256 /usr/bin/kubelet",
+                    "sha256sum /usr/bin/kubelet",
+                    "hash -a sha256 /usr/bin/kubelet"
+                  ],
+                  "correct_answers": [3],
+                  "explanation": "The 'sha256sum /usr/bin/kubelet' command computes the SHA256 checksum.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 247,
+                  "question": "Why is it important to verify the checksums of Kubernetes binaries?",
+                  "options": [
+                    "To ensure they are the latest version",
+                    "To verify the integrity and authenticity of the binaries",
+                    "To improve their performance",
+                    "To check for syntax errors",
+                    "To enable automatic updates"
+                  ],
+                  "correct_answers": [1],
+                  "explanation": "Verifying checksums ensures that the binaries have not been tampered with and are authentic.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 248,
+                  "question": "What is a potential risk of using an insecure container registry?",
+                  "options": [
+                    "Faster image downloads",
+                    "Increased image caching",
+                    "Man-in-the-middle attacks leading to compromised images",
+                    "Improved image availability",
+                    "Automatic image updates"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "Using an insecure registry can expose you to man-in-the-middle attacks where images can be tampered with.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 249,
+                  "question": "Which of the following is a best practice when configuring container registries?",
+                  "options": [
+                    "Use HTTP instead of HTTPS for performance",
+                    "Allow anonymous access",
+                    "Use authenticated and encrypted connections (HTTPS)",
+                    "Disable TLS verification",
+                    "Expose the registry publicly without restrictions"
+                  ],
+                  "correct_answers": [2],
+                  "explanation": "Using authenticated and encrypted connections ensures secure access to the registry.",
+                  "question_type": "single-choice"
+                },
+                {
+                  "id": 250,
+                  "question": "Which Kubernetes resource can enforce Pod Security Standards in a namespace?",
+                  "options": [
+                    "PodSecurityPolicy",
+                    "NetworkPolicy",
+                    "LimitRange",
+                    "ResourceQuota",
+                    "Pod Security Admission Controller"
+                  ],
+                  "correct_answers": [4],
+                  "explanation": "The Pod Security Admission Controller enforces Pod Security Standards in Kubernetes.",
+                  "question_type": "single-choice"
+                }
+                                  
             
   ];
