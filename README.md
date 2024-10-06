@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is an interactive web application designed to help aspiring Kubernetes security professionals prepare for certification exams. It features a comprehensive mock exam with 150 questions covering various aspects of Kubernetes security.
+This project is an interactive web application designed to help aspiring Kubernetes security professionals prepare for certification exams. It features a comprehensive mock exam with 250 questions covering various aspects of Kubernetes security.
 
 ## Live Version
 
