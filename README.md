@@ -10,7 +10,7 @@ You can access the live version of this app [here](https://kubernetes-security-k
 
 ## Features
 
-- 150 carefully crafted questions on Kubernetes security topics
+- 250 carefully crafted questions on Kubernetes security topics (UPDATED)
 - Randomized question order for each exam session
 - Configurable number of questions per exam
 - Interactive exam interface with one question displayed per page
