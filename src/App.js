@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Exam from './components/Exam';
 import Results from './components/Results';
 import ReviewFlagged from './components/ReviewFlagged';
+import HomePage from './components/HomePage';
 import { questions } from './questions';
 import useLocalStorage from './hooks/useLocalStorage';
 
@@ -99,50 +100,48 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Kubernetes Security KCSA Mock Exam</h1>
-      {!examStarted && !examFinished && !reviewingFlagged && (
-        <div>
-          <label>
-            Number of questions:
-            <input
-              type="number"
-              value={numQuestions}
-              onChange={(e) => setNumQuestions(Math.max(1, Math.min(questions.length, parseInt(e.target.value) || 0)))}
+      {!examStarted && !examFinished && !reviewingFlagged ? (
+        <HomePage
+          numQuestions={numQuestions}
+          setNumQuestions={setNumQuestions}
+          startExam={startExam}
+          maxQuestions={questions.length}
+        />
+      ) : (
+        <>
+          <h1>Kubernetes Security KCSA Mock Exam</h1>
+          {examStarted && !reviewingFlagged && (
+            <Exam
+              questions={examQuestions}
+              userAnswers={userAnswers}
+              setUserAnswers={setUserAnswers}
+              flaggedQuestions={flaggedQuestions}
+              setFlaggedQuestions={setFlaggedQuestions}
+              currentQuestionIndex={currentQuestionIndex}
+              setCurrentQuestionIndex={setCurrentQuestionIndex}
+              timeLeft={timeLeft}
+              setTimeLeft={setTimeLeft}
+              onFinish={startReview}
             />
-          </label>
-          <button onClick={startExam}>Start Exam</button>
-        </div>
-      )}
-      {examStarted && !reviewingFlagged && (
-        <Exam
-          questions={examQuestions}
-          userAnswers={userAnswers}
-          setUserAnswers={setUserAnswers}
-          flaggedQuestions={flaggedQuestions}
-          setFlaggedQuestions={setFlaggedQuestions}
-          currentQuestionIndex={currentQuestionIndex}
-          setCurrentQuestionIndex={setCurrentQuestionIndex}
-          timeLeft={timeLeft}
-          setTimeLeft={setTimeLeft}
-          onFinish={startReview}
-        />
-      )}
-      {reviewingFlagged && (
-        <ReviewFlagged
-          questions={examQuestions}
-          userAnswers={userAnswers}
-          setUserAnswers={setUserAnswers}
-          flaggedQuestions={flaggedQuestions}
-          setFlaggedQuestions={setFlaggedQuestions}
-          onFinish={finishExam}
-        />
-      )}
-      {examFinished && (
-        <Results
-          questions={examQuestions}
-          userAnswers={userAnswers}
-          onRestart={restartExam}
-        />
+          )}
+          {reviewingFlagged && (
+            <ReviewFlagged
+              questions={examQuestions}
+              userAnswers={userAnswers}
+              setUserAnswers={setUserAnswers}
+              flaggedQuestions={flaggedQuestions}
+              setFlaggedQuestions={setFlaggedQuestions}
+              onFinish={finishExam}
+            />
+          )}
+          {examFinished && (
+            <Results
+              questions={examQuestions}
+              userAnswers={userAnswers}
+              onRestart={restartExam}
+            />
+          )}
+        </>
       )}
     </div>
   );
