@@ -5,6 +5,7 @@ import ReviewFlagged from './components/ReviewFlagged';
 import HomePage from './components/HomePage';
 import { questions } from './questions';
 import useLocalStorage from './hooks/useLocalStorage';
+import { Analytics } from "@vercel/analytics/react"
 
 function App() {
   const [examStarted, setExamStarted] = useState(false);
@@ -100,6 +101,7 @@ function App() {
 
   return (
     <div className="App">
+     
       {!examStarted && !examFinished && !reviewingFlagged ? (
         <HomePage
           numQuestions={numQuestions}
@@ -143,6 +145,7 @@ function App() {
           )}
         </>
       )}
+      <Analytics />
     </div>
   );
 }
