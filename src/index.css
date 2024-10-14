@@ -302,3 +302,34 @@ input[type="number"] {
 .github-link:hover {
   background-color: #0056b3;
 }
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  width: 100%; /* Ensure container takes up full width */
+  max-width: 100%; /* Prevent overflow from container */
+  overflow: hidden; /* Prevent potential overflow issues */
+}
+
+.responsive-image {
+  width: 100%;
+  height: auto;
+  max-width: 500px; /* Restrict maximum size */
+  object-fit: contain; /* Make sure the image doesn't distort */
+}
+
+@media (max-width: 768px) {
+  .responsive-image {
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-image {
+    max-width: 400px;
+  }
+}
+
+

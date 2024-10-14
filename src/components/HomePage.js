@@ -56,6 +56,14 @@ function HomePage({ numQuestions, setNumQuestions, startExam, maxQuestions }) {
           <div className="creator-header">
             <h2 className="section-title">About the Creator</h2>
           </div>
+          <div className="image-container">
+  <img 
+    src="/Kubestronaut.png" 
+    alt="Kubestronaut" 
+    className="responsive-image"
+  />
+</div>
+
           <div className="creator-content">
             <dl className="creator-details">
               <div className="detail-row">
@@ -70,8 +78,12 @@ function HomePage({ numQuestions, setNumQuestions, startExam, maxQuestions }) {
               </div>
               <div className="detail-row">
                 <dt className="detail-label">About</dt>
+                               
+
                 <dd className="detail-content">
-                <p>I'm Thiago, an ICT developer who loves technology, specifically cloud-native applications.</p>
+               
+ 
+                  <p>I'm Thiago, an ICT developer who loves technology, specifically cloud-native applications.</p>
                   <p className="mt-2">I started coding in high school with assembly language. Even if life took me in other directions, those early days fostered a lifelong interest in computers and programming. 💻</p>
                   <p className="mt-2">With over a decade of tech expertise, I've explored many technologies, but Kubernetes is my current focus. My international upbringing—born in Brazil, spent years in Japan, and now in Australia—has profoundly impacted my approach to technology and problem-solving. 🌏</p>
                   <p className="mt-2">I co-host a Kubernetes User Group to discuss and demystify container orchestration. 👨‍💻</p>
@@ -83,7 +95,7 @@ function HomePage({ numQuestions, setNumQuestions, startExam, maxQuestions }) {
                 <dd className="detail-content">
                   <div className="links">
                     <a href="http://thiago4go.github.io/" className="link">Blog</a>
-                    <a href="https://www.linkedin.com/in/thiagoshimada/" className="link">LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/thiago4go/" className="link">LinkedIn</a>
                     <a href="https://github.com/thiago4go" className="link">GitHub</a>
                   </div>
                 </dd>
