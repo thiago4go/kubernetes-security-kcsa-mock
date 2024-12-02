@@ -1768,13 +1768,13 @@ export const questions = [
       "question": "Which command allows you to view the cluster's component statuses?",
       "options": [
         "kubectl get components",
-        "kubectl componentstatus",
+        "kubectl get --raw='/readyz?verbose'",
         "kubectl get cs",
         "kubectl get componentstatuses",
         "kubectl describe components"
       ],
-      "correct_answers": [3],
-      "explanation": "This command displays the status of cluster components.",
+      "correct_answers": [1],
+      "explanation": "'kubectl get cs' and 'kubectl get componentstatuses' were deprecated as of Kubernetes v1.19+. Using 'kubectl get --raw='/readyz?verbose'' is the recommended way to check component statuses.",
       "question_type": "single-choice"
     },
     {
