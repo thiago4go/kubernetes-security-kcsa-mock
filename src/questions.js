@@ -2734,13 +2734,13 @@ export const questions = [
       "question": "Which command would you use to check the status of the Kubernetes API server components?",
       "options": [
         "kubectl get pods -n kube-system",
-        "kubectl get componentstatuses",
+        "kubectl get --raw='/readyz?verbose'",
         "kubectl describe nodes",
         "kubectl cluster-info",
-        "kubectl get apiserver"
+        "kubectl get componentstatuses"
       ],
       "correct_answers": [1],
-      "explanation": "The 'kubectl get componentstatuses' command displays the status of the cluster components, including the API server.",
+      "explanation": "The 'kubectl get componentstatuses' or 'kubectl get cs' was deprecated, as of K8s v1.19+. Use 'kubectl get --raw='/readyz?verbose' instead.",
       "question_type": "single-choice"
     },
     {
