@@ -2146,13 +2146,13 @@ export const questions = [
       "question": "What is the purpose of the 'allowPrivilegeEscalation' securityContext field?",
       "options": [
         "Allows the container to run as root",
-        "Prevents the container from gaining more privileges than its parent process",
+        "Controls whether a process can gain more privileges than its parent process",
         "Enables privileged mode for the container",
         "Allows mounting of host directories",
         "Disables all capabilities for the container"
       ],
       "correct_answers": [1],
-      "explanation": "Setting 'allowPrivilegeEscalation' to false prevents processes from gaining more privileges than the parent.",
+      "explanation": "Setting 'allowPrivilegeEscalation' to false prevents processes from gaining more privileges than the parent. It's always true when the container is run as privileged or has CAP_SYS_ADMIN capability.",
       "question_type": "single-choice"
     },
     {
