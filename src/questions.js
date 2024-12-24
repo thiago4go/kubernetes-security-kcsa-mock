@@ -3319,7 +3319,7 @@ export const questions = [
     },
     {
       "id": 243,
-      "question": "Which command lists all installed packages on a system using apt?",
+      "question": "Which command lists all installed packages on a Debian-based system using apt?",
       "options": [
         "apt list --installed",
         "dpkg -l",
@@ -3327,8 +3327,8 @@ export const questions = [
         "yum list installed",
         "pkg info"
       ],
-      "correct_answers": [1],
-      "explanation": "The 'dpkg -l' command lists all installed packages on Debian-based systems.",
+      "correct_answers": [0],
+      "explanation": "The 'apt list --installed' command lists all installed packages on Debian-based systems.",
       "question_type": "single-choice"
     },
     {
