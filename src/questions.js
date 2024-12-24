@@ -2913,7 +2913,7 @@ export const questions = [
     },
     {
       "id": 214,
-      "question": "Which Kubernetes object is used to grant permissions to a user or group within a namespace?",
+      "question": "Which Kubernetes object is used to assign permissions within a namespace to a user or group?",
       "options": [
         "ClusterRole",
         "Role",
@@ -2921,8 +2921,8 @@ export const questions = [
         "RoleBinding",
         "ServiceAccount"
       ],
-      "correct_answers": [1],
-      "explanation": "A 'Role' defines permissions within a namespace.",
+      "correct_answers": [3],
+      "explanation": "A 'RoleBinding' is used to grant the permissions defined in a 'Role' to a user, group, or service account within a specific namespace. While a 'Role' defines permissions, it is the 'RoleBinding' that assigns those permissions to subjects.",
       "question_type": "single-choice"
     },
     {
