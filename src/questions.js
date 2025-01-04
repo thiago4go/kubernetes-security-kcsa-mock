@@ -29,7 +29,7 @@ export const questions = [
     },
     {
       "id": 3,
-      "question": "Can multiple Pod Security Admission (PSA) policies be applied to a single namespace?",
+      "question": "Can you enforce more than one Pod Security Admission (PSA) policy level concurrently within a single namespace?",
       "options": [
         "Yes, by applying multiple labels",
         "No, only one policy level per namespace",
