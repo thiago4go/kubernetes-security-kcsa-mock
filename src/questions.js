@@ -2333,8 +2333,8 @@ export const questions = [
         "To deny traffic to certain namespaces",
         "To enforce policies across all namespaces"
       ],
-      "correct_answers": [1],
-      "explanation": "The 'namespaceSelector' selects Pods in namespaces that match certain labels for applying ingress or egress rules.",
+      "correct_answers": [0],
+      "explanation": "The 'namespaceSelector' selects entire namespaces based on labels where the NetworkPolicy will be applied to all pods within those namespaces.",
       "question_type": "single-choice"
     },
     {
