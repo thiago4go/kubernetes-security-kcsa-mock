@@ -2697,8 +2697,8 @@ export const questions = [
         "PersistentVolumeClaim",
         "EmptyDir"
       ],
-      "correct_answers": [3],
-      "explanation": "A 'PersistentVolumeClaim' allows a Pod to request persistent storage.",
+      "correct_answers": [0],
+      "explanation": "A 'PersistentVolume' is the actual cluster resource that holds data (potentially encrypted at rest) and remains independent of the Pod lifecycle. PersistentVolumeClaims are requests for that storage, but the persistence itself is provided by the PV. For secure usage, ensure encryption at rest (via the underlying storage or StorageClass) and apply RBAC to restrict PVC binding.",
       "question_type": "single-choice"
     },
     {
