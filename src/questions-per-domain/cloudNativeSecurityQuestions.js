@@ -105,7 +105,99 @@ export const cloudNativeSecurityQuestions =
           "correct_answers": [0],
           "explanation": "The 4 Cs represent layers where security should be applied.",
           "question_type": "single-choice"
+        },
+    
+        {
+            "id": 45,
+            "question": "What could be a possible reason for failing to pull the latest version of an image from 'k8s.gcr.io'?",
+            "domain": "Cloud Native Security",
+            "options": [
+            "The image registry is deprecated",
+            "Incorrect image tag or name",
+            "Network policies blocking egress traffic",
+            "The node has insufficient resources",
+            "kube-proxy is not running"
+            ],
+            "correct_answers": [1],
+            "explanation": "A common reason is specifying an incorrect image name or tag.",
+            "question_type": "single-choice"
+        },
+        {
+            "id": 55,
+            "question": "How does image signing enhance container security?",
+            "domain": "Cloud Native Security",
+            "options": [
+            "By encrypting the image layers",
+            "By verifying the image's source and integrity",
+            "By compressing the image for faster deployment",
+            "By scanning the image for vulnerabilities",
+            "By optimizing runtime performance"
+            ],
+            "correct_answers": [1],
+            "explanation": "Image signing helps ensure that images are from trusted sources and have not been altered.",
+            "question_type": "single-choice"
+        },
+        {
+            "id": 63,
+            "question": "What is a potential risk of mounting the Docker socket ('/var/run/docker.sock') into a container?",
+            "domain": "Cloud Native Security",
+            "options": [
+            "No risk; it's a common practice",
+            "The container can control the Docker daemon and other containers",
+            "It improves container performance",
+            "It provides secure access to host resources",
+            "It isolates the container from the host"
+            ],
+            "correct_answers": [1],
+            "explanation": "Mounting the Docker socket can lead to full control over the host's Docker daemon.",
+            "question_type": "single-choice"
+        },
+        {
+            "id": 66,
+            "question": "How can you ensure that only signed images are run in your Kubernetes cluster?",
+            "domain": "Cloud Native Security",
+            "options": [
+            "Use imagePullSecrets",
+            "Configure admission controllers to verify image signatures",
+            "Manually inspect images before deployment",
+            "Disable image caching on nodes",
+            "Use a private container registry"
+            ],
+            "correct_answers": [1],
+            "explanation": "Admission controllers can enforce policies to allow only signed images.",
+            "question_type": "single-choice"
+        },
+        {
+            "id": 73,
+            "question": "What is a key benefit of using multistage Docker builds?",
+            "domain": "Cloud Native Security",
+            "options": [
+            "Faster build times",
+            "Smaller and more secure final images",
+            "Compatibility with older Docker versions",
+            "Simplified deployment scripts",
+            "Enhanced network performance"
+            ],
+            "correct_answers": [1],
+            "explanation": "Multistage builds produce lean images by excluding unnecessary build-time dependencies.",
+            "question_type": "single-choice"
+        },
+        {
+            "id": 90,
+            "question": "What is the outcome of setting 'imagePullPolicy: Never' in a pod spec?",
+            "domain": "Cloud Native Security",
+            "options": [
+            "The image will always be pulled from the registry",
+            "The pod will fail to start if the image is not present locally",
+            "The image will be pulled only if not present",
+            "The pod will ignore image updates in the registry",
+            "The kubelet will crash"
+            ],
+            "correct_answers": [1],
+            "explanation": "Setting 'imagePullPolicy: Never' prevents pulling images; the image must exist locally.",
+            "question_type": "single-choice"
         }
+        
       ]
       
 ;

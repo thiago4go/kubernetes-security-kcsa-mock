@@ -90,6 +90,38 @@ export const platformSecurityQuestions =
       "correct_answers": [0, 1, 2],
       "explanation": "These methods help isolate resources in multi-tenancy setups.",
       "question_type": "multiple-choice"
+    },
+
+    {
+        "id": 79,
+        "question": "Which of the following is a characteristic of hard multi-tenancy in Kubernetes?",
+        "domain": "Platform Security",
+        "options": [
+        "Shared namespaces among tenants",
+        "Logical separation using RBAC",
+        "Physical isolation of cluster control planes",
+        "Shared node resources",
+        "Common service accounts for all tenants"
+        ],
+        "correct_answers": [2],
+        "explanation": "Hard multi-tenancy involves strong isolation, often using separate clusters.",
+        "question_type": "single-choice"
+    },
+    {
+        "id": 85,
+        "question": "Which tool can be used to visualize Kubernetes cluster metrics in Grafana?",
+        "domain": "Platform Security",
+        "options": [
+        "Prometheus",
+        "Elasticsearch",
+        "Kibana",
+        "Fluentd",
+        "Logstash"
+        ],
+        "correct_answers": [0],
+        "explanation": "Prometheus collects metrics that can be visualized in Grafana dashboards.",
+        "question_type": "single-choice"
     }
+    
   ]
 ;

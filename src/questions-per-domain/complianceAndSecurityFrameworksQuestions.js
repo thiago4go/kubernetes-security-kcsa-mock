@@ -30,6 +30,22 @@ export const complianceAndSecurityFrameworksQuestions =
       "correct_answers": [2],
       "explanation": "MITRE ATT&CK catalogues cyber adversary behaviours.",
       "question_type": "single-choice"
+    },
+    {
+        "id": 50,
+        "question": "What is the Payment Card Industry Data Security Standard (PCI DSS)?",
+        "domain": "Compliance and Security Frameworks",
+        "options": [
+        "A protocol for secure credit card transactions",
+        "A set of security standards for organisations handling cardholder data",
+        "A government regulation for financial institutions",
+        "An encryption algorithm used in banking",
+        "A compliance framework for healthcare data"
+        ],
+        "correct_answers": [1],
+        "explanation": "PCI DSS sets requirements for securing credit card information.",
+        "question_type": "single-choice"
     }
+      
   ]
 ;
