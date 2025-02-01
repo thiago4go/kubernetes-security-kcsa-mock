@@ -6,7 +6,7 @@ import HomePage from './components/HomePage';
 import { questions } from './questions';
 import useLocalStorage from './hooks/useLocalStorage';
 import { Analytics } from "@vercel/analytics/react"
-
+console.log(`Total number of questions: ${questions.length}`);
 function App() {
   const [examStarted, setExamStarted] = useState(false);
   const [examFinished, setExamFinished] = useState(false);
