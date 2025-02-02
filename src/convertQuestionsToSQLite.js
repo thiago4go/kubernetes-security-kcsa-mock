@@ -48,7 +48,7 @@ const insertMany = db.transaction((questionsArray) => {
   for (const q of questionsArray) {
     insert.run(
       q.id,
-      JSON.stringify(q.question),         // Store question as JSON string
+      q.question,      
       JSON.stringify(q.options),         // Store options as JSON string
       JSON.stringify(q.correct_answers), // Store correct answers as JSON string
       q.explanation,
