@@ -1279,6 +1279,415 @@ export const kubernetesClusterComponentSecurityQuestions = [
           "question_type": "single-choice",
           "domain": "Kubernetes Cluster Component Security",
           "subdomain": "Storage"
-        }      
+        },
+          {
+            "id": 152,
+            "question": "When configuring etcd encryption for secrets, which Kubernetes component's configuration must be updated?",
+            "options": [
+              "kube-scheduler",
+              "kube-controller-manager",
+              "kubelet",
+              "kube-apiserver",
+              "etcd"
+            ],
+            "correct_answers": [3],
+            "explanation": "The kube-apiserver must be updated with the encryption configuration file.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "API Server"
+          },
+          {
+            "id": 153,
+            "question": "Which field in the Pod spec is used to specify the container runtime class?",
+            "options": [
+              "runtime",
+              "runtimeClassName",
+              "containerRuntime",
+              "runtimeClass",
+              "containerRuntimeClass"
+            ],
+            "correct_answers": [1],
+            "explanation": "The 'runtimeClassName' field specifies which RuntimeClass to use.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "Container Runtime"
+          },
+          {
+            "id": 172,
+            "question": "Which of the following are common steps in hardening the Kubernetes API server? (Select all that apply)",
+            "options": [
+              "Disable anonymous authentication",
+              "Enable RBAC authorization",
+              "Allow all admission controllers",
+              "Enable etcd encryption for secrets",
+              "Use insecure port for API communication"
+            ],
+            "correct_answers": [0, 1, 3],
+            "explanation": "Disabling anonymous auth, enabling RBAC, and using etcd encryption are best practices.",
+            "question_type": "multiple-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "API Server"
+          },
+          {
+            "id": 173,
+            "question": "Which component is responsible for scheduling Pods onto nodes?",
+            "options": [
+              "kube-controller-manager",
+              "kube-scheduler",
+              "kube-apiserver",
+              "kubelet",
+              "etcd"
+            ],
+            "correct_answers": [1],
+            "explanation": "The kube-scheduler assigns Pods to nodes.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "Scheduler"
+          },
+          {
+            "id": 174,
+            "question": "Which Kubernetes resource can be used to set up a Pod with multiple containers that share the same network namespace?",
+            "options": [
+              "Deployment",
+              "DaemonSet",
+              "Pod",
+              "Service",
+              "StatefulSet"
+            ],
+            "correct_answers": [2],
+            "explanation": "Containers within the same Pod share the same network namespace.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "Pod"
+          },
+          {
+            "id": 202,
+            "question": "If the API server is not responding, which file should you check for possible misconfigurations?",
+            "options": [
+              "/var/log/kube-apiserver.log",
+              "/etc/kubernetes/manifests/kube-scheduler.yaml",
+              "/etc/kubernetes/manifests/kube-apiserver.yaml",
+              "/etc/kubernetes/config/apiserver.conf",
+              "/var/lib/kubelet/config.yaml"
+            ],
+            "correct_answers": [2],
+            "explanation": "The API server's static pod manifest is usually located at '/etc/kubernetes/manifests/kube-apiserver.yaml'.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "API Server"
+          },
+          {
+            "id": 208,
+            "question": "According to the CIS Kubernetes Benchmark, which of the following settings should be disabled on the kube-apiserver for security?",
+            "options": [
+              "Anonymous authentication",
+              "RBAC authorization",
+              "TLS encryption",
+              "Admission controllers",
+              "Audit logging"
+            ],
+            "correct_answers": [0],
+            "explanation": "Anonymous authentication should be disabled per CIS Benchmarks.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "API Server"
+          },
+          {
+            "id": 209,
+            "question": "Which flag disables anonymous authentication in the kube-apiserver?",
+            "options": [
+              "--disable-anonymous-auth",
+              "--anonymous-auth=false",
+              "--enable-auth=false",
+              "--no-anonymous",
+              "--deny-anonymous"
+            ],
+            "correct_answers": [1],
+            "explanation": "The '--anonymous-auth=false' flag disables anonymous requests.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "API Server"
+          },
+          {
+            "id": 238,
+            "question": "Which Kubernetes object allows you to specify the use of a custom runtime like gVisor?",
+            "options": [
+              "Runtime",
+              "RuntimeClass",
+              "PodSecurityPolicy",
+              "SecurityContext",
+              "ContainerRuntime"
+            ],
+            "correct_answers": [1],
+            "explanation": "'RuntimeClass' specifies the container runtime to use.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "Container Runtime"
+          },
+          {
+            "id": 239,
+            "question": "In a Pod spec, how do you specify that it should use the gVisor runtime class?",
+            "options": [
+              "Set 'runtime: gvisor'",
+              "Set 'securityContext: {runtimeClassName: \"gvisor\"}'",
+              "Set 'runtimeClassName: \"gvisor\"' at the Pod spec level",
+              "Set 'containerRuntime: \"gvisor\"' in the container spec",
+              "Annotate the Pod with 'runtimeClass: gvisor'"
+            ],
+            "correct_answers": [2],
+            "explanation": "The 'runtimeClassName' field at the Pod spec level specifies which RuntimeClass to use.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "Container Runtime"
+          },
+          {
+            "id": 263,
+            "question": "Which component of Kubernetes is responsible for storing cluster data, including secrets?",
+            "options": [
+              "kube-apiserver",
+              "kube-scheduler",
+              "kubelet",
+              "etcd",
+              "kube-controller-manager"
+            ],
+            "correct_answers": [3],
+            "explanation": "etcd is the key-value store for cluster data.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "Etcd"
+          },
+          {
+            "id": 265,
+            "question": "Which Kubernetes component exposes the Kubernetes API and is considered the front end of the control plane?",
+            "options": [
+              "kubelet",
+              "kube-scheduler",
+              "kube-apiserver",
+              "kube-proxy",
+              "etcd"
+            ],
+            "correct_answers": [2],
+            "explanation": "The kube-apiserver exposes the Kubernetes API.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "API Server"
+          },
+          {
+            "id": 280,
+            "question": "Which command can be used to create a namespace named 'production'?",
+            "options": [
+              "kubectl create namespace production",
+              "kubectl new namespace production",
+              "kubectl apply namespace production",
+              "kubectl init namespace production",
+              "kubectl generate namespace production"
+            ],
+            "correct_answers": [0],
+            "explanation": "The command 'kubectl create namespace production' creates the namespace.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "API Server"
+          },
+          {
+            "id": 282,
+            "question": "Which component is responsible for scheduling pods onto nodes in Kubernetes?",
+            "options": [
+              "kube-apiserver",
+              "kube-scheduler",
+              "kubelet",
+              "kube-controller-manager",
+              "etcd"
+            ],
+            "correct_answers": [1],
+            "explanation": "The kube-scheduler assigns pods to nodes.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "Scheduler"
+          },
+          {
+            "id": 285,
+            "question": "What is the main purpose of the Kubernetes 'LimitRange' resource?",
+            "options": [
+              "To limit the number of namespaces",
+              "To set default resource requests and limits for pods in a namespace",
+              "To restrict network access between pods",
+              "To control access to the Kubernetes API",
+              "To define storage classes"
+            ],
+            "correct_answers": [1],
+            "explanation": "A LimitRange sets default resource limits within a namespace.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "Pod"
+          },
+          {
+            "id": 291,
+            "question": "Which Kubernetes resource is used to request persistent storage for a Pod?",
+            "options": [
+              "PersistentVolume",
+              "PersistentVolumeClaim",
+              "StorageClass",
+              "VolumeMount",
+              "ConfigMap"
+            ],
+            "correct_answers": [1],
+            "explanation": "A PersistentVolumeClaim requests storage resources provided by a PersistentVolume.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "Storage"
+          },
+          {
+            "id": 193,
+            "question": "Which command would you use to delete all pods in a namespace 'test'?",
+            "options": [
+              "kubectl delete pods --all -n test",
+              "kubectl delete pod -A",
+              "kubectl delete pods -n test",
+              "kubectl remove pods --namespace=test",
+              "kubectl delete pods * -n test"
+            ],
+            "correct_answers": [0],
+            "explanation": "The command deletes all pods in the 'test' namespace.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "Pod"
+          },
+          {
+            "id": 230,
+            "question": "Which API server flag enables the ImagePolicyWebhook admission controller?",
+            "options": [
+              "--enable-admission-plugins=ImagePolicyWebhook",
+              "--admission-control=ImagePolicyWebhook",
+              "--admission-plugins=ImagePolicyWebhook",
+              "--enable-image-policy",
+              "--image-policy-webhook=true"
+            ],
+            "correct_answers": [0],
+            "explanation": "The '--enable-admission-plugins=ImagePolicyWebhook' flag enables the ImagePolicyWebhook admission controller.",
+            "question_type": "single-choice",
+            "domain": "Kubernetes Cluster Component Security",
+            "subdomain": "API Server"
+          },
+            {
+              "id": 34,
+              "question": "Which folders on a client machine are sensitive when accessing Kubernetes clusters? (Select all that apply)",
+              "options": "[\"/var/log/\",\"~/.kube/config\",\"/etc/hosts\",\"~/.ssh/\",\"/tmp/\"]",
+              "correct_answers": "[1,3]",
+              "explanation": "~/.kube/config and ~/.ssh/ contain sensitive cluster and SSH access information.",
+              "question_type": "multiple-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "Client Security"
+            },
+            {
+              "id": 61,
+              "question": "What could happen if you disable anonymous authentication on the kubelet?",
+              "options": "[\"Increased security by requiring authentication\",\"Nodes cannot join the cluster\",\"Pods fail to start\",\"kube-proxy stops working\",\"No effect; kubelet does not support anonymous access\"]",
+              "correct_answers": "[0]",
+              "explanation": "Disabling anonymous authentication ensures that only authenticated requests are accepted by the kubelet.",
+              "question_type": "single-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "Kubelet"
+            },
+            {
+              "id": 86,
+              "question": "What is the function of the kubelet in Kubernetes?",
+              "options": "[\"Managing pod networking\",\"Running containers on each node\",\"Storing cluster configuration\",\"Scheduling pods to nodes\",\"Managing the control plane\"]",
+              "correct_answers": "[1]",
+              "explanation": "The kubelet starts and manages pods and their containers on nodes.",
+              "question_type": "single-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "Kubelet"
+            },
+            {
+              "id": 106,
+              "question": "What is the default behavior when a container in a pod crashes?",
+              "options": "[\"The pod is deleted\",\"Kubernetes does nothing\",\"The kubelet restarts the container\",\"An alert is sent to the administrator\",\"The node is drained\"]",
+              "correct_answers": "[2]",
+              "explanation": "The kubelet will restart containers in a pod if they crash.",
+              "question_type": "single-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "Kubelet"
+            },
+            {
+              "id": 129,
+              "question": "Which resource is used for long-running, persistent workloads with stable network identity and storage?",
+              "options": "[\"Deployment\",\"Job\",\"StatefulSet\",\"DaemonSet\",\"ReplicaSet\"]",
+              "correct_answers": "[2]",
+              "explanation": "StatefulSets manage applications requiring stable storage and network identities.",
+              "question_type": "single-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "Storage"
+            },
+            {
+              "id": 130,
+              "question": "What is the default behavior if a pod's container exceeds its memory limit?",
+              "options": "[\"The container is throttled\",\"The container is terminated\",\"The pod is moved to another node\",\"Kubernetes does nothing\",\"Additional memory is allocated\"]",
+              "correct_answers": "[1]",
+              "explanation": "Exceeding memory limits typically results in the container being terminated (OOMKilled).",
+              "question_type": "single-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "Kubelet"
+            },
+            {
+              "id": 134,
+              "question": "What is a common use case for a Kubernetes CronJob?",
+              "options": "[\"Running a database\",\"Serving web traffic\",\"Scheduling regular tasks\",\"Managing network policies\",\"Providing persistent storage\"]",
+              "correct_answers": "[2]",
+              "explanation": "CronJobs schedule Jobs to run at specified times.",
+              "question_type": "single-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "Pod"
+            },
+            {
+              "id": 145,
+              "question": "What is the function of a Kubernetes Ingress resource?",
+              "options": "[\"To manage internal cluster networking\",\"To define rules for external HTTP and HTTPS routing\",\"To provide storage to pods\",\"To schedule pods to nodes\",\"To configure network policies\"]",
+              "correct_answers": "[1]",
+              "explanation": "Ingress resources control external access to services over HTTP/HTTPS.",
+              "question_type": "single-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "Container Networking"
+            },
+            {
+              "id": 161,
+              "question": "Which Kubernetes resource is used to define external access to services, typically HTTP?",
+              "options": "[\"Ingress\",\"Service\",\"Endpoint\",\"NetworkPolicy\",\"LoadBalancer\"]",
+              "correct_answers": "[0]",
+              "explanation": "An Ingress resource exposes HTTP and HTTPS routes from outside the cluster.",
+              "question_type": "single-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "Container Networking"
+            },
+            {
+              "id": 167,
+              "question": "Which admission controller ensures that kubelets can only modify their own Node and Pod objects?",
+              "options": "[\"NodeRestriction\",\"LimitRanger\",\"NamespaceLifecycle\",\"ResourceQuota\",\"PodSecurityPolicy\"]",
+              "correct_answers": "[0]",
+              "explanation": "The NodeRestriction admission controller limits kubelet modifications to their own Node and Pod objects.",
+              "question_type": "single-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "API Server"
+            },
+            {
+              "id": 180,
+              "question": "Which command would you use to label a namespace 'production' with 'env=prod'?",
+              "options": "[\"kubectl label namespace env=prod production\",\"kubectl label namespace production env=prod\",\"kubectl annotate namespace production env=prod\",\"kubectl label namespaces env=prod production\",\"kubectl set label namespace production env=prod\"]",
+              "correct_answers": "[1]",
+              "explanation": "The correct command is 'kubectl label namespace production env=prod'.",
+              "question_type": "single-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "Client Security"
+            },
+            {
+              "id": 198,
+              "question": "Which Kubernetes object can be used to persist data across the lifecycle of a Pod?",
+              "options": "[\"PersistentVolume\",\"ConfigMap\",\"Secret\",\"PersistentVolumeClaim\",\"EmptyDir\"]",
+              "correct_answers": "[0]",
+              "explanation": "A PersistentVolume is a cluster resource that holds data independently of pod lifecycles.",
+              "question_type": "single-choice",
+              "domain": "Kubernetes Cluster Component Security",
+              "subdomain": "Storage"
+            }
+                        
   ]
   ;
