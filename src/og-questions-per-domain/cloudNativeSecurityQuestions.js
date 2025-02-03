@@ -592,6 +592,326 @@ export const cloudNativeSecurityQuestions =
           "question_type": "single-choice",
           "domain": "Cloud Native Security",
           "subdomain": "Workload and Application Code Security"
-        }      
+        },
+          {
+            "id": 146,
+            "question": "Which of the following is a key principle of the 4 Cs of cloud-native security?",
+            "options": [
+              "Encrypting data at rest only",
+              "Applying security at Code, Container, Cluster, and Cloud levels",
+              "Relying solely on cloud provider security",
+              "Using containers to bypass security checks",
+              "Limiting security to the network layer"
+            ],
+            "correct_answers": [1],
+            "explanation": "The 4 Cs emphasise layered security across all levels.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "The 4Cs of Cloud Native Security"
+          },
+          {
+            "id": 150,
+            "question": "Which Kubernetes object allows you to inject environment variables into a pod from a ConfigMap?",
+            "options": [
+              "VolumeMount",
+              "EnvFrom",
+              "Secret",
+              "Annotation",
+              "Label"
+            ],
+            "correct_answers": [1],
+            "explanation": "The 'envFrom' field in a pod spec allows environment variables from a ConfigMap to be injected.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Workload and Application Code Security"
+          },
+          {
+            "id": 156,
+            "question": "To block access to the cloud metadata API from Pods, which IP address should be blocked in the NetworkPolicy?",
+            "options": [
+              "0.0.0.0/0",
+              "127.0.0.1/32",
+              "169.254.169.254/32",
+              "255.255.255.255/32",
+              "192.168.0.1/32"
+            ],
+            "correct_answers": [2],
+            "explanation": "Blocking 169.254.169.254 prevents access to the cloud metadata service.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Cloud Provider and Infrastructure Security"
+          },
+          {
+            "id": 164,
+            "question": "Which tool can be used to perform static analysis of Kubernetes manifests for security issues?",
+            "options": [
+              "kube-bench",
+              "kube-hunter",
+              "kube-score",
+              "kubectl describe",
+              "kubesec"
+            ],
+            "correct_answers": [4],
+            "explanation": "Kubesec is a tool for static analysis of Kubernetes manifests to find security issues.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Controls and Frameworks"
+          },
+          {
+            "id": 203,
+            "question": "Which annotation is used in a Pod manifest to specify an AppArmor profile for a container named 'nginx'?",
+            "options": [
+              "apparmor.security.beta.kubernetes.io/nginx: 'localhost/nginx-profile'",
+              "security.alpha.kubernetes.io/apparmor/nginx: 'localhost/nginx-profile'",
+              "container.apparmor.security.beta.kubernetes.io/nginx: 'localhost/nginx-profile'",
+              "nginx.apparmor.kubernetes.io/profile: 'localhost/nginx-profile'",
+              "securityContext.apparmorProfile: 'localhost/nginx-profile'"
+            ],
+            "correct_answers": [2],
+            "explanation": "The correct annotation is 'container.apparmor.security.beta.kubernetes.io/nginx: \"localhost/nginx-profile\"'.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Isolation Techniques"
+          },
+          {
+            "id": 210,
+            "question": "Which of the following are best practices for container image hardening? (Select all that apply)",
+            "options": [
+              "Use a minimal base image",
+              "Run containers as root",
+              "Remove unnecessary packages",
+              "Expose all ports for flexibility",
+              "Regularly scan images for vulnerabilities"
+            ],
+            "correct_answers": [0, 2, 4],
+            "explanation": "Using minimal base images, removing unnecessary packages, and scanning for vulnerabilities are best practices.",
+            "question_type": "multiple-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Artifact Repository and Image Security"
+          },
+          {
+            "id": 211,
+            "question": "In a Dockerfile, which instruction can be used to ensure the application runs as a non-root user?",
+            "options": [
+              "FROM nonroot",
+              "USER nobody",
+              "RUN chmod 777 /app",
+              "EXPOSE 80",
+              "ENTRYPOINT [\"/app\"]"
+            ],
+            "correct_answers": [1],
+            "explanation": "The USER instruction sets the running user to 'nobody', ensuring the container does not run as root.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Workload and Application Code Security"
+          },
+          {
+            "id": 212,
+            "question": "Which command scans a Docker image 'myapp:latest' for HIGH and CRITICAL vulnerabilities using Trivy?",
+            "options": [
+              "trivy myapp:latest",
+              "trivy image --severity HIGH,CRITICAL myapp:latest",
+              "trivy scan --critical myapp:latest",
+              "trivy image --vulnerabilities HIGH,CRITICAL myapp:latest",
+              "trivy inspect myapp:latest"
+            ],
+            "correct_answers": [1],
+            "explanation": "The command 'trivy image --severity HIGH,CRITICAL myapp:latest' scans the image for critical vulnerabilities.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Artifact Repository and Image Security"
+          },
+          {
+            "id": 213,
+            "question": "After identifying a vulnerable image in your cluster, what is the recommended immediate action?",
+            "options": [
+              "Ignore the vulnerability",
+              "Update the image tag to 'latest'",
+              "Delete the pod using the image",
+              "Restart the Kubernetes cluster",
+              "Rebuild the image without changes"
+            ],
+            "correct_answers": [2],
+            "explanation": "Deleting the pod running the vulnerable image is the recommended immediate action to mitigate risk.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Artifact Repository and Image Security"
+          },
+          {
+            "id": 216,
+            "question": "Which flag allows you to run a Docker container sharing the PID namespace with another container named 'container1'?",
+            "options": [
+              "--pid=host",
+              "--pid=container1",
+              "--pid=container:container1",
+              "--net=container:container1",
+              "--namespace=pid:container1"
+            ],
+            "correct_answers": [2],
+            "explanation": "The '--pid=container:container1' flag allows sharing the PID namespace with 'container1'.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Isolation Techniques"
+          },
+          {
+            "id": 217,
+            "question": "What is the effect of sharing the PID namespace between two Docker containers?",
+            "options": [
+              "They share the same network interfaces",
+              "They can see and signal each other's processes",
+              "They share the same filesystem",
+              "They can access each other's environment variables",
+              "They share the same memory space"
+            ],
+            "correct_answers": [1],
+            "explanation": "Sharing the PID namespace allows containers to see and interact with each other's processes.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Isolation Techniques"
+          },
+          {
+            "id": 218,
+            "question": "Why is it recommended to use image digests instead of tags in Kubernetes manifests?",
+            "options": [
+              "Digests are shorter than tags",
+              "Tags can be mutable, but digests ensure image immutability",
+              "Using digests is required by Kubernetes",
+              "Tags are not supported in private registries",
+              "Digests allow for automatic updates"
+            ],
+            "correct_answers": [1],
+            "explanation": "Digests refer to a specific, immutable image version, ensuring consistency.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Artifact Repository and Image Security"
+          },
+          {
+            "id": 219,
+            "question": "How do you obtain the digest of an image 'nginx:1.19'?",
+            "options": [
+              "docker images nginx:1.19 --digests",
+              "docker inspect nginx:1.19 --format='{{.Id}}'",
+              "docker pull nginx@sha256",
+              "docker inspect --format='{{index .RepoDigests 0}}' nginx:1.19",
+              "docker tag nginx:1.19 nginx:sha256"
+            ],
+            "correct_answers": [3],
+            "explanation": "The 'docker inspect --format='{{index .RepoDigests 0}}' nginx:1.19' command returns the image digest.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Artifact Repository and Image Security"
+          },
+          {
+            "id": 248,
+            "question": "What is a potential risk of using an insecure container registry?",
+            "options": [
+              "Faster image downloads",
+              "Increased image caching",
+              "Man-in-the-middle attacks leading to compromised images",
+              "Improved image availability",
+              "Automatic image updates"
+            ],
+            "correct_answers": [2],
+            "explanation": "An insecure registry can be compromised in transit, leading to tampered images.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Artifact Repository and Image Security"
+          },
+          {
+            "id": 249,
+            "question": "Which of the following is a best practice when configuring container registries?",
+            "options": [
+              "Use HTTP instead of HTTPS for performance",
+              "Allow anonymous access",
+              "Use authenticated and encrypted connections (HTTPS)",
+              "Disable TLS verification",
+              "Expose the registry publicly without restrictions"
+            ],
+            "correct_answers": [2],
+            "explanation": "Using HTTPS with authentication secures registry access.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Artifact Repository and Image Security"
+          },
+          {
+            "id": 273,
+            "question": "Which of the following are Kubernetes best practices during the Build Phase? (Select all that apply)",
+            "options": [
+              "Use minimal base images",
+              "Run containers as root",
+              "Scan images for vulnerabilities",
+              "Include unnecessary packages",
+              "Use authorized images only"
+            ],
+            "correct_answers": [0, 2, 4],
+            "explanation": "Best practices include minimal images, vulnerability scanning and using authorised images.",
+            "question_type": "multiple-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Workload and Application Code Security"
+          },
+          {
+            "id": 284,
+            "question": "Which of the following are Kubernetes best practices during the Deploy Phase? (Select all that apply)",
+            "options": [
+              "Implement network policies",
+              "Run containers as root",
+              "Use image tags like 'latest'",
+              "Use the ImagePolicyWebhook admission controller",
+              "Apply security contexts to pods and containers"
+            ],
+            "correct_answers": [0, 3, 4],
+            "explanation": "Deploy best practices include implementing network policies, using admission controllers for images, and applying security contexts.",
+            "question_type": "multiple-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Controls and Frameworks"
+          },
+          {
+            "id": 288,
+            "question": "Which of the following is a reason to use 'distroless' images?",
+            "options": [
+              "They include a shell for debugging",
+              "They have a larger attack surface",
+              "They are minimal images that reduce vulnerabilities",
+              "They support all Linux distributions",
+              "They are required by Kubernetes"
+            ],
+            "correct_answers": [2],
+            "explanation": "Distroless images are minimal and reduce the attack surface by excluding unnecessary packages.",
+            "question_type": "single-choice",
+            "domain": "Cloud Native Security",
+            "subdomain": "Workload and Application Code Security"
+          },
+            {
+              "id": 38,
+              "question": "When is soft multi-tenancy preferred over hard multi-tenancy?",
+              "options": "[\"When strict isolation is required\",\"For untrusted tenant workloads\",\"To maximize resource efficiency in trusted environments\",\"In compliance-regulated industries\",\"When using multiple clusters\"]",
+              "correct_answers": "[2]",
+              "explanation": "Soft tenancy is suitable when strict isolation isn't required.",
+              "question_type": "single-choice",
+              "domain": "Cloud Native Security",
+              "subdomain": "Isolation Techniques"
+            },
+            {
+              "id": 39,
+              "question": "How can resources be isolated in a multi-tenancy Kubernetes setting? (Select all that apply)",
+              "options": "[\"Using separate clusters for each tenant\",\"Implementing namespaces and RBAC\",\"Applying network policies\",\"Sharing service accounts among tenants\",\"Disabling resource quotas\"]",
+              "correct_answers": "[0,1,2]",
+              "explanation": "These methods help isolate resources in multi-tenancy setups.",
+              "question_type": "multiple-choice",
+              "domain": "Cloud Native Security",
+              "subdomain": "Isolation Techniques"
+            },
+            {
+              "id": 90,
+              "question": "What is the outcome of setting 'imagePullPolicy: Never' in a pod spec?",
+              "options": "[\"The image will always be pulled from the registry\",\"The pod will fail to start if the image is not present locally\",\"The image will be pulled only if not present\",\"The pod will ignore image updates in the registry\",\"The kubelet will crash\"]",
+              "correct_answers": "[1]",
+              "explanation": "Setting 'imagePullPolicy: Never' prevents pulling images; the image must exist locally.",
+              "question_type": "single-choice",
+              "domain": "Cloud Native Security",
+              "subdomain": "Artifact Repository and Image Security"
+            }
+      
+                        
   ]
   ;
