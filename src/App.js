@@ -3,11 +3,14 @@ import Exam from './components/Exam';
 import Results from './components/Results';
 import ReviewFlagged from './components/ReviewFlagged';
 import HomePage from './components/HomePage';
-import { questions } from './questions';
+import { getAllQuestions } from './questionsDatabase'; // adjust the path as needed
+
 import useLocalStorage from './hooks/useLocalStorage';
 import { Analytics } from "@vercel/analytics/react"
 
 function App() {
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [examStarted, setExamStarted] = useState(false);
   const [examFinished, setExamFinished] = useState(false);
   const [reviewingFlagged, setReviewingFlagged] = useState(false);
@@ -17,6 +20,21 @@ function App() {
   const [flaggedQuestions, setFlaggedQuestions] = useLocalStorage('flaggedQuestions', []);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useLocalStorage('currentQuestionIndex', 0);
   const [timeLeft, setTimeLeft] = useLocalStorage('timeLeft', 0);
+
+  
+
+  // Load questions from the bundled SQLite database on component mount
+  useEffect(() => {
+    getAllQuestions()
+      .then(qs => {
+        setQuestions(qs);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error loading questions:", err);
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     const storedExamStarted = localStorage.getItem('examStarted');
@@ -36,6 +54,10 @@ function App() {
     }
   }, []);
 
+  if (loading) {
+    return <div>Loading questions...</div>;
+  }
+
   const shuffleArray = (array) => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -44,6 +66,7 @@ function App() {
     }
     return shuffled;
   };
+  console.log("Exam Questions:", questions);
 
   const startExam = () => {
     const shuffledQuestions = shuffleArray(questions);
