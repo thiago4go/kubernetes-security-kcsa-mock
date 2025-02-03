@@ -88,22 +88,33 @@ export const KubernetesClusterComponentSecurityQuestions = [
   },
   {
     "id": 25,
-    "question": "Which flags should be set to 'false' to minimize the attack surface on the Kubernetes scheduler?",
+    "question": "Which of the following best practices are recommended to secure the Kubernetes scheduler (kube-scheduler)? (Select all that apply.)",
     "options": [
-      "--profiling and --enable-scheduler-policy",
-      "--leader-elect and --kubeconfig",
-      "--bind-address and --secure-port",
-      "--port and --address",
-      "--use-legacy-policy and --enable-profiling"
+      "A - Bind the scheduler to 0.0.0.0 to ensure it is accessible from all network interfaces",
+      "B - Use Role-Based Access Control (RBAC) to restrict access to the scheduler API",
+      "C - Run the scheduler as a non-root user to minimize privilege escalation risks",
+      "D - Enable anonymous authentication to simplify access for debugging purposes",
+      "E - Configure network policies to restrict network access to and from the scheduler"
     ],
-    "correct_answers": [
-      3
-    ],
-    "explanation": "Setting these to disable the insecure port and restrict access minimizes the attack surface.",
-    "question_type": "single-choice",
+    "correct_answers": [1, 2, 4],
+    "explanation": "Options B, C, and E represent recommended security measures for the kube-scheduler. Using RBAC enforces least privilege, running as a non-root user mitigates privilege escalation risks, and applying network policies restricts unauthorized access. (A) Binding to 0.0.0.0 or (D) enabling anonymous authentication are not recommended as they increase exposure and weaken security.",
+    "question_type": "multiple-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "Scheduler",
-    "sources": [],
+    "sources": [
+      {
+        "name": "Kubernetes Documentation",
+        "url": "https://kubernetes.io/docs/concepts/security/overview/"
+      },
+      {
+        "name": "Red Hat Blog",
+        "url": "https://www.redhat.com/en/blog/12-kubernetes-configuration-best-practices"
+      },
+      {
+        "name": "Kubernetes RBAC Best Practices",
+        "url": "https://www.getambassador.io/blog/kubernetes-rbac-role-based-access-control"
+      }
+    ],
     "revision": 0,
     "revision_date": null
   },
