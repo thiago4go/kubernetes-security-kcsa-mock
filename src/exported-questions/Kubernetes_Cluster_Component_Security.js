@@ -1,6 +1,6 @@
 
 // Exported 93 questions for domain: Kubernetes Cluster Component Security
-// Last revision date: N/A
+// Last revision date: 2025-02-04 10:48:35
 export const KubernetesClusterComponentSecurityQuestions = [
   {
     "id": 6,
@@ -96,7 +96,11 @@ export const KubernetesClusterComponentSecurityQuestions = [
       "D - Enable anonymous authentication to simplify access for debugging purposes",
       "E - Configure network policies to restrict network access to and from the scheduler"
     ],
-    "correct_answers": [1, 2, 4],
+    "correct_answers": [
+      1,
+      2,
+      4
+    ],
     "explanation": "Options B, C, and E represent recommended security measures for the kube-scheduler. Using RBAC enforces least privilege, running as a non-root user mitigates privilege escalation risks, and applying network policies restricts unauthorized access. (A) Binding to 0.0.0.0 or (D) enabling anonymous authentication are not recommended as they increase exposure and weaken security.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Cluster Component Security",
@@ -115,8 +119,8 @@ export const KubernetesClusterComponentSecurityQuestions = [
         "url": "https://www.getambassador.io/blog/kubernetes-rbac-role-based-access-control"
       }
     ],
-    "revision": 0,
-    "revision_date": null
+    "revision": 1,
+    "revision_date": "2025-02-04 10:48:35"
   },
   {
     "id": 26,
