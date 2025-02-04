@@ -395,16 +395,31 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       1,
       2,
+      3,
       4
     ],
-    "explanation": "Calico, Weave Net, and Cilium are CNI plugins that support Network Policies. Flannel does not support them by default.",
+    "explanation": "Calico, Weave Net, Cilium, and AWS VPC CNI are CNI plugins that support Network Policies. Flannel does not support them by default. As of August 2023, AWS VPC CNI supports network policies but requires them to be enabled and does not support them for Fargate or Windows containers.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Network Policy",
-    "sources": [],
+    "sources": [
+      {
+        "name": "AWS Announcement on VPC CNI Network Policy Support",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2023/08/amazon-vpc-cni-kubernetes-networkpolicy-enforcement/"
+      },
+      {
+        "name": "AWS EKS Documentation on Network Policy Configuration",
+        "url": "https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy-configure.html#enable-network-policy-parameter"
+      },
+      {
+        "name": "Kubernetes Documentation on Network Policies",
+        "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/"
+      }
+    ],
     "revision": 0,
     "revision_date": null
-  },
+  }
+  ,
   {
     "id": 67,
     "question": "Which Kubernetes feature allows for encryption of Secrets at rest?",
