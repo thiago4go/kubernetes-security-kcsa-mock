@@ -1,6 +1,6 @@
 
 // Exported 102 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-02-04 11:02:29
+// Last revision date: 2025-02-04 12:44:17
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -1126,8 +1126,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
       }
     ],
     "revision": 1,
-    "revision_date": "2025-02-04T12:00:00+11:00"
-  },  
+    "revision_date": "2025-02-04 12:44:17"
+  },
   {
     "id": 181,
     "question": "In a NetworkPolicy, which selector is used to apply the policy to specific Pods?",
