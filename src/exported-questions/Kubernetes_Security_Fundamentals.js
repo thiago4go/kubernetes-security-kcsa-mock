@@ -1105,16 +1105,29 @@ export const KubernetesSecurityFundamentalsQuestions = [
       "metadata.securityContext.allowPrivilegeEscalation: false"
     ],
     "correct_answers": [
-      3
+      2
     ],
-    "explanation": "Setting 'spec.securityContext.allowPrivilegeEscalation: false' applies to all containers.",
+    "explanation": "The correct field to disable privilege escalation for all containers in a Pod is 'spec.containers.securityContext.allowPrivilegeEscalation: false'. This must be set individually for each container within the Pod, as there is no global 'allowPrivilegeEscalation' setting at the Pod level.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
+    "sources": [
+      {
+        "name": "Kubernetes Documentation on Security Context",
+        "url": "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
+      },
+      {
+        "name": "Wiz Kubernetes Security Context Best Practices",
+        "url": "https://www.wiz.io/academy/kubernetes-security-context-best-practices"
+      },
+      {
+        "name": "Red Hat Guide to Kubernetes Security Context",
+        "url": "https://www.redhat.com/en/blog/guide-to-kubernetes-security-context-pod-security-policy-psp"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-04T12:00:00+11:00"
+  },  
   {
     "id": 181,
     "question": "In a NetworkPolicy, which selector is used to apply the policy to specific Pods?",
