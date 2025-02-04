@@ -1,10 +1,8 @@
-module.exports = {
-    setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-    transform: {
-      "^.+\\.jsx?$": "babel-jest",
-    },
-    moduleNameMapper: {
-      "@vercel/analytics/react": "<rootDir>/__mocks__/@vercel/analytics/react.js"
-    },
-  };
-  
+export default {
+  transform: {},
+  extensionsToTreatAsEsm: [".mjs", ".js"],
+  moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.mjs$": "$1.js", // Allows Jest to recognize .mjs imports
+  },
+  testEnvironment: "node",
+};
