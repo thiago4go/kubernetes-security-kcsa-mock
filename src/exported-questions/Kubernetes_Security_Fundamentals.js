@@ -1,6 +1,6 @@
 
 // Exported 102 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: N/A
+// Last revision date: 2025-02-04 11:02:29
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -416,10 +416,9 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/"
       }
     ],
-    "revision": 0,
-    "revision_date": null
-  }
-  ,
+    "revision": 1,
+    "revision_date": "2025-02-04 11:02:29"
+  },
   {
     "id": 67,
     "question": "Which Kubernetes feature allows for encryption of Secrets at rest?",
