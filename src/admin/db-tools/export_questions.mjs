@@ -96,7 +96,7 @@ const exportQuestions = () => {
         });
 
         // Create JavaScript export file
-        const jsFilePath = path.join(OUTPUT_DIR, `${safeDomain}.js`);
+        const jsFilePath = path.join(OUTPUT_DIR, `${safeDomain}.mjs`);
         const jsContent = `
 // Exported ${questionCount} questions for domain: ${domain}
 // Last revision date: ${latestRevisionDate}

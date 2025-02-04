@@ -1,6 +1,6 @@
 
 // Exported 102 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-02-04 13:36:14
+// Last revision date: 2025-02-04 13:52:44
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -75,9 +75,9 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://www.innablr.com.au/blog/kubernetes-pod-security-using-podsecuritystandards"
       }
     ],
-    "revision": 0,
-    "revision_date": null
-  },  
+    "revision": 1,
+    "revision_date": "2025-02-04 13:52:44"
+  },
   {
     "id": 4,
     "question": "Which of the following restrictions does the 'baseline' Pod Security Standard enforce? (Select all that apply)",

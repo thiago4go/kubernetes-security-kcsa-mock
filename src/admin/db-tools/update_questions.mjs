@@ -47,7 +47,7 @@ const getExistingQuestion = (id) => {
 
 // Function to load questions from JavaScript files
 const loadQuestionsFromFiles = async () => {
-    const questionFiles = fs.readdirSync(questionsDir).filter(file => file.endsWith('.js'));
+    const questionFiles = fs.readdirSync(questionsDir).filter(file => file.endsWith('.mjs'));
     let allQuestions = [];
 
     for (const file of questionFiles) {
