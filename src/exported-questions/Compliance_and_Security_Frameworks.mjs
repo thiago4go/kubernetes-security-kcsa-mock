@@ -558,6 +558,7 @@ export const ComplianceAndSecurityFrameworksQuestions = [
       "explanation": "The CIS Kubernetes Benchmark offers practical recommendations to harden production clusters, improving overall security and compliance.",
       "question_type": "single-choice",
       "domain": "Compliance and Security Frameworks",
-      "subdomain": "Compliance Frameworks" 
+      "subdomain": "Compliance Frameworks"
     }
+
 ];
