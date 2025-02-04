@@ -1,6 +1,6 @@
 
 // Exported 102 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-02-04 12:44:17
+// Last revision date: 2025-02-04 13:36:14
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -761,8 +761,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/concepts/security/controlling-access/"
       }
     ],
-    "revision": 0,
-    "revision_date": null
+    "revision": 1,
+    "revision_date": "2025-02-04 13:36:14"
   },
   {
     "id": 143,
