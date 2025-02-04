@@ -57,14 +57,27 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "PSA policies are applied per namespace using labels; only one policy level can be enforced per namespace.",
+    "explanation": "PSA policies are applied at the namespace level. While multiple labels can be applied to a namespace, each label corresponds to a specific mode (enforce, audit, or warn), and only one PSA policy level (privileged, baseline, or restricted) can be enforced per namespace for each mode. This ensures clear and consistent policy enforcement.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
-    "sources": [],
+    "sources": [
+      {
+        "name": "Kubernetes Documentation",
+        "url": "https://kubernetes.io/docs/concepts/security/pod-security-admission/"
+      },
+      {
+        "name": "Red Hat Documentation",
+        "url": "https://docs.redhat.com/en/documentation/openshift_dedicated/4/html/authentication_and_authorization/understanding-and-managing-pod-security-admission"
+      },
+      {
+        "name": "Innablr Blog",
+        "url": "https://www.innablr.com.au/blog/kubernetes-pod-security-using-podsecuritystandards"
+      }
+    ],
     "revision": 0,
     "revision_date": null
-  },
+  },  
   {
     "id": 4,
     "question": "Which of the following restrictions does the 'baseline' Pod Security Standard enforce? (Select all that apply)",
