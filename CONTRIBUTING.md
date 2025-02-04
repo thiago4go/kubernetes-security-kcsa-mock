@@ -22,10 +22,10 @@ Before making changes, **open an issue** in the repository to describe:
 
 💡 **Example Issue:**  
 ```
-Title: Update Question #42 – Incorrect Explanation  
+Title: Update Question id: 42 – Incorrect Explanation  
 
 Description:  
-The explanation for question #42 is incorrect.  
+The explanation for question id: 42 is incorrect.  
 - **Current Explanation:** "Kubernetes API Server is responsible for managing nodes directly."  
 - **Corrected Explanation:** "The Kubernetes API Server serves as the control plane, exposing RESTful APIs for interacting with the cluster."  
 - **Adding Sources:** ["Kubernetes Documentation", "https://kubernetes.io/docs/concepts/overview/components/"]
@@ -81,11 +81,11 @@ export const CloudNativeSecurityQuestions = [
 Once you've made your changes, commit and push them:  
 ```bash
 git add src/exported-questions/Cloud_Native_Security.js
-git commit -m "Updated question #7 - Fixed explanation and added sources"
+git commit -m "Updated question id: 7 - Fixed explanation and added sources"
 git push origin update-question-7
 ```
 Then, **create a Pull Request (PR)**:
-- **Title:** `[Update Question #7] Fixed explanation and added references`
+- **Title:** `[Update Question id: 7] Fixed explanation and added references`
 - **Description:**  
   - What was changed (e.g., added sources, corrected explanation).
   - Why the change was needed.  
