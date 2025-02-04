@@ -747,11 +747,20 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       2
     ],
-    "explanation": "The 'cluster-admin' role grants full cluster-wide administrative permissions.",
+    "explanation": "The 'cluster-admin' ClusterRole grants full cluster-wide administrative permissions. However, its scope depends on how it is bound to a user or group. When bound via a RoleBinding, its permissions are restricted to the namespace specified in the binding. When bound via a ClusterRoleBinding, it provides full control over all resources in the cluster.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Authorization",
-    "sources": [],
+    "sources": [
+      {
+        "name": "Kubernetes Documentation - Role-Based Access Control (RBAC)",
+        "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+      },
+      {
+        "name": "Kubernetes Documentation - Controlling Access to the Kubernetes API",
+        "url": "https://kubernetes.io/docs/concepts/security/controlling-access/"
+      }
+    ],
     "revision": 0,
     "revision_date": null
   },
