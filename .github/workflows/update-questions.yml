@@ -55,9 +55,21 @@ jobs:
           git commit -m "Auto-update questions database after PR merge" || exit 0
           git push --force https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git staging
 
+      - name: Ensure staging branch exists
+        run: |
+            git fetch origin staging || true
+            if ! git rev-parse --verify origin/staging >/dev/null 2>&1; then
+              echo "⚠️ 'staging' branch does not exist. Creating it..."
+              git checkout -b staging
+              git push --set-upstream origin staging
+            else
+              git checkout staging
+              git reset --hard origin/staging
+            fi
+
       - name: Create Pull Request to main
         if: success()
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GH_PAT }}
           branch: staging
