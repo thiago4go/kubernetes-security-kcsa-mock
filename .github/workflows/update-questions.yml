@@ -35,10 +35,10 @@ jobs:
           echo "✅ SQLite database exists."
 
       - name: Run update script
-        run: node src/admin/db-tools/update_questions.js
+        run: node src/admin/db-tools/update_questions.mjs
 
       - name: Export updated questions
-        run: node src/admin/db-tools/export_questions.js 
+        run: node src/admin/db-tools/export_questions.mjs 
 
       - name: Run database integrity tests
         run: npm run test:db

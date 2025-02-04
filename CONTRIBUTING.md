@@ -96,11 +96,11 @@ Then, **create a Pull Request (PR)**:
 - Maintainers will review the PR.
 - If approved, the PR will be merged, and the **SQLite database will be updated** using:
   ```bash
-  node src/update_questions.js
+  node src/admin/db-tools/update_questions.mjs
   ```
 - The latest questions will be **exported** back to JavaScript files using:
   ```bash
-  node src/export_questions.js
+  node src/admin/db-tools/export_questions.mjs
   ```
 
 ---
