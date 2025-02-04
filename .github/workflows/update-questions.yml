@@ -41,7 +41,7 @@ jobs:
         run: node src/export_questions.js
 
       - name: Run database integrity tests
-        run: npm test tests/questionsIntegrity.test.js
+        run: npm run test:db
 
       - name: Commit and push changes to staging branch
         if: success()
