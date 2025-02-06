@@ -1,6 +1,6 @@
 
-// Exported 101 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-02-06 13:33:32
+// Exported 100 questions for domain: Kubernetes Security Fundamentals
+// Last revision date: 2025-02-06 14:07:54
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -1063,7 +1063,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 177,
-    "question": "Which admission controller is deprecated and replaced by Pod Security Admission in Kubernetes 1.25?",
+    "question": "Which Kubernetes Admission Controller was deprecated and replaced by Pod Security Admission in Kubernetes version 1.25?",
     "options": [
       "PodSecurityPolicy",
       "NodeRestriction",
@@ -1074,13 +1074,22 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       0
     ],
-    "explanation": "PodSecurityPolicy is deprecated in favour of the new Pod Security Admission Controller.",
+    "explanation": "PodSecurityPolicy was deprecated in Kubernetes version 1.25 and replaced by the Pod Security Admission (PSA) controller. The PSA controller provides a simpler and more flexible way to enforce pod security standards, aligning with Kubernetes' evolving security model. Other options, such as NodeRestriction, AlwaysPullImages, NamespaceLifecycle, and LimitRanger, are not related to this deprecation.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Standards",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - Pod Security Admission",
+        "url": "https://kubernetes.io/docs/concepts/security/pod-security-admission/"
+      },
+      {
+        "name": "Kubernetes Blog - Deprecation of PodSecurityPolicy",
+        "url": "https://kubernetes.io/blog/2021/04/06/podsecuritypolicy-deprecation-past-present-and-future/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:07:54"
   },
   {
     "id": 178,
@@ -1772,27 +1781,6 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Authorization",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 270,
-    "question": "Which Kubernetes Admission Controller is deprecated and removed in version 1.25?",
-    "options": [
-      "PodSecurityPolicy",
-      "NodeRestriction",
-      "AlwaysPullImages",
-      "NamespaceLifecycle",
-      "LimitRanger"
-    ],
-    "correct_answers": [
-      0
-    ],
-    "explanation": "PodSecurityPolicy is deprecated in Kubernetes 1.25.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Security Fundamentals",
-    "subdomain": "Pod Security Standards",
     "sources": [],
     "revision": 0,
     "revision_date": null
