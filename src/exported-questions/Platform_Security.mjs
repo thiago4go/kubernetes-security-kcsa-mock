@@ -1,6 +1,6 @@
 
-// Exported 35 questions for domain: Platform Security
-// Last revision date: 2025-02-06 13:49:03
+// Exported 34 questions for domain: Platform Security
+// Last revision date: 2025-02-06 13:52:59
 export const PlatformSecurityQuestions = [
   {
     "id": 11,
@@ -306,27 +306,6 @@ export const PlatformSecurityQuestions = [
     "revision_date": null
   },
   {
-    "id": 187,
-    "question": "Which command would you use to approve a CertificateSigningRequest named 'user1'?",
-    "options": [
-      "kubectl certificate approve user1",
-      "kubectl csr approve user1",
-      "kubectl approve csr user1",
-      "kubectl sign csr user1",
-      "kubectl certificate sign user1"
-    ],
-    "correct_answers": [
-      0
-    ],
-    "explanation": "kubectl certificate approve user1 approves the CSR.",
-    "question_type": "single-choice",
-    "domain": "Platform Security",
-    "subdomain": "PKI",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
     "id": 196,
     "question": "Which command can be used to get detailed information about a Kubernetes node?",
     "options": [
@@ -505,7 +484,7 @@ export const PlatformSecurityQuestions = [
   },
   {
     "id": 237,
-    "question": "After creating a CSR object in Kubernetes, which command is used to approve it?",
+    "question": "Which command is used to approve a CertificateSigningRequest (CSR) in Kubernetes?",
     "options": [
       "kubectl sign csr <csr-name>",
       "kubectl create csr <csr-name>",
@@ -516,13 +495,22 @@ export const PlatformSecurityQuestions = [
     "correct_answers": [
       3
     ],
-    "explanation": "The command 'kubectl certificate approve <csr-name>' approves the CSR.",
+    "explanation": "The correct command to approve a CertificateSigningRequest (CSR) in Kubernetes is 'kubectl certificate approve <csr-name>'. This command instructs the certificate signing controller to approve the CSR, allowing the requested certificate to be issued. Other options like 'kubectl create' are used for creating resources, while 'kubectl sign' and 'kubectl csr approve' are invalid commands.",
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "PKI",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Documentation: Managing TLS Certificates",
+        "url": "https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/"
+      },
+      {
+        "name": "Kubernetes Reference: kubectl certificate approve",
+        "url": "https://kubernetes.io/docs/reference/kubectl/generated/kubectl_certificate/kubectl_certificate_approve/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:52:59"
   },
   {
     "id": 240,
