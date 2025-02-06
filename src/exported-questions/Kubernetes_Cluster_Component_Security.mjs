@@ -1,5 +1,5 @@
 
-// Exported 93 questions for domain: Kubernetes Cluster Component Security
+// Exported 92 questions for domain: Kubernetes Cluster Component Security
 // Last revision date: 2025-02-04 10:48:35
 export const KubernetesClusterComponentSecurityQuestions = [
   {
@@ -1430,27 +1430,6 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "Client Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 140,
-    "question": "Which of the following is true about Kubernetes Namespaces?",
-    "options": [
-      "They provide physical isolation of resources",
-      "They are used to group and isolate resources logically",
-      "They manage network policies",
-      "They control node assignments",
-      "They store persistent data"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "Namespaces provide logical isolation within a cluster.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Cluster Component Security",
-    "subdomain": "API Server",
     "sources": [],
     "revision": 0,
     "revision_date": null

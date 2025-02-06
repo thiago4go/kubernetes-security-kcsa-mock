@@ -1,6 +1,6 @@
 
 // Exported 102 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-02-04 13:52:44
+// Last revision date: 2025-02-06 13:06:54
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -1832,24 +1832,33 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 272,
-    "question": "What is the primary purpose of using namespaces in Kubernetes?",
+    "question": "In Kubernetes, what is the main reason for using namespaces?",
     "options": [
-      "To provide network isolation",
-      "To group and isolate resources logically",
-      "To enforce security policies",
-      "To manage storage volumes",
-      "To monitor cluster health"
+      "To provide network isolation between different applications.",
+      "To group and logically isolate resources such as deployments, services, and pods.",
+      "To enforce security policies across the entire cluster.",
+      "To manage the lifecycle of persistent storage volumes.",
+      "To monitor the overall health and performance of the Kubernetes cluster."
     ],
     "correct_answers": [
       1
     ],
-    "explanation": "Namespaces provide logical isolation of resources.",
+    "explanation": "Namespaces in Kubernetes are primarily used to logically divide a cluster into multiple virtual clusters. This allows teams or projects to operate in isolation from one another within the same physical cluster. While namespaces can be used in conjunction with network policies to provide network isolation, their primary purpose is logical grouping and isolation of Kubernetes resources like pods, services, and deployments. They do not inherently enforce security policies or manage storage volumes directly, nor are they primarily for monitoring cluster health.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
-    "subdomain": "Network Isolation and Segmentation",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "subdomain": "Resource Management and Isolation",
+    "sources": [
+      {
+        "name": "Kubernetes Documentation: Namespaces",
+        "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+      },
+      {
+        "name": "Aqua Security: Kubernetes Namespaces",
+        "url": "https://www.aquasec.com/cloud-native-academy/kubernetes-security/kubernetes-namespaces/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:06:54"
   },
   {
     "id": 274,
