@@ -1,6 +1,6 @@
 
-// Exported 31 questions for domain: Compliance and Security Frameworks
-// Last revision date: 2025-02-06 14:00:20
+// Exported 30 questions for domain: Compliance and Security Frameworks
+// Last revision date: 2025-02-06 14:16:11
 export const ComplianceAndSecurityFrameworksQuestions = [
   {
     "id": 8,
@@ -52,27 +52,6 @@ export const ComplianceAndSecurityFrameworksQuestions = [
     ],
     "revision": 1,
     "revision_date": "2025-02-06 14:00:20"
-  },
-  {
-    "id": 50,
-    "question": "What is the Payment Card Industry Data Security Standard (PCI DSS)?",
-    "options": [
-      "A protocol for secure credit card transactions",
-      "A set of security standards for organizations handling cardholder data",
-      "A government regulation for financial institutions",
-      "An encryption algorithm used in banking",
-      "A compliance framework for healthcare data"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "PCI DSS sets requirements for securing credit card information.",
-    "question_type": "single-choice",
-    "domain": "Compliance and Security Frameworks",
-    "subdomain": "Compliance Frameworks",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
   },
   {
     "id": 301,
@@ -160,9 +139,9 @@ export const ComplianceAndSecurityFrameworksQuestions = [
   },
   {
     "id": 306,
-    "question": "Which best defines PCI DSS in a containerised environment?",
+    "question": "Which best defines PCI DSS in a containerized environment?",
     "options": [
-      "A software licence for open-source container platforms",
+      "A software license for open-source container platforms",
       "A set of security standards for systems handling cardholder data, applicable to container-based workflows",
       "A Kubernetes admission controller for preventing configuration drift",
       "A recommended approach to container performance tuning",
@@ -171,13 +150,22 @@ export const ComplianceAndSecurityFrameworksQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "PCI DSS defines baseline security requirements for any environment handling cardholder data, including containerised systems.",
+    "explanation": "PCI DSS in a containerized environment refers to the application of its security standards to workflows that handle cardholder data within containers. This includes ensuring compliance with requirements such as network segmentation, access control, and real-time monitoring. Other options are incorrect because they either mischaracterize PCI DSS or describe unrelated concepts like software licenses or Kubernetes-specific tools.",
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Compliance Frameworks",
-    "sources": [],
-    "revision": 0,
-    "revision_date": "2025-02-04 15:50:32"
+    "sources": [
+      {
+        "name": "Sysdig Blog - PCI Compliance for Containers and Kubernetes",
+        "url": "https://sysdig.com/blog/container-pci-compliance/"
+      },
+      {
+        "name": "Red Hat - Container and Kubernetes Compliance Considerations",
+        "url": "https://www.redhat.com/en/topics/containers/compliance"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:16:11"
   },
   {
     "id": 307,
