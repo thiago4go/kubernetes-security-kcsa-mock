@@ -1,6 +1,6 @@
 
 // Exported 37 questions for domain: Cloud Native Security
-// Last revision date: 2025-02-04 09:03:39
+// Last revision date: 2025-02-06 13:13:12
 export const CloudNativeSecurityQuestions = [
   {
     "id": 7,
@@ -46,24 +46,33 @@ export const CloudNativeSecurityQuestions = [
   },
   {
     "id": 14,
-    "question": "What is the purpose of a multistage build in Docker?",
+    "question": "How do multistage builds in Docker reduce image size?",
     "options": [
-      "To run multiple containers in one image",
-      "To build images compatible with multiple architectures",
-      "To reduce image size by separating build and runtime stages",
-      "To enable parallel builds",
-      "To deploy to multiple environments simultaneously"
+      "By running multiple containers within a single image",
+      "By creating images compatible with multiple architectures",
+      "By separating build-time dependencies from runtime components in different stages",
+      "By enabling parallel builds across multiple stages",
+      "By deploying to multiple environments simultaneously"
     ],
     "correct_answers": [
       2
     ],
-    "explanation": "Multistage builds allow copying only necessary artifacts to the final image.",
+    "explanation": "Multistage builds in Docker allow developers to separate build-time dependencies (e.g., compilers, libraries) from runtime components by using multiple `FROM` instructions in a single Dockerfile. This ensures that only the necessary artifacts (e.g., binaries) are included in the final image, significantly reducing its size and improving security. While multistage builds can simplify workflows, they do not inherently enable parallel builds or support multi-environment deployments.",
     "question_type": "single-choice",
     "domain": "Cloud Native Security",
     "subdomain": "Artifact Repository and Image Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Docker Documentation: Multi-Stage Builds",
+        "url": "https://docs.docker.com/get-started/docker-concepts/building-images/multi-stage-builds/"
+      },
+      {
+        "name": "Earthly Blog: Understanding Docker Multistage Builds",
+        "url": "https://earthly.dev/blog/docker-multistage/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:13:12"
   },
   {
     "id": 18,
@@ -344,24 +353,33 @@ export const CloudNativeSecurityQuestions = [
   },
   {
     "id": 73,
-    "question": "What is a key benefit of using multistage Docker builds?",
+    "question": "What is the primary benefit of using multistage Docker builds?",
     "options": [
-      "Faster build times",
-      "Smaller and more secure final images",
-      "Compatibility with older Docker versions",
-      "Simplified deployment scripts",
-      "Enhanced network performance"
+      "Faster build times by reusing intermediate stages",
+      "Smaller and more secure final images by excluding build-time dependencies",
+      "Compatibility with older Docker versions for broader deployment",
+      "Simplified deployment scripts for easier automation",
+      "Enhanced network performance during container communication"
     ],
     "correct_answers": [
       1
     ],
-    "explanation": "Multistage builds produce lean images by excluding unnecessary build-time dependencies.",
+    "explanation": "The primary advantage of multistage Docker builds is the ability to create smaller and more secure final images. By separating the build and runtime stages, unnecessary build-time dependencies (e.g., compilers, libraries) are excluded from the final image. This reduces the image size, minimizes the attack surface, and enhances security. While multistage builds can indirectly improve build times by optimizing layers, their main focus is on producing leaner and safer images. They do not specifically address network performance or deployment script simplification.",
     "question_type": "single-choice",
     "domain": "Cloud Native Security",
     "subdomain": "Artifact Repository and Image Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Docker Documentation: Multi-Stage Builds",
+        "url": "https://docs.docker.com/get-started/docker-concepts/building-images/multi-stage-builds/"
+      },
+      {
+        "name": "Cherry Servers: Docker Multi-Stage Build",
+        "url": "https://www.cherryservers.com/blog/docker-multistage-build"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:13:12"
   },
   {
     "id": 90,
