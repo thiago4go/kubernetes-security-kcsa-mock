@@ -1,6 +1,6 @@
 
-// Exported 102 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-02-06 13:06:54
+// Exported 101 questions for domain: Kubernetes Security Fundamentals
+// Last revision date: 2025-02-06 13:18:37
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -201,27 +201,6 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 31,
-    "question": "What are possible issues of not restricting egress traffic from pods?",
-    "options": [
-      "Pods cannot communicate with the API server",
-      "Increased risk of data exfiltration",
-      "Reduced cluster performance",
-      "Difficulty in scaling applications",
-      "Pods will be unable to receive traffic"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "Unrestricted egress can lead to data leaks and other security issues.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Security Fundamentals",
-    "subdomain": "Network Isolation and Segmentation",
     "sources": [],
     "revision": 0,
     "revision_date": null
@@ -539,24 +518,33 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 74,
-    "question": "Which of the following is a disadvantage of not restricting egress traffic in Kubernetes?",
+    "question": "What is a significant security risk associated with not restricting egress traffic in a Kubernetes cluster?",
     "options": [
-      "Easier debugging of network issues",
-      "Reduced latency in network communication",
-      "Potential for data exfiltration",
-      "Improved pod-to-pod communication",
-      "Simplified network configuration"
+      "It complicates the debugging process for network-related issues.",
+      "It leads to reduced latency in network communications within the cluster.",
+      "It creates a potential pathway for data exfiltration from compromised pods to external, unauthorized destinations.",
+      "It enhances and simplifies pod-to-pod communication within the cluster.",
+      "It simplifies network configuration, reducing the complexity of network policies."
     ],
     "correct_answers": [
       2
     ],
-    "explanation": "Without egress restrictions, attackers may exfiltrate data from the cluster.",
+    "explanation": "Failing to restrict egress traffic in Kubernetes can expose the cluster to significant security risks, most notably data exfiltration. Without proper egress controls, a compromised pod can freely communicate with external servers, potentially leaking sensitive data to attackers. While unrestricted egress might simplify initial network configurations, the security implications far outweigh any convenience gained. Restricting egress traffic is a critical security measure to limit the attack surface and prevent unauthorized communication from within the cluster.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Network Policy",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Tigera: Prevent Data Exfiltration in Kubernetes",
+        "url": "https://www.tigera.io/blog/prevent-data-exfiltration-in-kubernetes-the-critical-role-of-egress-access-controls/"
+      },
+      {
+        "name": "Red Hat: Guide to Kubernetes Egress Network Policies",
+        "url": "https://www.redhat.com/en/blog/guide-to-kubernetes-egress-network-policies"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:18:37"
   },
   {
     "id": 75,
