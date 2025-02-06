@@ -1,5 +1,5 @@
 
-// Exported 38 questions for domain: Cloud Native Security
+// Exported 37 questions for domain: Cloud Native Security
 // Last revision date: 2025-02-04 09:03:39
 export const CloudNativeSecurityQuestions = [
   {
@@ -359,27 +359,6 @@ export const CloudNativeSecurityQuestions = [
     "question_type": "single-choice",
     "domain": "Cloud Native Security",
     "subdomain": "Artifact Repository and Image Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 79,
-    "question": "When is soft multi-tenancy preferred over hard multi-tenancy?",
-    "options": [
-      "When strict isolation is required",
-      "For untrusted tenant workloads",
-      "To maximize resource efficiency in trusted environments",
-      "In compliance-regulated industries",
-      "When using multiple clusters"
-    ],
-    "correct_answers": [
-      2
-    ],
-    "explanation": "Soft tenancy is suitable when strict isolation isn't required.",
-    "question_type": "single-choice",
-    "domain": "Cloud Native Security",
-    "subdomain": "Isolation Techniques",
     "sources": [],
     "revision": 0,
     "revision_date": null

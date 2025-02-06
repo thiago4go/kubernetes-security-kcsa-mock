@@ -1,5 +1,5 @@
 
-// Exported 37 questions for domain: Platform Security
+// Exported 36 questions for domain: Platform Security
 // Last revision date: N/A
 export const PlatformSecurityQuestions = [
   {
@@ -691,27 +691,6 @@ export const PlatformSecurityQuestions = [
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "PKI",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 283,
-    "question": "Which command can be used to apply a configuration change to a resource defined in 'deployment.yaml'?",
-    "options": [
-      "kubectl create -f deployment.yaml",
-      "kubectl apply -f deployment.yaml",
-      "kubectl set -f deployment.yaml",
-      "kubectl update -f deployment.yaml",
-      "kubectl replace -f deployment.yaml"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "The command 'kubectl apply -f deployment.yaml' applies the configuration change.",
-    "question_type": "single-choice",
-    "domain": "Platform Security",
-    "subdomain": "Observability",
     "sources": [],
     "revision": 0,
     "revision_date": null
