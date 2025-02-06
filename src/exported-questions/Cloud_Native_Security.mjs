@@ -1,6 +1,6 @@
 
 // Exported 36 questions for domain: Cloud Native Security
-// Last revision date: 2025-02-06 13:25:13
+// Last revision date: 2025-02-06 14:05:18
 export const CloudNativeSecurityQuestions = [
   {
     "id": 7,
@@ -518,26 +518,35 @@ export const CloudNativeSecurityQuestions = [
   },
   {
     "id": 210,
-    "question": "Which of the following are best practices for container image hardening? (Select all that apply)",
+    "question": "What are the key best practices for hardening container images to enhance security?",
     "options": [
-      "Use a minimal base image",
-      "Run containers as root",
-      "Remove unnecessary packages",
-      "Expose all ports for flexibility",
-      "Regularly scan images for vulnerabilities"
+      "Use a minimal base image to reduce the attack surface.",
+      "Run containers as root to simplify privilege management.",
+      "Remove unnecessary packages and dependencies to minimize potential vulnerabilities.",
+      "Expose all ports for maximum connectivity and flexibility.",
+      "Regularly scan images for known vulnerabilities and apply necessary patches."
     ],
     "correct_answers": [
       0,
       2,
       4
     ],
-    "explanation": "Using minimal base images, removing unnecessary packages, and scanning for vulnerabilities are best practices.",
+    "explanation": "To effectively harden container images, it is crucial to minimize the attack surface and potential vulnerabilities. Using minimal base images ensures that only essential components are included, reducing the number of potential security flaws. Removing unnecessary packages further decreases the likelihood of exploitable vulnerabilities. Regularly scanning images for known vulnerabilities allows for proactive identification and remediation of security risks. Running containers as root is discouraged because it gives the process elevated privileges that it does not need and exposes the host system to vulnerabilities. Exposing all ports creates unnecessary entry points for attackers.",
     "question_type": "multiple-choice",
     "domain": "Cloud Native Security",
     "subdomain": "Artifact Repository and Image Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "NIST Special Publication 800-190",
+        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-190.pdf"
+      },
+      {
+        "name": "OWASP Container Security Cheat Sheet",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Container_Security_Cheat_Sheet.html"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:05:18"
   },
   {
     "id": 211,
@@ -730,26 +739,35 @@ export const CloudNativeSecurityQuestions = [
   },
   {
     "id": 273,
-    "question": "Which of the following are Kubernetes best practices during the Build Phase? (Select all that apply)",
+    "question": "During the build phase of a Kubernetes application, which practices are most effective for ensuring security?",
     "options": [
-      "Use minimal base images",
-      "Run containers as root",
-      "Scan images for vulnerabilities",
-      "Include unnecessary packages",
-      "Use authorized images only"
+      "Use minimal base images to reduce the attack surface.",
+      "Run containers as root to simplify privilege management.",
+      "Scan images for vulnerabilities to identify and remediate potential security flaws.",
+      "Include unnecessary packages to provide additional functionality.",
+      "Use only authorized images from trusted registries to prevent the introduction of malicious code."
     ],
     "correct_answers": [
       0,
       2,
       4
     ],
-    "explanation": "Best practices include minimal images, vulnerability scanning and using authorised images.",
+    "explanation": "In the build phase, security is best ensured by minimizing the image footprint with minimal base images, regularly scanning for vulnerabilities to catch issues early, and using only authorized images from trusted sources.  Minimal base images reduce the attack surface.  Vulnerability scanning identifies and allows remediation of security flaws before deployment. Using authorized images prevents the introduction of untrusted or malicious code. Running containers as root is a security risk, and including unnecessary packages increases the potential attack surface.",
     "question_type": "multiple-choice",
     "domain": "Cloud Native Security",
     "subdomain": "Workload and Application Code Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Security Best Practices",
+        "url": "https://kubernetes.io/docs/concepts/security/best-practices/"
+      },
+      {
+        "name": "SANS Institute: Securing Docker Containers",
+        "url": "https://www.sans.org/white-papers/36267/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:05:18"
   },
   {
     "id": 284,
