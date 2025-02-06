@@ -1,6 +1,6 @@
 
-// Exported 37 questions for domain: Cloud Native Security
-// Last revision date: 2025-02-04 09:03:39
+// Exported 36 questions for domain: Cloud Native Security
+// Last revision date: 2025-02-06 13:25:13
 export const CloudNativeSecurityQuestions = [
   {
     "id": 7,
@@ -33,7 +33,9 @@ export const CloudNativeSecurityQuestions = [
       "To enforce runtime security policies",
       "To speed up image pulling during deployment"
     ],
-    "correct_answers": [1],
+    "correct_answers": [
+      1
+    ],
     "explanation": "The primary purpose of image signing is to ensure that a container image originates from a trusted source and has not been tampered with. This process involves cryptographically signing the image, allowing users to verify its integrity and authenticity before use. Incorrect options such as reducing image size or speeding up deployment do not relate to the security function of signing. Similarly, metadata inclusion and runtime policy enforcement are separate mechanisms unrelated to image signing.",
     "question_type": "single-choice",
     "domain": "Cloud Native Security",
@@ -48,8 +50,8 @@ export const CloudNativeSecurityQuestions = [
         "url": "https://github.com/cncf/tag-security/blob/main/security-whitepaper/cloud-native-security-whitepaper.md"
       }
     ],
-    "revision": 0,
-    "revision_date": null
+    "revision": 1,
+    "revision_date": "2025-02-06 13:25:13"
   },
   {
     "id": 14,
@@ -78,8 +80,8 @@ export const CloudNativeSecurityQuestions = [
         "url": "https://earthly.dev/blog/docker-multistage/"
       }
     ],
-    "revision": 0,
-    "revision_date": null
+    "revision": 1,
+    "revision_date": "2025-02-06 13:13:12"
   },
   {
     "id": 18,
@@ -296,27 +298,6 @@ export const CloudNativeSecurityQuestions = [
     "revision_date": null
   },
   {
-    "id": 55,
-    "question": "How does image signing enhance container security?",
-    "options": [
-      "By encrypting the image layers",
-      "By verifying the image's source and integrity",
-      "By compressing the image for faster deployment",
-      "By scanning the image for vulnerabilities",
-      "By optimizing runtime performance"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "Image signing helps ensure that images are from trusted sources and have not been altered.",
-    "question_type": "single-choice",
-    "domain": "Cloud Native Security",
-    "subdomain": "Artifact Repository and Image Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
     "id": 63,
     "question": "What is a potential risk of mounting the Docker socket ('/var/run/docker.sock') into a container?",
     "options": [
@@ -385,8 +366,8 @@ export const CloudNativeSecurityQuestions = [
         "url": "https://www.cherryservers.com/blog/docker-multistage-build"
       }
     ],
-    "revision": 0,
-    "revision_date": null
+    "revision": 1,
+    "revision_date": "2025-02-06 13:13:12"
   },
   {
     "id": 90,
