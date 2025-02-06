@@ -1,6 +1,6 @@
 
 // Exported 89 questions for domain: Kubernetes Cluster Component Security
-// Last revision date: 2025-02-06 14:10:18
+// Last revision date: 2025-02-06 16:21:38
 export const KubernetesClusterComponentSecurityQuestions = [
   {
     "id": 6,
@@ -99,28 +99,28 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "id": 25,
     "question": "Which of the following best practices are recommended to secure the Kubernetes scheduler (kube-scheduler)? (Select all that apply.)",
     "options": [
-      "A - Bind the scheduler to 0.0.0.0 to ensure it is accessible from all network interfaces",
-      "B - Use Role-Based Access Control (RBAC) to restrict access to the scheduler API",
-      "C - Run the scheduler as a non-root user to minimize privilege escalation risks",
-      "D - Enable anonymous authentication to simplify access for debugging purposes",
-      "E - Configure network policies to restrict network access to and from the scheduler"
+      "Bind the scheduler to 0.0.0.0 to ensure it is accessible from all network interfaces",
+      "Use Role-Based Access Control (RBAC) to restrict access to the scheduler API",
+      "Run the scheduler as a non-root user to minimize privilege escalation risks",
+      "Enable anonymous authentication to simplify access for debugging purposes",
+      "Configure network policies to restrict network access to and from the scheduler"
     ],
     "correct_answers": [
       1,
       2,
       4
     ],
-    "explanation": "Options B, C, and E represent recommended security measures for the kube-scheduler. Using RBAC enforces least privilege, running as a non-root user mitigates privilege escalation risks, and applying network policies restricts unauthorized access. (A) Binding to 0.0.0.0 or (D) enabling anonymous authentication are not recommended as they increase exposure and weaken security.",
+    "explanation": "The recommended security measures for securing the kube-scheduler include: using Role-Based Access Control (RBAC) to enforce least privilege, ensuring only authorized entities can interact with the scheduler's API; running the kube-scheduler as a non-root user to reduce potential risks of privilege escalation in case of a compromise; and configuring network policies to restrict unauthorized network access to or from the kube-scheduler, thereby enhancing its security. Binding the scheduler to 0.0.0.0 increases exposure and is not recommended. Similarly, enabling anonymous authentication weakens security by allowing unauthenticated access.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "Scheduler",
     "sources": [
       {
-        "name": "Kubernetes Documentation",
+        "name": "Kubernetes Documentation - Security Overview",
         "url": "https://kubernetes.io/docs/concepts/security/overview/"
       },
       {
-        "name": "Red Hat Blog",
+        "name": "Red Hat Blog - Kubernetes Configuration Best Practices",
         "url": "https://www.redhat.com/en/blog/12-kubernetes-configuration-best-practices"
       },
       {
@@ -128,8 +128,8 @@ export const KubernetesClusterComponentSecurityQuestions = [
         "url": "https://www.getambassador.io/blog/kubernetes-rbac-role-based-access-control"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-04 10:48:35"
+    "revision": 2,
+    "revision_date": "2025-02-06 16:21:38"
   },
   {
     "id": 26,
@@ -731,24 +731,33 @@ export const KubernetesClusterComponentSecurityQuestions = [
   },
   {
     "id": 99,
-    "question": "What is the role of a ReplicaSet in Kubernetes?",
+    "question": "What is the primary function of a ReplicaSet in Kubernetes?",
     "options": [
-      "To manage the desired state of pods",
-      "To expose services to external traffic",
-      "To store persistent data",
-      "To define network policies",
-      "To schedule pods to specific nodes"
+      "To ensure that a specified number of pod replicas are running at all times",
+      "To expose services to external traffic using load balancing",
+      "To store persistent data for applications",
+      "To define and enforce network policies for pods",
+      "To schedule pods to specific nodes based on resource requirements"
     ],
     "correct_answers": [
       0
     ],
-    "explanation": "ReplicaSets ensure that a specified number of pod replicas are running.",
+    "explanation": "A ReplicaSet in Kubernetes ensures that a specified number of pod replicas are running at all times. It monitors existing pods and creates or deletes them as needed to maintain the desired state. Incorrect options: (1) Exposing services to external traffic is handled by Services, not ReplicaSets. (2) Persistent data storage is managed by PersistentVolumes and PersistentVolumeClaims. (3) Network policies are defined separately using NetworkPolicy resources. (4) Scheduling pods to specific nodes is handled by the Kubernetes Scheduler.",
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "Controller Manager",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - ReplicaSet",
+        "url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/"
+      },
+      {
+        "name": "Kubernetes Concepts - Workloads and Controllers",
+        "url": "https://kubernetes.io/docs/concepts/workloads/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 16:21:38"
   },
   {
     "id": 102,
@@ -920,24 +929,33 @@ export const KubernetesClusterComponentSecurityQuestions = [
   },
   {
     "id": 112,
-    "question": "What does the 'kubectl exec' command do?",
+    "question": "What is the purpose of the 'kubectl exec' command in Kubernetes?",
     "options": [
-      "Executes a command on the master node",
-      "Runs a command in a container",
-      "Starts a new pod",
-      "Updates a deployment",
-      "Deletes a resource"
+      "Executes a command on the Kubernetes control plane",
+      "Runs a command inside a container in a pod",
+      "Creates a new pod in the cluster",
+      "Updates an existing deployment",
+      "Deletes a Kubernetes resource"
     ],
     "correct_answers": [
       1
     ],
-    "explanation": "'kubectl exec' executes a command in a running container.",
+    "explanation": "'kubectl exec' is used to execute a command inside a running container within a Kubernetes pod. This is particularly useful for debugging or interacting with applications running inside containers. For example, you can use it to access logs or run shell commands within the container. Other options are incorrect because:\n- Option 0: Commands are not executed on the control plane using 'kubectl exec'.\n- Option 2: It does not create new pods; 'kubectl run' or deployment manifests are used for that.\n- Option 3: Updating deployments is done using 'kubectl apply' or 'kubectl set'.\n- Option 4: Deleting resources is handled by 'kubectl delete'.",
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
-    "subdomain": "Pod",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "subdomain": "Pod Management",
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - kubectl exec",
+        "url": "https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#exec"
+      },
+      {
+        "name": "Kubernetes Basics - Debugging Applications",
+        "url": "https://kubernetes.io/docs/tutorials/kubernetes-basics/debug-application/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 16:21:38"
   },
   {
     "id": 113,
@@ -1594,7 +1612,7 @@ export const KubernetesClusterComponentSecurityQuestions = [
   },
   {
     "id": 174,
-    "question": "Which Kubernetes resource can be used to set up a Pod with multiple containers that share the same network namespace?",
+    "question": "In Kubernetes, which resource allows multiple containers to share the same network stack, enabling them to communicate using 'localhost'?",
     "options": [
       "Deployment",
       "DaemonSet",
@@ -1605,13 +1623,22 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "correct_answers": [
       2
     ],
-    "explanation": "Containers within the same Pod share the same network namespace.",
+    "explanation": "A Pod in Kubernetes is the smallest deployable unit that can host one or more containers. Containers within the same Pod share the same network stack, including the same IP address and port space. This allows them to communicate with each other using 'localhost'. Other resources like Deployment, DaemonSet, Service, and StatefulSet are higher-level abstractions that manage Pods but do not define such shared networking behavior directly.",
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "Pod",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - Pods",
+        "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+      },
+      {
+        "name": "Kubernetes Networking Concepts",
+        "url": "https://kubernetes.io/docs/concepts/cluster-administration/networking/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 16:21:38"
   },
   {
     "id": 180,
