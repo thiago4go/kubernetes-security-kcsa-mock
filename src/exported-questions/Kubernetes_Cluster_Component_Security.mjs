@@ -1,10 +1,10 @@
 
-// Exported 90 questions for domain: Kubernetes Cluster Component Security
-// Last revision date: 2025-02-06 13:57:04
+// Exported 89 questions for domain: Kubernetes Cluster Component Security
+// Last revision date: 2025-02-06 14:10:18
 export const KubernetesClusterComponentSecurityQuestions = [
   {
     "id": 6,
-    "question": "Which admission controller runs first in Kubernetes?",
+    "question": "Which Kubernetes admission controller runs first during the admission control process?",
     "options": [
       "ValidatingAdmissionWebhook",
       "MutatingAdmissionWebhook",
@@ -15,13 +15,22 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "Mutating admission controllers run before validating ones to modify the request before validation.",
+    "explanation": "The MutatingAdmissionWebhook runs first in the Kubernetes admission control process. This is because mutating admission controllers are designed to modify the incoming request before it is validated by validating admission controllers. Other options, such as ValidatingAdmissionWebhook, ResourceQuota, NamespaceLifecycle, and AlwaysPullImages, either run later in the process or serve different purposes.",
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "API Server",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - Admission Controllers",
+        "url": "https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/"
+      },
+      {
+        "name": "Styra Blog - What Is Kubernetes Admission Control?",
+        "url": "https://www.styra.com/blog/what-is-kubernetes-admission-control/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:10:18"
   },
   {
     "id": 9,
@@ -314,27 +323,6 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "KubeProxy",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 53,
-    "question": "What is the order of execution for admission controllers in Kubernetes?",
-    "options": [
-      "Mutating, then Validating admission controllers",
-      "Validating, then Mutating admission controllers",
-      "Both run simultaneously",
-      "The order is random",
-      "Only one type runs depending on configuration"
-    ],
-    "correct_answers": [
-      0
-    ],
-    "explanation": "Kubernetes processes MutatingAdmissionWebhook controllers before ValidatingAdmissionWebhook controllers.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Cluster Component Security",
-    "subdomain": "API Server",
     "sources": [],
     "revision": 0,
     "revision_date": null
