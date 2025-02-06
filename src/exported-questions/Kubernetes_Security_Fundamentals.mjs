@@ -1,6 +1,6 @@
 
 // Exported 101 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-02-06 13:18:37
+// Last revision date: 2025-02-06 13:33:32
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -2171,22 +2171,31 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "id": 298,
     "question": "What is the primary function of Open Policy Agent (OPA) in Kubernetes?",
     "options": [
-      "Container runtime",
-      "Policy enforcement and authorization",
-      "Logging and monitoring",
-      "Network routing",
-      "Storage management"
+      "To serve as a container runtime",
+      "To enforce policies and make authorization decisions",
+      "To provide logging and monitoring capabilities",
+      "To manage network routing",
+      "To handle storage management"
     ],
     "correct_answers": [
       1
     ],
-    "explanation": "OPA is used to enforce policies and make authorization decisions.",
+    "explanation": "Open Policy Agent (OPA) is a general-purpose policy engine that evaluates inputs against defined policies to make authorization decisions. In Kubernetes, OPA is commonly used to enforce security and compliance policies on cluster resources. Incorrect options, such as serving as a container runtime, logging, or network management, describe functionalities unrelated to OPA's role.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "CNCF Blog - Secure Your Kubernetes Environment with OPA and Gatekeeper",
+        "url": "https://www.cncf.io/blog/2023/10/09/secure-your-kubernetes-environment-with-opa-and-gatekeeper/"
+      },
+      {
+        "name": "Spacelift Blog - Kubernetes with Open Policy Agent (OPA) & Gatekeeper",
+        "url": "https://spacelift.io/blog/opa-kubernetes"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:33:32"
   },
   {
     "id": 299,

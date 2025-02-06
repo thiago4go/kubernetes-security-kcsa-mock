@@ -1,6 +1,6 @@
 
 // Exported 33 questions for domain: Compliance and Security Frameworks
-// Last revision date: 2025-02-04 15:50:32
+// Last revision date: 2025-02-06 13:33:32
 export const ComplianceAndSecurityFrameworksQuestions = [
   {
     "id": 8,
@@ -246,13 +246,22 @@ export const ComplianceAndSecurityFrameworksQuestions = [
     "correct_answers": [
       2
     ],
-    "explanation": "OPA Gatekeeper allows custom policy enforcement in Kubernetes admission control, ensuring only compliant resources are admitted.",
+    "explanation": "OPA Gatekeeper is a validating admission controller that enforces policies defined as code during resource creation or updates in Kubernetes. It ensures compliance by preventing non-compliant resources from being admitted to the cluster. Incorrect options, such as managing node scaling or providing a container registry, are unrelated to OPA Gatekeeper's functionality. Similarly, it does not handle threat feeds or runtime installation.",
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Automation and Tooling",
-    "sources": [],
-    "revision": 0,
-    "revision_date": "2025-02-04 15:50:32"
+    "sources": [
+      {
+        "name": "Cloud Google - Pod Security Policies with Gatekeeper",
+        "url": "https://cloud.google.com/kubernetes-engine/docs/how-to/pod-security-policies-with-gatekeeper"
+      },
+      {
+        "name": "Open Policy Agent Documentation - Kubernetes Admission Control",
+        "url": "https://www.openpolicyagent.org/docs/v0.12.2/kubernetes-admission-control/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:33:32"
   },
   {
     "id": 310,
