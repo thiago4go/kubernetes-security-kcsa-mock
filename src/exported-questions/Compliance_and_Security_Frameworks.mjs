@@ -1,6 +1,6 @@
 
-// Exported 32 questions for domain: Compliance and Security Frameworks
-// Last revision date: 2025-02-06 13:43:26
+// Exported 31 questions for domain: Compliance and Security Frameworks
+// Last revision date: 2025-02-06 14:00:20
 export const ComplianceAndSecurityFrameworksQuestions = [
   {
     "id": 8,
@@ -25,24 +25,33 @@ export const ComplianceAndSecurityFrameworksQuestions = [
   },
   {
     "id": 24,
-    "question": "What is the MITRE ATT&CK framework?",
+    "question": "What is the MITRE ATT&CK framework, and how is it used in cybersecurity?",
     "options": [
       "A set of compliance requirements for cloud providers",
       "A vulnerability scanning tool",
-      "A knowledge base of adversary tactics and techniques",
-      "An incident response guide",
-      "A network security protocol"
+      "A knowledge base of adversary tactics and techniques used in cyberattacks",
+      "An incident response guide for organizations",
+      "A network security protocol for secure communication"
     ],
     "correct_answers": [
       2
     ],
-    "explanation": "MITRE ATT&CK catalogs cyber adversary behaviors.",
+    "explanation": "The MITRE ATT&CK framework is a comprehensive knowledge base that catalogs adversary tactics, techniques, and procedures (TTPs) observed in real-world cyberattacks. It is widely used by cybersecurity professionals to understand attacker behavior, improve threat detection, and enhance defense strategies. Other options are incorrect because they describe unrelated tools or concepts.",
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Threat Modelling Frameworks",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "MITRE ATT&CK Official Website",
+        "url": "https://attack.mitre.org/"
+      },
+      {
+        "name": "NIST Cybersecurity Framework",
+        "url": "https://www.nist.gov/cyberframework"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:00:20"
   },
   {
     "id": 50,
@@ -520,27 +529,6 @@ export const ComplianceAndSecurityFrameworksQuestions = [
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Automation and Tooling",
-    "sources": [],
-    "revision": 0,
-    "revision_date": "2025-02-04 15:50:32"
-  },
-  {
-    "id": 323,
-    "question": "Which statement correctly defines the role of MITRE ATT&CK in a security context?",
-    "options": [
-      "A widely used phishing simulation platform",
-      "A directive for compliance with financial regulations",
-      "A knowledge base detailing adversary tactics and techniques",
-      "An encryption algorithm set for securing web traffic",
-      "A software composition analysis tool for container images"
-    ],
-    "correct_answers": [
-      2
-    ],
-    "explanation": "MITRE ATT&CK is a framework documenting adversary tactics and techniques across various stages of an intrusion.",
-    "question_type": "single-choice",
-    "domain": "Compliance and Security Frameworks",
-    "subdomain": "Threat Modelling Frameworks",
     "sources": [],
     "revision": 0,
     "revision_date": "2025-02-04 15:50:32"
