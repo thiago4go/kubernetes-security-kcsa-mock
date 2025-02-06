@@ -1,6 +1,6 @@
 
-// Exported 100 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-02-06 14:07:54
+// Exported 99 questions for domain: Kubernetes Security Fundamentals
+// Last revision date: 2025-02-06 14:18:35
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -1040,7 +1040,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 176,
-    "question": "Which of the following are considered sensitive Kubernetes resources that should be audited carefully? (Select all that apply)",
+    "question": "Which Kubernetes resources, if compromised, could lead to significant security breaches and should be audited carefully? (Select all that apply)",
     "options": [
       "Secrets",
       "ConfigMaps",
@@ -1053,13 +1053,22 @@ export const KubernetesSecurityFundamentalsQuestions = [
       1,
       3
     ],
-    "explanation": "Secrets, ConfigMaps and ServiceAccounts are sensitive and should be protected.",
+    "explanation": "Secrets, ConfigMaps, and ServiceAccounts are considered sensitive Kubernetes resources because they often contain confidential information such as credentials, API keys, and configuration data. If compromised, these resources can lead to unauthorized access, privilege escalation, or data breaches. While Pods and PersistentVolumes are important, they are not as directly sensitive as the other three, although they can become so depending on the data they handle.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Security Fundamentals",
-    "subdomain": "Secrets",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "subdomain": "Auditing",
+    "sources": [
+      {
+        "name": "Kubernetes Documentation - Auditing",
+        "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/"
+      },
+      {
+        "name": "Datadog - Key Kubernetes Audit Logs for Monitoring Cluster Security",
+        "url": "https://www.datadoghq.com/blog/key-kubernetes-audit-logs-for-monitoring-cluster-security/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:18:35"
   },
   {
     "id": 177,
@@ -1937,29 +1946,6 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 279,
-    "question": "Which of the following are considered sensitive Kubernetes resources that should be protected? (Select all that apply)",
-    "options": [
-      "Pods",
-      "ConfigMaps",
-      "Secrets",
-      "ServiceAccounts",
-      "PersistentVolumes"
-    ],
-    "correct_answers": [
-      1,
-      2,
-      3
-    ],
-    "explanation": "ConfigMaps, Secrets and ServiceAccounts often hold sensitive information.",
-    "question_type": "multiple-choice",
-    "domain": "Kubernetes Security Fundamentals",
-    "subdomain": "Secrets",
     "sources": [],
     "revision": 0,
     "revision_date": null
