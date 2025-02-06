@@ -1,6 +1,6 @@
 
-// Exported 91 questions for domain: Kubernetes Cluster Component Security
-// Last revision date: 2025-02-04 10:48:35
+// Exported 90 questions for domain: Kubernetes Cluster Component Security
+// Last revision date: 2025-02-06 13:57:04
 export const KubernetesClusterComponentSecurityQuestions = [
   {
     "id": 6,
@@ -1162,27 +1162,6 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "revision_date": null
   },
   {
-    "id": 124,
-    "question": "Which Kubernetes component watches for new pods with no assigned node and assigns them one?",
-    "options": [
-      "kube-apiserver",
-      "kubelet",
-      "kube-proxy",
-      "kube-scheduler",
-      "etcd"
-    ],
-    "correct_answers": [
-      3
-    ],
-    "explanation": "The scheduler assigns pods without a node to a suitable node.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Cluster Component Security",
-    "subdomain": "Scheduler",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
     "id": 125,
     "question": "How can you port-forward a local port to a port on a pod?",
     "options": [
@@ -1879,7 +1858,7 @@ export const KubernetesClusterComponentSecurityQuestions = [
   },
   {
     "id": 282,
-    "question": "Which component is responsible for scheduling pods onto nodes in Kubernetes?",
+    "question": "In a Kubernetes cluster, which component is responsible for assigning pods to specific nodes based on resource requirements and constraints?",
     "options": [
       "kube-apiserver",
       "kube-scheduler",
@@ -1890,13 +1869,22 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "The kube-scheduler assigns pods to nodes.",
+    "explanation": "The kube-scheduler is the component in Kubernetes responsible for scheduling pods onto nodes. It evaluates the resource requirements of the pods (e.g., CPU, memory) and matches them with the available resources on nodes. Other components, such as kube-apiserver, handle API requests; kubelet manages node-level operations; kube-controller-manager handles controllers; and etcd is the key-value store for cluster data.",
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "Scheduler",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - Scheduler",
+        "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/"
+      },
+      {
+        "name": "Kubernetes Components Overview",
+        "url": "https://kubernetes.io/docs/concepts/overview/components/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:57:04"
   },
   {
     "id": 285,
