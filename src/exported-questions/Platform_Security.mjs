@@ -1,6 +1,6 @@
 
 // Exported 35 questions for domain: Platform Security
-// Last revision date: 2025-02-06 13:36:42
+// Last revision date: 2025-02-06 13:49:03
 export const PlatformSecurityQuestions = [
   {
     "id": 11,
@@ -370,7 +370,7 @@ export const PlatformSecurityQuestions = [
   },
   {
     "id": 199,
-    "question": "Which command can be used to apply a configuration change to a resource defined in 'deployment.yaml'?",
+    "question": "Which command is used to apply configuration changes defined in 'deployment.yaml' to a Kubernetes resource?",
     "options": [
       "kubectl create -f deployment.yaml",
       "kubectl apply -f deployment.yaml",
@@ -381,13 +381,22 @@ export const PlatformSecurityQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "'kubectl apply -f deployment.yaml' applies configuration changes.",
+    "explanation": "The 'kubectl apply -f deployment.yaml' command applies configuration changes to a Kubernetes resource defined in the YAML file. It uses declarative management, ensuring that the resource's current state matches the desired state specified in the file. Other commands like 'kubectl create' are used for creating resources but do not update existing ones, while 'kubectl replace' replaces the entire resource instead of merging changes.",
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "Observability",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Documentation: kubectl apply",
+        "url": "https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#apply"
+      },
+      {
+        "name": "Spacelift Blog: kubectl apply vs create",
+        "url": "https://spacelift.io/blog/kubectl-apply-vs-create"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:49:03"
   },
   {
     "id": 206,

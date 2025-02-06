@@ -1,5 +1,5 @@
 
-// Exported 92 questions for domain: Kubernetes Cluster Component Security
+// Exported 91 questions for domain: Kubernetes Cluster Component Security
 // Last revision date: 2025-02-04 10:48:35
 export const KubernetesClusterComponentSecurityQuestions = [
   {
@@ -989,27 +989,6 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "Controller Manager",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 115,
-    "question": "Which command applies changes defined in a YAML file to the cluster?",
-    "options": [
-      "kubectl create -f <file.yaml>",
-      "kubectl apply -f <file.yaml>",
-      "kubectl update -f <file.yaml>",
-      "kubectl insert -f <file.yaml>",
-      "kubectl deploy -f <file.yaml>"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "The 'apply' command applies the configuration in the YAML file to the cluster.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Cluster Component Security",
-    "subdomain": "API Server",
     "sources": [],
     "revision": 0,
     "revision_date": null
