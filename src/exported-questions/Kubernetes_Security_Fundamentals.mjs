@@ -1,6 +1,6 @@
 
-// Exported 102 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-02-04 13:52:44
+// Exported 99 questions for domain: Kubernetes Security Fundamentals
+// Last revision date: 2025-02-06 14:18:35
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -201,27 +201,6 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 31,
-    "question": "What are possible issues of not restricting egress traffic from pods?",
-    "options": [
-      "Pods cannot communicate with the API server",
-      "Increased risk of data exfiltration",
-      "Reduced cluster performance",
-      "Difficulty in scaling applications",
-      "Pods will be unable to receive traffic"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "Unrestricted egress can lead to data leaks and other security issues.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Security Fundamentals",
-    "subdomain": "Network Isolation and Segmentation",
     "sources": [],
     "revision": 0,
     "revision_date": null
@@ -539,24 +518,33 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 74,
-    "question": "Which of the following is a disadvantage of not restricting egress traffic in Kubernetes?",
+    "question": "What is a significant security risk associated with not restricting egress traffic in a Kubernetes cluster?",
     "options": [
-      "Easier debugging of network issues",
-      "Reduced latency in network communication",
-      "Potential for data exfiltration",
-      "Improved pod-to-pod communication",
-      "Simplified network configuration"
+      "It complicates the debugging process for network-related issues.",
+      "It leads to reduced latency in network communications within the cluster.",
+      "It creates a potential pathway for data exfiltration from compromised pods to external, unauthorized destinations.",
+      "It enhances and simplifies pod-to-pod communication within the cluster.",
+      "It simplifies network configuration, reducing the complexity of network policies."
     ],
     "correct_answers": [
       2
     ],
-    "explanation": "Without egress restrictions, attackers may exfiltrate data from the cluster.",
+    "explanation": "Failing to restrict egress traffic in Kubernetes can expose the cluster to significant security risks, most notably data exfiltration. Without proper egress controls, a compromised pod can freely communicate with external servers, potentially leaking sensitive data to attackers. While unrestricted egress might simplify initial network configurations, the security implications far outweigh any convenience gained. Restricting egress traffic is a critical security measure to limit the attack surface and prevent unauthorized communication from within the cluster.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Network Policy",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Tigera: Prevent Data Exfiltration in Kubernetes",
+        "url": "https://www.tigera.io/blog/prevent-data-exfiltration-in-kubernetes-the-critical-role-of-egress-access-controls/"
+      },
+      {
+        "name": "Red Hat: Guide to Kubernetes Egress Network Policies",
+        "url": "https://www.redhat.com/en/blog/guide-to-kubernetes-egress-network-policies"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:18:37"
   },
   {
     "id": 75,
@@ -1052,7 +1040,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 176,
-    "question": "Which of the following are considered sensitive Kubernetes resources that should be audited carefully? (Select all that apply)",
+    "question": "Which Kubernetes resources, if compromised, could lead to significant security breaches and should be audited carefully? (Select all that apply)",
     "options": [
       "Secrets",
       "ConfigMaps",
@@ -1065,17 +1053,26 @@ export const KubernetesSecurityFundamentalsQuestions = [
       1,
       3
     ],
-    "explanation": "Secrets, ConfigMaps and ServiceAccounts are sensitive and should be protected.",
+    "explanation": "Secrets, ConfigMaps, and ServiceAccounts are considered sensitive Kubernetes resources because they often contain confidential information such as credentials, API keys, and configuration data. If compromised, these resources can lead to unauthorized access, privilege escalation, or data breaches. While Pods and PersistentVolumes are important, they are not as directly sensitive as the other three, although they can become so depending on the data they handle.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Security Fundamentals",
-    "subdomain": "Secrets",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "subdomain": "Auditing",
+    "sources": [
+      {
+        "name": "Kubernetes Documentation - Auditing",
+        "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/"
+      },
+      {
+        "name": "Datadog - Key Kubernetes Audit Logs for Monitoring Cluster Security",
+        "url": "https://www.datadoghq.com/blog/key-kubernetes-audit-logs-for-monitoring-cluster-security/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:18:35"
   },
   {
     "id": 177,
-    "question": "Which admission controller is deprecated and replaced by Pod Security Admission in Kubernetes 1.25?",
+    "question": "Which Kubernetes Admission Controller was deprecated and replaced by Pod Security Admission in Kubernetes version 1.25?",
     "options": [
       "PodSecurityPolicy",
       "NodeRestriction",
@@ -1086,13 +1083,22 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       0
     ],
-    "explanation": "PodSecurityPolicy is deprecated in favour of the new Pod Security Admission Controller.",
+    "explanation": "PodSecurityPolicy was deprecated in Kubernetes version 1.25 and replaced by the Pod Security Admission (PSA) controller. The PSA controller provides a simpler and more flexible way to enforce pod security standards, aligning with Kubernetes' evolving security model. Other options, such as NodeRestriction, AlwaysPullImages, NamespaceLifecycle, and LimitRanger, are not related to this deprecation.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Standards",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - Pod Security Admission",
+        "url": "https://kubernetes.io/docs/concepts/security/pod-security-admission/"
+      },
+      {
+        "name": "Kubernetes Blog - Deprecation of PodSecurityPolicy",
+        "url": "https://kubernetes.io/blog/2021/04/06/podsecuritypolicy-deprecation-past-present-and-future/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:07:54"
   },
   {
     "id": 178,
@@ -1789,27 +1795,6 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "revision_date": null
   },
   {
-    "id": 270,
-    "question": "Which Kubernetes Admission Controller is deprecated and removed in version 1.25?",
-    "options": [
-      "PodSecurityPolicy",
-      "NodeRestriction",
-      "AlwaysPullImages",
-      "NamespaceLifecycle",
-      "LimitRanger"
-    ],
-    "correct_answers": [
-      0
-    ],
-    "explanation": "PodSecurityPolicy is deprecated in Kubernetes 1.25.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Security Fundamentals",
-    "subdomain": "Pod Security Standards",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
     "id": 271,
     "question": "Which admission controller should be used to enforce Pod Security Standards in Kubernetes 1.25 and above?",
     "options": [
@@ -1832,24 +1817,33 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 272,
-    "question": "What is the primary purpose of using namespaces in Kubernetes?",
+    "question": "In Kubernetes, what is the main reason for using namespaces?",
     "options": [
-      "To provide network isolation",
-      "To group and isolate resources logically",
-      "To enforce security policies",
-      "To manage storage volumes",
-      "To monitor cluster health"
+      "To provide network isolation between different applications.",
+      "To group and logically isolate resources such as deployments, services, and pods.",
+      "To enforce security policies across the entire cluster.",
+      "To manage the lifecycle of persistent storage volumes.",
+      "To monitor the overall health and performance of the Kubernetes cluster."
     ],
     "correct_answers": [
       1
     ],
-    "explanation": "Namespaces provide logical isolation of resources.",
+    "explanation": "Namespaces in Kubernetes are primarily used to logically divide a cluster into multiple virtual clusters. This allows teams or projects to operate in isolation from one another within the same physical cluster. While namespaces can be used in conjunction with network policies to provide network isolation, their primary purpose is logical grouping and isolation of Kubernetes resources like pods, services, and deployments. They do not inherently enforce security policies or manage storage volumes directly, nor are they primarily for monitoring cluster health.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
-    "subdomain": "Network Isolation and Segmentation",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "subdomain": "Resource Management and Isolation",
+    "sources": [
+      {
+        "name": "Kubernetes Documentation: Namespaces",
+        "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+      },
+      {
+        "name": "Aqua Security: Kubernetes Namespaces",
+        "url": "https://www.aquasec.com/cloud-native-academy/kubernetes-security/kubernetes-namespaces/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:06:54"
   },
   {
     "id": 274,
@@ -1952,29 +1946,6 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 279,
-    "question": "Which of the following are considered sensitive Kubernetes resources that should be protected? (Select all that apply)",
-    "options": [
-      "Pods",
-      "ConfigMaps",
-      "Secrets",
-      "ServiceAccounts",
-      "PersistentVolumes"
-    ],
-    "correct_answers": [
-      1,
-      2,
-      3
-    ],
-    "explanation": "ConfigMaps, Secrets and ServiceAccounts often hold sensitive information.",
-    "question_type": "multiple-choice",
-    "domain": "Kubernetes Security Fundamentals",
-    "subdomain": "Secrets",
     "sources": [],
     "revision": 0,
     "revision_date": null
@@ -2174,22 +2145,31 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "id": 298,
     "question": "What is the primary function of Open Policy Agent (OPA) in Kubernetes?",
     "options": [
-      "Container runtime",
-      "Policy enforcement and authorization",
-      "Logging and monitoring",
-      "Network routing",
-      "Storage management"
+      "To serve as a container runtime",
+      "To enforce policies and make authorization decisions",
+      "To provide logging and monitoring capabilities",
+      "To manage network routing",
+      "To handle storage management"
     ],
     "correct_answers": [
       1
     ],
-    "explanation": "OPA is used to enforce policies and make authorization decisions.",
+    "explanation": "Open Policy Agent (OPA) is a general-purpose policy engine that evaluates inputs against defined policies to make authorization decisions. In Kubernetes, OPA is commonly used to enforce security and compliance policies on cluster resources. Incorrect options, such as serving as a container runtime, logging, or network management, describe functionalities unrelated to OPA's role.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "CNCF Blog - Secure Your Kubernetes Environment with OPA and Gatekeeper",
+        "url": "https://www.cncf.io/blog/2023/10/09/secure-your-kubernetes-environment-with-opa-and-gatekeeper/"
+      },
+      {
+        "name": "Spacelift Blog - Kubernetes with Open Policy Agent (OPA) & Gatekeeper",
+        "url": "https://spacelift.io/blog/opa-kubernetes"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:33:32"
   },
   {
     "id": 299,

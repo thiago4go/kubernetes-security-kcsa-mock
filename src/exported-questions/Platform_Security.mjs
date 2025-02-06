@@ -1,6 +1,6 @@
 
-// Exported 37 questions for domain: Platform Security
-// Last revision date: N/A
+// Exported 34 questions for domain: Platform Security
+// Last revision date: 2025-02-06 13:52:59
 export const PlatformSecurityQuestions = [
   {
     "id": 11,
@@ -151,7 +151,7 @@ export const PlatformSecurityQuestions = [
   },
   {
     "id": 127,
-    "question": "Which command allows you to view the cluster's component statuses?",
+    "question": "Which command is recommended to check the readiness and status of Kubernetes cluster components?",
     "options": [
       "kubectl get components",
       "kubectl get --raw='/readyz?verbose'",
@@ -162,13 +162,22 @@ export const PlatformSecurityQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "Deprecated commands exist for this, so using 'kubectl get --raw='/readyz?verbose'' is recommended.",
+    "explanation": "The command `kubectl get --raw='/readyz?verbose'` is the recommended way to check the readiness and status of Kubernetes cluster components. This approach provides detailed and up-to-date information about the health of the cluster. Other commands, such as `kubectl get cs` and `kubectl get componentstatuses`, are deprecated and may not provide accurate results in newer Kubernetes versions.",
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "Observability",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - API Server Health Checks",
+        "url": "https://kubernetes.io/docs/reference/using-api/health-checks/"
+      },
+      {
+        "name": "Kubernetes Blog - Deprecation of kubectl get cs",
+        "url": "https://kubernetes.io/blog/2020/09/03/kubectl-get-componentstatus-deprecated/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:36:42"
   },
   {
     "id": 128,
@@ -297,27 +306,6 @@ export const PlatformSecurityQuestions = [
     "revision_date": null
   },
   {
-    "id": 187,
-    "question": "Which command would you use to approve a CertificateSigningRequest named 'user1'?",
-    "options": [
-      "kubectl certificate approve user1",
-      "kubectl csr approve user1",
-      "kubectl approve csr user1",
-      "kubectl sign csr user1",
-      "kubectl certificate sign user1"
-    ],
-    "correct_answers": [
-      0
-    ],
-    "explanation": "kubectl certificate approve user1 approves the CSR.",
-    "question_type": "single-choice",
-    "domain": "Platform Security",
-    "subdomain": "PKI",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
     "id": 196,
     "question": "Which command can be used to get detailed information about a Kubernetes node?",
     "options": [
@@ -361,7 +349,7 @@ export const PlatformSecurityQuestions = [
   },
   {
     "id": 199,
-    "question": "Which command can be used to apply a configuration change to a resource defined in 'deployment.yaml'?",
+    "question": "Which command is used to apply configuration changes defined in 'deployment.yaml' to a Kubernetes resource?",
     "options": [
       "kubectl create -f deployment.yaml",
       "kubectl apply -f deployment.yaml",
@@ -372,34 +360,22 @@ export const PlatformSecurityQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "'kubectl apply -f deployment.yaml' applies configuration changes.",
+    "explanation": "The 'kubectl apply -f deployment.yaml' command applies configuration changes to a Kubernetes resource defined in the YAML file. It uses declarative management, ensuring that the resource's current state matches the desired state specified in the file. Other commands like 'kubectl create' are used for creating resources but do not update existing ones, while 'kubectl replace' replaces the entire resource instead of merging changes.",
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "Observability",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 201,
-    "question": "Which command would you use to check the status of the Kubernetes API server components?",
-    "options": [
-      "kubectl get <resource>",
-      "kubectl describe <resource>",
-      "kubectl get --raw='/readyz?verbose'",
-      "kubectl cluster-info",
-      "kubectl get componentstatuses"
+    "sources": [
+      {
+        "name": "Kubernetes Documentation: kubectl apply",
+        "url": "https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#apply"
+      },
+      {
+        "name": "Spacelift Blog: kubectl apply vs create",
+        "url": "https://spacelift.io/blog/kubectl-apply-vs-create"
+      }
     ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "The recommended command is 'kubectl get --raw='/readyz?verbose''.",
-    "question_type": "single-choice",
-    "domain": "Platform Security",
-    "subdomain": "Observability",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "revision": 1,
+    "revision_date": "2025-02-06 13:49:03"
   },
   {
     "id": 206,
@@ -508,7 +484,7 @@ export const PlatformSecurityQuestions = [
   },
   {
     "id": 237,
-    "question": "After creating a CSR object in Kubernetes, which command is used to approve it?",
+    "question": "Which command is used to approve a CertificateSigningRequest (CSR) in Kubernetes?",
     "options": [
       "kubectl sign csr <csr-name>",
       "kubectl create csr <csr-name>",
@@ -519,13 +495,22 @@ export const PlatformSecurityQuestions = [
     "correct_answers": [
       3
     ],
-    "explanation": "The command 'kubectl certificate approve <csr-name>' approves the CSR.",
+    "explanation": "The correct command to approve a CertificateSigningRequest (CSR) in Kubernetes is 'kubectl certificate approve <csr-name>'. This command instructs the certificate signing controller to approve the CSR, allowing the requested certificate to be issued. Other options like 'kubectl create' are used for creating resources, while 'kubectl sign' and 'kubectl csr approve' are invalid commands.",
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "PKI",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Documentation: Managing TLS Certificates",
+        "url": "https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/"
+      },
+      {
+        "name": "Kubernetes Reference: kubectl certificate approve",
+        "url": "https://kubernetes.io/docs/reference/kubectl/generated/kubectl_certificate/kubectl_certificate_approve/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:52:59"
   },
   {
     "id": 240,
@@ -691,27 +676,6 @@ export const PlatformSecurityQuestions = [
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "PKI",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 283,
-    "question": "Which command can be used to apply a configuration change to a resource defined in 'deployment.yaml'?",
-    "options": [
-      "kubectl create -f deployment.yaml",
-      "kubectl apply -f deployment.yaml",
-      "kubectl set -f deployment.yaml",
-      "kubectl update -f deployment.yaml",
-      "kubectl replace -f deployment.yaml"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "The command 'kubectl apply -f deployment.yaml' applies the configuration change.",
-    "question_type": "single-choice",
-    "domain": "Platform Security",
-    "subdomain": "Observability",
     "sources": [],
     "revision": 0,
     "revision_date": null

@@ -1,6 +1,6 @@
 
-// Exported 33 questions for domain: Compliance and Security Frameworks
-// Last revision date: 2025-02-04 15:50:32
+// Exported 30 questions for domain: Compliance and Security Frameworks
+// Last revision date: 2025-02-06 14:16:11
 export const ComplianceAndSecurityFrameworksQuestions = [
   {
     "id": 8,
@@ -25,45 +25,33 @@ export const ComplianceAndSecurityFrameworksQuestions = [
   },
   {
     "id": 24,
-    "question": "What is the MITRE ATT&CK framework?",
+    "question": "What is the MITRE ATT&CK framework, and how is it used in cybersecurity?",
     "options": [
       "A set of compliance requirements for cloud providers",
       "A vulnerability scanning tool",
-      "A knowledge base of adversary tactics and techniques",
-      "An incident response guide",
-      "A network security protocol"
+      "A knowledge base of adversary tactics and techniques used in cyberattacks",
+      "An incident response guide for organizations",
+      "A network security protocol for secure communication"
     ],
     "correct_answers": [
       2
     ],
-    "explanation": "MITRE ATT&CK catalogs cyber adversary behaviors.",
+    "explanation": "The MITRE ATT&CK framework is a comprehensive knowledge base that catalogs adversary tactics, techniques, and procedures (TTPs) observed in real-world cyberattacks. It is widely used by cybersecurity professionals to understand attacker behavior, improve threat detection, and enhance defense strategies. Other options are incorrect because they describe unrelated tools or concepts.",
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Threat Modelling Frameworks",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 50,
-    "question": "What is the Payment Card Industry Data Security Standard (PCI DSS)?",
-    "options": [
-      "A protocol for secure credit card transactions",
-      "A set of security standards for organizations handling cardholder data",
-      "A government regulation for financial institutions",
-      "An encryption algorithm used in banking",
-      "A compliance framework for healthcare data"
+    "sources": [
+      {
+        "name": "MITRE ATT&CK Official Website",
+        "url": "https://attack.mitre.org/"
+      },
+      {
+        "name": "NIST Cybersecurity Framework",
+        "url": "https://www.nist.gov/cyberframework"
+      }
     ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "PCI DSS sets requirements for securing credit card information.",
-    "question_type": "single-choice",
-    "domain": "Compliance and Security Frameworks",
-    "subdomain": "Compliance Frameworks",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "revision": 1,
+    "revision_date": "2025-02-06 14:00:20"
   },
   {
     "id": 301,
@@ -100,27 +88,6 @@ export const ComplianceAndSecurityFrameworksQuestions = [
       1
     ],
     "explanation": "The CIS Kubernetes Benchmark provides detailed configuration guidelines to harden and secure Kubernetes environments.",
-    "question_type": "single-choice",
-    "domain": "Compliance and Security Frameworks",
-    "subdomain": "Compliance Frameworks",
-    "sources": [],
-    "revision": 0,
-    "revision_date": "2025-02-04 15:50:32"
-  },
-  {
-    "id": 303,
-    "question": "Which of the following best describes the NSA/CISA Kubernetes Hardening Guidance?",
-    "options": [
-      "A set of hardware design specifications for Kubernetes nodes",
-      "A guidance focusing on supply chain risks and security of cluster components",
-      "An alternative to the PCI DSS for transaction compliance",
-      "A database of known container vulnerabilities",
-      "An AI-based intrusion detection engine for container clusters"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "The NSA/CISA Kubernetes Hardening Guidance provides strategies to mitigate supply chain risks and improve cluster security.",
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Compliance Frameworks",
@@ -172,9 +139,9 @@ export const ComplianceAndSecurityFrameworksQuestions = [
   },
   {
     "id": 306,
-    "question": "Which best defines PCI DSS in a containerised environment?",
+    "question": "Which best defines PCI DSS in a containerized environment?",
     "options": [
-      "A software licence for open-source container platforms",
+      "A software license for open-source container platforms",
       "A set of security standards for systems handling cardholder data, applicable to container-based workflows",
       "A Kubernetes admission controller for preventing configuration drift",
       "A recommended approach to container performance tuning",
@@ -183,13 +150,22 @@ export const ComplianceAndSecurityFrameworksQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "PCI DSS defines baseline security requirements for any environment handling cardholder data, including containerised systems.",
+    "explanation": "PCI DSS in a containerized environment refers to the application of its security standards to workflows that handle cardholder data within containers. This includes ensuring compliance with requirements such as network segmentation, access control, and real-time monitoring. Other options are incorrect because they either mischaracterize PCI DSS or describe unrelated concepts like software licenses or Kubernetes-specific tools.",
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Compliance Frameworks",
-    "sources": [],
-    "revision": 0,
-    "revision_date": "2025-02-04 15:50:32"
+    "sources": [
+      {
+        "name": "Sysdig Blog - PCI Compliance for Containers and Kubernetes",
+        "url": "https://sysdig.com/blog/container-pci-compliance/"
+      },
+      {
+        "name": "Red Hat - Container and Kubernetes Compliance Considerations",
+        "url": "https://www.redhat.com/en/topics/containers/compliance"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:16:11"
   },
   {
     "id": 307,
@@ -246,13 +222,22 @@ export const ComplianceAndSecurityFrameworksQuestions = [
     "correct_answers": [
       2
     ],
-    "explanation": "OPA Gatekeeper allows custom policy enforcement in Kubernetes admission control, ensuring only compliant resources are admitted.",
+    "explanation": "OPA Gatekeeper is a validating admission controller that enforces policies defined as code during resource creation or updates in Kubernetes. It ensures compliance by preventing non-compliant resources from being admitted to the cluster. Incorrect options, such as managing node scaling or providing a container registry, are unrelated to OPA Gatekeeper's functionality. Similarly, it does not handle threat feeds or runtime installation.",
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Automation and Tooling",
-    "sources": [],
-    "revision": 0,
-    "revision_date": "2025-02-04 15:50:32"
+    "sources": [
+      {
+        "name": "Cloud Google - Pod Security Policies with Gatekeeper",
+        "url": "https://cloud.google.com/kubernetes-engine/docs/how-to/pod-security-policies-with-gatekeeper"
+      },
+      {
+        "name": "Open Policy Agent Documentation - Kubernetes Admission Control",
+        "url": "https://www.openpolicyagent.org/docs/v0.12.2/kubernetes-admission-control/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:33:32"
   },
   {
     "id": 310,
@@ -424,24 +409,33 @@ export const ComplianceAndSecurityFrameworksQuestions = [
   },
   {
     "id": 318,
-    "question": "Which framework provides guidance on mitigating supply chain risks in a Kubernetes environment?",
+    "question": "Which guidance document provides best practices for mitigating supply chain risks in Kubernetes environments?",
     "options": [
-      "TOGAF Enterprise Architecture",
-      "OWASP Top 10",
+      "TOGAF Enterprise Architecture Framework",
+      "OWASP Top 10 Security Risks",
       "NSA/CISA Kubernetes Hardening Guidance",
-      "ITIL Service Management",
+      "ITIL Service Management Framework",
       "SRE (Site Reliability Engineering) Handbook"
     ],
     "correct_answers": [
       2
     ],
-    "explanation": "The NSA/CISA Kubernetes Hardening Guidance includes best practices for reducing supply chain threats and securing clusters.",
+    "explanation": "The NSA/CISA Kubernetes Hardening Guidance outlines strategies to mitigate supply chain risks in Kubernetes environments. It includes recommendations for securing container images, implementing role-based access control (RBAC), and ensuring secure configurations for clusters.",
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Compliance Frameworks",
-    "sources": [],
-    "revision": 0,
-    "revision_date": "2025-02-04 15:50:32"
+    "sources": [
+      {
+        "name": "NSA/CISA Kubernetes Hardening Guidance",
+        "url": "https://media.defense.gov/2021/Aug/03/2002820346/-1/-1/0/ESF_KUBERNETES_HARDENING_GUIDANCE.PDF"
+      },
+      {
+        "name": "Kubernetes Supply Chain Security Best Practices",
+        "url": "https://kubernetes.io/blog/2021/04/06/supply-chain-security-best-practices/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:43:26"
   },
   {
     "id": 319,
@@ -523,27 +517,6 @@ export const ComplianceAndSecurityFrameworksQuestions = [
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Automation and Tooling",
-    "sources": [],
-    "revision": 0,
-    "revision_date": "2025-02-04 15:50:32"
-  },
-  {
-    "id": 323,
-    "question": "Which statement correctly defines the role of MITRE ATT&CK in a security context?",
-    "options": [
-      "A widely used phishing simulation platform",
-      "A directive for compliance with financial regulations",
-      "A knowledge base detailing adversary tactics and techniques",
-      "An encryption algorithm set for securing web traffic",
-      "A software composition analysis tool for container images"
-    ],
-    "correct_answers": [
-      2
-    ],
-    "explanation": "MITRE ATT&CK is a framework documenting adversary tactics and techniques across various stages of an intrusion.",
-    "question_type": "single-choice",
-    "domain": "Compliance and Security Frameworks",
-    "subdomain": "Threat Modelling Frameworks",
     "sources": [],
     "revision": 0,
     "revision_date": "2025-02-04 15:50:32"
@@ -655,24 +628,33 @@ export const ComplianceAndSecurityFrameworksQuestions = [
   },
   {
     "id": 329,
-    "question": "Which of the following best characterises the NSA/CISA Kubernetes Hardening Guidance recommendation?",
+    "question": "What is the primary focus of the NSA/CISA Kubernetes Hardening Guidance?",
     "options": [
-      "Direct usage of insecure container registries for testing",
-      "Skipping vulnerability scanning to reduce overhead",
-      "Securing supply chain components and limiting container privileges",
-      "Restricting TLS usage to speed up deployments",
-      "Auto-approving all configuration changes for agility"
+      "Using insecure container registries for testing purposes",
+      "Skipping vulnerability scanning to reduce operational overhead",
+      "Securing supply chain components and minimizing container privileges",
+      "Disabling TLS to accelerate deployment processes",
+      "Automatically approving all configuration changes to enhance agility"
     ],
     "correct_answers": [
       2
     ],
-    "explanation": "NSA/CISA guidelines advocate securing supply chain components and limiting containers’ privileges to reduce attack vectors.",
+    "explanation": "The NSA/CISA Kubernetes Hardening Guidance emphasizes securing the software supply chain and minimizing container privileges to reduce attack surfaces. This includes practices like signing container images, scanning for vulnerabilities, and implementing least privilege access controls.",
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Compliance Frameworks",
-    "sources": [],
-    "revision": 0,
-    "revision_date": "2025-02-04 15:50:32"
+    "sources": [
+      {
+        "name": "NSA/CISA Kubernetes Hardening Guidance",
+        "url": "https://media.defense.gov/2021/Aug/03/2002820346/-1/-1/0/ESF_KUBERNETES_HARDENING_GUIDANCE.PDF"
+      },
+      {
+        "name": "Kubernetes Security Best Practices",
+        "url": "https://kubernetes.io/docs/concepts/security/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:43:26"
   },
   {
     "id": 330,

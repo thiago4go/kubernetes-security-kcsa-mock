@@ -1,6 +1,6 @@
 
-// Exported 38 questions for domain: Cloud Native Security
-// Last revision date: 2025-02-04 09:03:39
+// Exported 36 questions for domain: Cloud Native Security
+// Last revision date: 2025-02-06 14:05:18
 export const CloudNativeSecurityQuestions = [
   {
     "id": 7,
@@ -25,45 +25,63 @@ export const CloudNativeSecurityQuestions = [
   },
   {
     "id": 10,
-    "question": "What is the purpose of image signing in container environments?",
+    "question": "What is the primary purpose of signing container images in a cloud-native environment?",
     "options": [
-      "To compress the image size",
+      "To reduce the image size for deployment",
       "To verify the image's integrity and authenticity",
-      "To add metadata for deployment",
-      "To enforce runtime policies",
-      "To enable faster image pulls"
+      "To include metadata for deployment automation",
+      "To enforce runtime security policies",
+      "To speed up image pulling during deployment"
     ],
     "correct_answers": [
       1
     ],
-    "explanation": "Image signing ensures images are from trusted sources and have not been tampered with.",
+    "explanation": "The primary purpose of image signing is to ensure that a container image originates from a trusted source and has not been tampered with. This process involves cryptographically signing the image, allowing users to verify its integrity and authenticity before use. Incorrect options such as reducing image size or speeding up deployment do not relate to the security function of signing. Similarly, metadata inclusion and runtime policy enforcement are separate mechanisms unrelated to image signing.",
     "question_type": "single-choice",
     "domain": "Cloud Native Security",
     "subdomain": "Artifact Repository and Image Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Docker Content Trust Documentation",
+        "url": "https://docs.docker.com/engine/security/trust/"
+      },
+      {
+        "name": "CNCF Cloud Native Security Whitepaper",
+        "url": "https://github.com/cncf/tag-security/blob/main/security-whitepaper/cloud-native-security-whitepaper.md"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:25:13"
   },
   {
     "id": 14,
-    "question": "What is the purpose of a multistage build in Docker?",
+    "question": "How do multistage builds in Docker reduce image size?",
     "options": [
-      "To run multiple containers in one image",
-      "To build images compatible with multiple architectures",
-      "To reduce image size by separating build and runtime stages",
-      "To enable parallel builds",
-      "To deploy to multiple environments simultaneously"
+      "By running multiple containers within a single image",
+      "By creating images compatible with multiple architectures",
+      "By separating build-time dependencies from runtime components in different stages",
+      "By enabling parallel builds across multiple stages",
+      "By deploying to multiple environments simultaneously"
     ],
     "correct_answers": [
       2
     ],
-    "explanation": "Multistage builds allow copying only necessary artifacts to the final image.",
+    "explanation": "Multistage builds in Docker allow developers to separate build-time dependencies (e.g., compilers, libraries) from runtime components by using multiple `FROM` instructions in a single Dockerfile. This ensures that only the necessary artifacts (e.g., binaries) are included in the final image, significantly reducing its size and improving security. While multistage builds can simplify workflows, they do not inherently enable parallel builds or support multi-environment deployments.",
     "question_type": "single-choice",
     "domain": "Cloud Native Security",
     "subdomain": "Artifact Repository and Image Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Docker Documentation: Multi-Stage Builds",
+        "url": "https://docs.docker.com/get-started/docker-concepts/building-images/multi-stage-builds/"
+      },
+      {
+        "name": "Earthly Blog: Understanding Docker Multistage Builds",
+        "url": "https://earthly.dev/blog/docker-multistage/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:13:12"
   },
   {
     "id": 18,
@@ -280,27 +298,6 @@ export const CloudNativeSecurityQuestions = [
     "revision_date": null
   },
   {
-    "id": 55,
-    "question": "How does image signing enhance container security?",
-    "options": [
-      "By encrypting the image layers",
-      "By verifying the image's source and integrity",
-      "By compressing the image for faster deployment",
-      "By scanning the image for vulnerabilities",
-      "By optimizing runtime performance"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "Image signing helps ensure that images are from trusted sources and have not been altered.",
-    "question_type": "single-choice",
-    "domain": "Cloud Native Security",
-    "subdomain": "Artifact Repository and Image Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
     "id": 63,
     "question": "What is a potential risk of mounting the Docker socket ('/var/run/docker.sock') into a container?",
     "options": [
@@ -344,45 +341,33 @@ export const CloudNativeSecurityQuestions = [
   },
   {
     "id": 73,
-    "question": "What is a key benefit of using multistage Docker builds?",
+    "question": "What is the primary benefit of using multistage Docker builds?",
     "options": [
-      "Faster build times",
-      "Smaller and more secure final images",
-      "Compatibility with older Docker versions",
-      "Simplified deployment scripts",
-      "Enhanced network performance"
+      "Faster build times by reusing intermediate stages",
+      "Smaller and more secure final images by excluding build-time dependencies",
+      "Compatibility with older Docker versions for broader deployment",
+      "Simplified deployment scripts for easier automation",
+      "Enhanced network performance during container communication"
     ],
     "correct_answers": [
       1
     ],
-    "explanation": "Multistage builds produce lean images by excluding unnecessary build-time dependencies.",
+    "explanation": "The primary advantage of multistage Docker builds is the ability to create smaller and more secure final images. By separating the build and runtime stages, unnecessary build-time dependencies (e.g., compilers, libraries) are excluded from the final image. This reduces the image size, minimizes the attack surface, and enhances security. While multistage builds can indirectly improve build times by optimizing layers, their main focus is on producing leaner and safer images. They do not specifically address network performance or deployment script simplification.",
     "question_type": "single-choice",
     "domain": "Cloud Native Security",
     "subdomain": "Artifact Repository and Image Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 79,
-    "question": "When is soft multi-tenancy preferred over hard multi-tenancy?",
-    "options": [
-      "When strict isolation is required",
-      "For untrusted tenant workloads",
-      "To maximize resource efficiency in trusted environments",
-      "In compliance-regulated industries",
-      "When using multiple clusters"
+    "sources": [
+      {
+        "name": "Docker Documentation: Multi-Stage Builds",
+        "url": "https://docs.docker.com/get-started/docker-concepts/building-images/multi-stage-builds/"
+      },
+      {
+        "name": "Cherry Servers: Docker Multi-Stage Build",
+        "url": "https://www.cherryservers.com/blog/docker-multistage-build"
+      }
     ],
-    "correct_answers": [
-      2
-    ],
-    "explanation": "Soft tenancy is suitable when strict isolation isn't required.",
-    "question_type": "single-choice",
-    "domain": "Cloud Native Security",
-    "subdomain": "Isolation Techniques",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "revision": 1,
+    "revision_date": "2025-02-06 13:13:12"
   },
   {
     "id": 90,
@@ -533,26 +518,35 @@ export const CloudNativeSecurityQuestions = [
   },
   {
     "id": 210,
-    "question": "Which of the following are best practices for container image hardening? (Select all that apply)",
+    "question": "What are the key best practices for hardening container images to enhance security?",
     "options": [
-      "Use a minimal base image",
-      "Run containers as root",
-      "Remove unnecessary packages",
-      "Expose all ports for flexibility",
-      "Regularly scan images for vulnerabilities"
+      "Use a minimal base image to reduce the attack surface.",
+      "Run containers as root to simplify privilege management.",
+      "Remove unnecessary packages and dependencies to minimize potential vulnerabilities.",
+      "Expose all ports for maximum connectivity and flexibility.",
+      "Regularly scan images for known vulnerabilities and apply necessary patches."
     ],
     "correct_answers": [
       0,
       2,
       4
     ],
-    "explanation": "Using minimal base images, removing unnecessary packages, and scanning for vulnerabilities are best practices.",
+    "explanation": "To effectively harden container images, it is crucial to minimize the attack surface and potential vulnerabilities. Using minimal base images ensures that only essential components are included, reducing the number of potential security flaws. Removing unnecessary packages further decreases the likelihood of exploitable vulnerabilities. Regularly scanning images for known vulnerabilities allows for proactive identification and remediation of security risks. Running containers as root is discouraged because it gives the process elevated privileges that it does not need and exposes the host system to vulnerabilities. Exposing all ports creates unnecessary entry points for attackers.",
     "question_type": "multiple-choice",
     "domain": "Cloud Native Security",
     "subdomain": "Artifact Repository and Image Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "NIST Special Publication 800-190",
+        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-190.pdf"
+      },
+      {
+        "name": "OWASP Container Security Cheat Sheet",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Container_Security_Cheat_Sheet.html"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:05:18"
   },
   {
     "id": 211,
@@ -745,26 +739,35 @@ export const CloudNativeSecurityQuestions = [
   },
   {
     "id": 273,
-    "question": "Which of the following are Kubernetes best practices during the Build Phase? (Select all that apply)",
+    "question": "During the build phase of a Kubernetes application, which practices are most effective for ensuring security?",
     "options": [
-      "Use minimal base images",
-      "Run containers as root",
-      "Scan images for vulnerabilities",
-      "Include unnecessary packages",
-      "Use authorized images only"
+      "Use minimal base images to reduce the attack surface.",
+      "Run containers as root to simplify privilege management.",
+      "Scan images for vulnerabilities to identify and remediate potential security flaws.",
+      "Include unnecessary packages to provide additional functionality.",
+      "Use only authorized images from trusted registries to prevent the introduction of malicious code."
     ],
     "correct_answers": [
       0,
       2,
       4
     ],
-    "explanation": "Best practices include minimal images, vulnerability scanning and using authorised images.",
+    "explanation": "In the build phase, security is best ensured by minimizing the image footprint with minimal base images, regularly scanning for vulnerabilities to catch issues early, and using only authorized images from trusted sources.  Minimal base images reduce the attack surface.  Vulnerability scanning identifies and allows remediation of security flaws before deployment. Using authorized images prevents the introduction of untrusted or malicious code. Running containers as root is a security risk, and including unnecessary packages increases the potential attack surface.",
     "question_type": "multiple-choice",
     "domain": "Cloud Native Security",
     "subdomain": "Workload and Application Code Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Security Best Practices",
+        "url": "https://kubernetes.io/docs/concepts/security/best-practices/"
+      },
+      {
+        "name": "SANS Institute: Securing Docker Containers",
+        "url": "https://www.sans.org/white-papers/36267/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:05:18"
   },
   {
     "id": 284,

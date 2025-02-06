@@ -1,10 +1,10 @@
 
-// Exported 93 questions for domain: Kubernetes Cluster Component Security
-// Last revision date: 2025-02-04 10:48:35
+// Exported 89 questions for domain: Kubernetes Cluster Component Security
+// Last revision date: 2025-02-06 14:10:18
 export const KubernetesClusterComponentSecurityQuestions = [
   {
     "id": 6,
-    "question": "Which admission controller runs first in Kubernetes?",
+    "question": "Which Kubernetes admission controller runs first during the admission control process?",
     "options": [
       "ValidatingAdmissionWebhook",
       "MutatingAdmissionWebhook",
@@ -15,13 +15,22 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "Mutating admission controllers run before validating ones to modify the request before validation.",
+    "explanation": "The MutatingAdmissionWebhook runs first in the Kubernetes admission control process. This is because mutating admission controllers are designed to modify the incoming request before it is validated by validating admission controllers. Other options, such as ValidatingAdmissionWebhook, ResourceQuota, NamespaceLifecycle, and AlwaysPullImages, either run later in the process or serve different purposes.",
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "API Server",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - Admission Controllers",
+        "url": "https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/"
+      },
+      {
+        "name": "Styra Blog - What Is Kubernetes Admission Control?",
+        "url": "https://www.styra.com/blog/what-is-kubernetes-admission-control/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 14:10:18"
   },
   {
     "id": 9,
@@ -314,27 +323,6 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "KubeProxy",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 53,
-    "question": "What is the order of execution for admission controllers in Kubernetes?",
-    "options": [
-      "Mutating, then Validating admission controllers",
-      "Validating, then Mutating admission controllers",
-      "Both run simultaneously",
-      "The order is random",
-      "Only one type runs depending on configuration"
-    ],
-    "correct_answers": [
-      0
-    ],
-    "explanation": "Kubernetes processes MutatingAdmissionWebhook controllers before ValidatingAdmissionWebhook controllers.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Cluster Component Security",
-    "subdomain": "API Server",
     "sources": [],
     "revision": 0,
     "revision_date": null
@@ -994,27 +982,6 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "revision_date": null
   },
   {
-    "id": 115,
-    "question": "Which command applies changes defined in a YAML file to the cluster?",
-    "options": [
-      "kubectl create -f <file.yaml>",
-      "kubectl apply -f <file.yaml>",
-      "kubectl update -f <file.yaml>",
-      "kubectl insert -f <file.yaml>",
-      "kubectl deploy -f <file.yaml>"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "The 'apply' command applies the configuration in the YAML file to the cluster.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Cluster Component Security",
-    "subdomain": "API Server",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
     "id": 116,
     "question": "What is the purpose of an Ingress Controller?",
     "options": [
@@ -1178,27 +1145,6 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "Client Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 124,
-    "question": "Which Kubernetes component watches for new pods with no assigned node and assigns them one?",
-    "options": [
-      "kube-apiserver",
-      "kubelet",
-      "kube-proxy",
-      "kube-scheduler",
-      "etcd"
-    ],
-    "correct_answers": [
-      3
-    ],
-    "explanation": "The scheduler assigns pods without a node to a suitable node.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Cluster Component Security",
-    "subdomain": "Scheduler",
     "sources": [],
     "revision": 0,
     "revision_date": null
@@ -1430,27 +1376,6 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "Client Security",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 140,
-    "question": "Which of the following is true about Kubernetes Namespaces?",
-    "options": [
-      "They provide physical isolation of resources",
-      "They are used to group and isolate resources logically",
-      "They manage network policies",
-      "They control node assignments",
-      "They store persistent data"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "Namespaces provide logical isolation within a cluster.",
-    "question_type": "single-choice",
-    "domain": "Kubernetes Cluster Component Security",
-    "subdomain": "API Server",
     "sources": [],
     "revision": 0,
     "revision_date": null
@@ -1921,7 +1846,7 @@ export const KubernetesClusterComponentSecurityQuestions = [
   },
   {
     "id": 282,
-    "question": "Which component is responsible for scheduling pods onto nodes in Kubernetes?",
+    "question": "In a Kubernetes cluster, which component is responsible for assigning pods to specific nodes based on resource requirements and constraints?",
     "options": [
       "kube-apiserver",
       "kube-scheduler",
@@ -1932,13 +1857,22 @@ export const KubernetesClusterComponentSecurityQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "The kube-scheduler assigns pods to nodes.",
+    "explanation": "The kube-scheduler is the component in Kubernetes responsible for scheduling pods onto nodes. It evaluates the resource requirements of the pods (e.g., CPU, memory) and matches them with the available resources on nodes. Other components, such as kube-apiserver, handle API requests; kubelet manages node-level operations; kube-controller-manager handles controllers; and etcd is the key-value store for cluster data.",
     "question_type": "single-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "Scheduler",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - Scheduler",
+        "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/"
+      },
+      {
+        "name": "Kubernetes Components Overview",
+        "url": "https://kubernetes.io/docs/concepts/overview/components/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:57:04"
   },
   {
     "id": 285,
