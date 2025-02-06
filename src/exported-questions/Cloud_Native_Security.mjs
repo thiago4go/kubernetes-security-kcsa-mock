@@ -1,6 +1,6 @@
 
 // Exported 37 questions for domain: Cloud Native Security
-// Last revision date: 2025-02-06 13:13:12
+// Last revision date: 2025-02-04 09:03:39
 export const CloudNativeSecurityQuestions = [
   {
     "id": 7,
@@ -25,22 +25,29 @@ export const CloudNativeSecurityQuestions = [
   },
   {
     "id": 10,
-    "question": "What is the purpose of image signing in container environments?",
+    "question": "What is the primary purpose of signing container images in a cloud-native environment?",
     "options": [
-      "To compress the image size",
+      "To reduce the image size for deployment",
       "To verify the image's integrity and authenticity",
-      "To add metadata for deployment",
-      "To enforce runtime policies",
-      "To enable faster image pulls"
+      "To include metadata for deployment automation",
+      "To enforce runtime security policies",
+      "To speed up image pulling during deployment"
     ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "Image signing ensures images are from trusted sources and have not been tampered with.",
+    "correct_answers": [1],
+    "explanation": "The primary purpose of image signing is to ensure that a container image originates from a trusted source and has not been tampered with. This process involves cryptographically signing the image, allowing users to verify its integrity and authenticity before use. Incorrect options such as reducing image size or speeding up deployment do not relate to the security function of signing. Similarly, metadata inclusion and runtime policy enforcement are separate mechanisms unrelated to image signing.",
     "question_type": "single-choice",
     "domain": "Cloud Native Security",
     "subdomain": "Artifact Repository and Image Security",
-    "sources": [],
+    "sources": [
+      {
+        "name": "Docker Content Trust Documentation",
+        "url": "https://docs.docker.com/engine/security/trust/"
+      },
+      {
+        "name": "CNCF Cloud Native Security Whitepaper",
+        "url": "https://github.com/cncf/tag-security/blob/main/security-whitepaper/cloud-native-security-whitepaper.md"
+      }
+    ],
     "revision": 0,
     "revision_date": null
   },
@@ -71,8 +78,8 @@ export const CloudNativeSecurityQuestions = [
         "url": "https://earthly.dev/blog/docker-multistage/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-06 13:13:12"
+    "revision": 0,
+    "revision_date": null
   },
   {
     "id": 18,
@@ -378,8 +385,8 @@ export const CloudNativeSecurityQuestions = [
         "url": "https://www.cherryservers.com/blog/docker-multistage-build"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-06 13:13:12"
+    "revision": 0,
+    "revision_date": null
   },
   {
     "id": 90,
