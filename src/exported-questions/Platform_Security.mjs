@@ -1,6 +1,6 @@
 
-// Exported 36 questions for domain: Platform Security
-// Last revision date: N/A
+// Exported 35 questions for domain: Platform Security
+// Last revision date: 2025-02-06 13:36:42
 export const PlatformSecurityQuestions = [
   {
     "id": 11,
@@ -151,7 +151,7 @@ export const PlatformSecurityQuestions = [
   },
   {
     "id": 127,
-    "question": "Which command allows you to view the cluster's component statuses?",
+    "question": "Which command is recommended to check the readiness and status of Kubernetes cluster components?",
     "options": [
       "kubectl get components",
       "kubectl get --raw='/readyz?verbose'",
@@ -162,13 +162,22 @@ export const PlatformSecurityQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "Deprecated commands exist for this, so using 'kubectl get --raw='/readyz?verbose'' is recommended.",
+    "explanation": "The command `kubectl get --raw='/readyz?verbose'` is the recommended way to check the readiness and status of Kubernetes cluster components. This approach provides detailed and up-to-date information about the health of the cluster. Other commands, such as `kubectl get cs` and `kubectl get componentstatuses`, are deprecated and may not provide accurate results in newer Kubernetes versions.",
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "Observability",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - API Server Health Checks",
+        "url": "https://kubernetes.io/docs/reference/using-api/health-checks/"
+      },
+      {
+        "name": "Kubernetes Blog - Deprecation of kubectl get cs",
+        "url": "https://kubernetes.io/blog/2020/09/03/kubectl-get-componentstatus-deprecated/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 13:36:42"
   },
   {
     "id": 128,
@@ -373,27 +382,6 @@ export const PlatformSecurityQuestions = [
       1
     ],
     "explanation": "'kubectl apply -f deployment.yaml' applies configuration changes.",
-    "question_type": "single-choice",
-    "domain": "Platform Security",
-    "subdomain": "Observability",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
-  },
-  {
-    "id": 201,
-    "question": "Which command would you use to check the status of the Kubernetes API server components?",
-    "options": [
-      "kubectl get <resource>",
-      "kubectl describe <resource>",
-      "kubectl get --raw='/readyz?verbose'",
-      "kubectl cluster-info",
-      "kubectl get componentstatuses"
-    ],
-    "correct_answers": [
-      1
-    ],
-    "explanation": "The recommended command is 'kubectl get --raw='/readyz?verbose''.",
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "Observability",
