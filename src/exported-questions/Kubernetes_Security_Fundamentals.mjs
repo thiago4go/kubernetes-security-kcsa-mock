@@ -1,6 +1,6 @@
 
 // Exported 99 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-02-06 14:18:35
+// Last revision date: 2025-02-06 16:21:58
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -271,24 +271,33 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 47,
-    "question": "If a user is granted the 'cluster-admin' ClusterRole via a RoleBinding, what permissions do they have?",
+    "question": "If a user is granted the 'cluster-admin' ClusterRole through a RoleBinding, what level of access will they have?",
     "options": [
-      "Limited to the namespace where the RoleBinding is applied",
+      "Full administrative privileges limited to the namespace where the RoleBinding is applied",
       "Full cluster-wide administrative privileges",
-      "Read-only access to all resources",
-      "No permissions; ClusterRoles require ClusterRoleBindings",
-      "Access only to service accounts"
+      "Read-only access to all resources in the cluster",
+      "No permissions; ClusterRoles require ClusterRoleBindings to take effect",
+      "Access only to service accounts within the namespace"
     ],
     "correct_answers": [
       0
     ],
-    "explanation": "RoleBindings apply roles within a namespace, so the permissions are limited accordingly.",
+    "explanation": "When a ClusterRole, such as 'cluster-admin', is assigned using a RoleBinding, it grants full administrative privileges but only within the namespace where the RoleBinding is applied. This is because RoleBindings are namespace-scoped, meaning they cannot grant cluster-wide permissions even if the associated role is a ClusterRole. To grant cluster-wide permissions, a ClusterRoleBinding must be used. Incorrect options: (1) Full cluster-wide privileges require a ClusterRoleBinding, not a RoleBinding. (2) Read-only access is not tied to this scenario. (3) The statement about 'no permissions' is incorrect because RoleBindings do apply within their namespace. (4) Access to service accounts is not exclusive in this context.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Authorization",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - RBAC",
+        "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+      },
+      {
+        "name": "StrongDM Blog - Kubernetes RBAC Explained",
+        "url": "https://www.strongdm.com/blog/kubernetes-rbac-role-based-access-control"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 16:21:58"
   },
   {
     "id": 51,
@@ -611,24 +620,33 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 87,
-    "question": "How can you prevent a container from running as root?",
+    "question": "What measures can you take to prevent a container from running as the root user in Kubernetes?",
     "options": [
       "Set 'runAsUser: 0' in the security context",
-      "Use a Pod Security Policy that requires non-root user",
+      "Use a Pod Security Policy or Pod Security Admission to enforce non-root user requirements",
       "It is not possible to prevent this",
-      "Modify the container image to exclude root",
-      "Set 'allowPrivilegeEscalation: true'"
+      "Modify the container image to exclude root user privileges",
+      "Set 'allowPrivilegeEscalation: true' in the security context"
     ],
     "correct_answers": [
       1
     ],
-    "explanation": "Enforcing policies to prevent running as root enhances security.",
+    "explanation": "To enhance security, you can use Pod Security Policies (deprecated) or Pod Security Admission (current) to enforce that containers run as non-root users. This prevents potential privilege escalation attacks. Option 1 ('runAsUser: 0') explicitly allows running as root, which is insecure. Option 3 is incorrect because Kubernetes provides mechanisms to enforce non-root users. Option 4 may reduce root privileges but does not enforce non-root execution. Option 5 ('allowPrivilegeEscalation: true') enables privilege escalation, which contradicts the goal of preventing root access.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - Pod Security Standards",
+        "url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+      },
+      {
+        "name": "Kubernetes Official Documentation - Security Contexts",
+        "url": "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 16:21:58"
   },
   {
     "id": 88,
@@ -1102,7 +1120,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 178,
-    "question": "Which Kubernetes object allows you to define a set of rules for validating or mutating admission requests?",
+    "question": "Select all that apply: Which Kubernetes object(s) allow you to define a set of rules for validating or mutating admission requests?",
     "options": [
       "ValidatingWebhookConfiguration",
       "MutatingWebhookConfiguration",
@@ -1114,13 +1132,22 @@ export const KubernetesSecurityFundamentalsQuestions = [
       0,
       1
     ],
-    "explanation": "Both Validating and MutatingWebhookConfiguration are used to integrate admission webhooks.",
+    "explanation": "`ValidatingWebhookConfiguration` and `MutatingWebhookConfiguration` are used to integrate admission webhooks that validate or mutate admission requests. Option 2 (`AdmissionController`) is a general term for the mechanism but not a specific Kubernetes object. Option 3 (`CustomResourceDefinition`) is used to define custom resources, and Option 4 (`WebhookPolicy`) is not a valid Kubernetes object.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Admission Webhooks Documentation",
+        "url": "https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/"
+      },
+      {
+        "name": "Kubernetes API Reference",
+        "url": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 16:21:58"
   },
   {
     "id": 179,
@@ -1266,7 +1293,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 189,
-    "question": "Which command can be used to list all ServiceAccounts in the 'dev' namespace?",
+    "question": "Select all that apply: Which command(s) can be used to list all ServiceAccounts in the 'dev' namespace?",
     "options": [
       "kubectl get sa -n dev",
       "kubectl get serviceaccount -A",
@@ -1278,13 +1305,22 @@ export const KubernetesSecurityFundamentalsQuestions = [
       0,
       2
     ],
-    "explanation": "Both commands list the ServiceAccounts in the 'dev' namespace.",
+    "explanation": "The commands `kubectl get sa -n dev` and `kubectl get serviceaccounts --namespace=dev` both list all ServiceAccounts in the 'dev' namespace. Option 1 (`kubectl get serviceaccount -A`) lists ServiceAccounts across all namespaces, Option 3 (`kubectl describe serviceaccounts -n dev`) provides detailed information about ServiceAccounts in the 'dev' namespace but does not list them, and Option 4 (`kubectl list sa dev`) is not a valid `kubectl` command.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Authorization",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation",
+        "url": "https://kubernetes.io/docs/reference/kubectl/overview/"
+      },
+      {
+        "name": "Kubernetes kubectl Command Reference",
+        "url": "https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 16:21:58"
   },
   {
     "id": 190,

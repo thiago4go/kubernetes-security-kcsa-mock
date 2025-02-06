@@ -1,6 +1,6 @@
 
 // Exported 34 questions for domain: Platform Security
-// Last revision date: 2025-02-06 13:52:59
+// Last revision date: 2025-02-06 16:21:38
 export const PlatformSecurityQuestions = [
   {
     "id": 11,
@@ -67,7 +67,7 @@ export const PlatformSecurityQuestions = [
   },
   {
     "id": 85,
-    "question": "Which tool can be used to visualize Kubernetes cluster metrics in Grafana?",
+    "question": "Which tool serves as a data source for visualizing Kubernetes cluster metrics in Grafana?",
     "options": [
       "Prometheus",
       "Elasticsearch",
@@ -78,13 +78,22 @@ export const PlatformSecurityQuestions = [
     "correct_answers": [
       0
     ],
-    "explanation": "Prometheus collects metrics that can be visualized in Grafana dashboards.",
+    "explanation": "Prometheus is a robust monitoring and alerting toolkit that collects metrics from Kubernetes clusters. These metrics can be integrated into Grafana as a data source to create dashboards for visualization. While Grafana handles the visualization, Prometheus provides the necessary data. Other options like Elasticsearch, Kibana, Fluentd, and Logstash are primarily used for logging and log analysis, not for collecting or serving metrics directly.",
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "Observability",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Documentation - Monitoring with Prometheus",
+        "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/monitoring/"
+      },
+      {
+        "name": "Grafana Documentation - Prometheus Integration",
+        "url": "https://grafana.com/docs/grafana/latest/datasources/prometheus/"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 16:21:38"
   },
   {
     "id": 91,
@@ -421,7 +430,7 @@ export const PlatformSecurityQuestions = [
   },
   {
     "id": 222,
-    "question": "Which command would you use to list all loaded AppArmor profiles on a node?",
+    "question": "Which commands can be used to list all loaded AppArmor profiles on a Linux node?",
     "options": [
       "sudo apparmor_status",
       "sudo aa-enforce",
@@ -430,36 +439,56 @@ export const PlatformSecurityQuestions = [
       "sudo systemctl status apparmor"
     ],
     "correct_answers": [
+      0,
       3
     ],
-    "explanation": "The command 'sudo aa-status' lists all loaded AppArmor profiles.",
-    "question_type": "single-choice",
+    "explanation": "Both `sudo apparmor_status` and `sudo aa-status` can be used to list all loaded AppArmor profiles on a Linux node. These commands provide detailed information about AppArmor, including the number of loaded profiles, their modes (enforce or complain), and any unconfined processes.\n\nOther options are incorrect for the following reasons:\n\n1. `sudo aa-enforce`: This command is used to set an AppArmor profile to enforce mode, not to list profiles.\n2. `sudo apparmor_parser -L`: This command is used for loading AppArmor profiles but does not list them.\n3. `sudo systemctl status apparmor`: This command checks the status of the AppArmor service but does not provide a list of loaded profiles.\n\nUsing either `sudo apparmor_status` or `sudo aa-status` ensures you can monitor and manage AppArmor profiles effectively.",
+    "question_type": "multiple-choice",
     "domain": "Platform Security",
     "subdomain": "Observability",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "AppArmor Documentation - Ubuntu",
+        "url": "https://ubuntu.com/server/docs/security-apparmor"
+      },
+      {
+        "name": "Linux Manual Pages - aa-status",
+        "url": "https://manpages.ubuntu.com/manpages/bionic/man8/aa-status.8.html"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 16:21:38"
   },
   {
     "id": 223,
-    "question": "In Kubernetes, how do you apply an AppArmor profile to all containers in a Pod?",
+    "question": "In Kubernetes, how can you apply an AppArmor profile to all containers within a Pod?",
     "options": [
       "Set the profile in the Pod's securityContext",
       "Annotate each container with the AppArmor profile",
-      "Use the 'apparmorProfile' field in the container spec",
+      "Use the 'appArmorProfile' field in the container spec",
       "Specify the profile in the Deployment's metadata",
       "Set the profile in the node's AppArmor configuration"
     ],
     "correct_answers": [
-      1
+      1,
+      2
     ],
-    "explanation": "You annotate each container with the desired AppArmor profile.",
-    "question_type": "single-choice",
+    "explanation": "To apply an AppArmor profile to all containers in a Pod, you can use one of two methods:\n\n1. **Annotations**: Use the annotation `container.apparmor.security.beta.kubernetes.io/<container_name>: <profile_ref>` for each container in the Pod. This method has been traditionally used and is backward-compatible.\n\n2. **`appArmorProfile` field in `securityContext`**: Starting with Kubernetes v1.30, you can specify the AppArmor profile directly in the `securityContext` of a container using the `appArmorProfile` field. This method is more intuitive and avoids relying on annotations.\n\nOther options, such as setting it in the Pod's `securityContext`, Deployment metadata, or node-level configuration, are not valid methods for applying AppArmor profiles to specific containers.",
+    "question_type": "multiple-choice",
     "domain": "Platform Security",
     "subdomain": "Observability",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "Kubernetes Official Documentation - Security Contexts",
+        "url": "https://kubernetes.io/docs/tutorials/clusters/apparmor/"
+      },
+      {
+        "name": "Kubernetes v1.30 Release Notes",
+        "url": "https://kubernetes.io/docs/setup/release/notes/#feature-apparmor-profile-in-securitycontext"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-02-06 16:21:38"
   },
   {
     "id": 236,
