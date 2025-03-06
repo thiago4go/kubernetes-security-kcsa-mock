@@ -1,45 +1,45 @@
-# 🔹 Fase 1: Build (instalação de dependências e build da aplicação)
+# 🔹 Phase 1: Build (dependency installation and application build)
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copia os arquivos essenciais antes da instalação
+# Copy essential files before installation
 COPY ../package.json ../package-lock.json ./
 
-# Altera permissões para evitar problemas na instalação
+# Change permissions to avoid installation issues
 RUN chown -R node:node /app
 
-# Executa como usuário node
+# Run as node user
 USER node
 
-# Instala TODAS as dependências (incluindo devDependencies)
+# Install ALL dependencies (including devDependencies)
 RUN npm ci --include=dev
 
-# Copia os arquivos da aplicação
+# Copy application files
 COPY --chown=node:node ../ . 
 
-# Compila a aplicação
+# Build the application
 RUN npm run build
 
-# 🔹 Fase 2: Runtime (imagem final mínima)
+# 🔹 Phase 2: Runtime (minimal final image)
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Copia apenas arquivos essenciais da fase de build
+# Copy only essential files from the build phase
 COPY --from=builder /app/package.json /app/package-lock.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/build ./build
 
-# Instala o `serve` globalmente antes de trocar de usuário
+# Install `serve` globally before switching user
 RUN npm install -g serve
 
-# Define usuário não root para maior segurança
+# Set a non-root user for better security
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
 
-# Expõe a porta da aplicação
+# Expose the application port
 EXPOSE 3000
 
-# Comando de entrada para rodar a aplicação em produção
+# Entry command to run the application in production
 CMD ["serve", "-s", "build", "-l", "3000", "--single"]
