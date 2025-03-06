@@ -1,0 +1,22 @@
+x-deploy: &template-deploy
+  replicas: 1
+  restart_policy:
+    condition: any
+  update_config:
+    parallelism: 1
+    delay: 10s
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker-compose/Dockerfile
+    container_name: kubernetes-security-kcsa-mock
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    # volumes:
+    #   - ..:/app  # ❌ NÃO MONTAR /node_modules
+    deploy: 
+      <<: *template-deploy
