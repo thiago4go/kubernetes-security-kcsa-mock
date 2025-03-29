@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name | default "kcsa-mock-service" }}
+  labels:
+    app: {{ .Values.labels.app | default "kcsa-mock" }}
+    environment: {{ .Values.env.name }}
+    {{- with .Values.labels.additional }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.annotations.service }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    app: {{ .Values.labels.app | default "kcsa-mock" }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port | default 80 }}
+      targetPort: {{ .Values.service.targetPort | default 8080 }}
+  type: {{ .Values.service.type | default "ClusterIP" }}

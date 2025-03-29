@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kcsa-mock-rolebinding
+  namespace: {{ .Values.namespace.name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.rbac.serviceAccountName | default "kcsa-mock-service-account" }}
+    namespace: {{ .Values.namespace.name }}
+roleRef:
+  kind: Role
+  name: kcsa-mock-role
+  apiGroup: rbac.authorization.k8s.io
