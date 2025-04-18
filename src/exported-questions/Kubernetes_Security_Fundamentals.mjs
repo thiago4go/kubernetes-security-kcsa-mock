@@ -1,6 +1,6 @@
 
 // Exported 99 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-02-06 16:21:58
+// Last revision date: 2025-04-18 15:18:54
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -1160,7 +1160,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
       "metadata.securityContext.allowPrivilegeEscalation: false"
     ],
     "correct_answers": [
-      2
+      3
     ],
     "explanation": "The correct field to disable privilege escalation for all containers in a Pod is 'spec.containers.securityContext.allowPrivilegeEscalation: false'. This must be set individually for each container within the Pod, as there is no global 'allowPrivilegeEscalation' setting at the Pod level.",
     "question_type": "single-choice",
@@ -1180,8 +1180,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://www.redhat.com/en/blog/guide-to-kubernetes-security-context-pod-security-policy-psp"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-04 12:44:17"
+    "revision": 2,
+    "revision_date": "2025-04-18 15:18:54"
   },
   {
     "id": 181,
