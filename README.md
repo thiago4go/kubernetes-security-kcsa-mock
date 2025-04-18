@@ -86,13 +86,13 @@ The application now **stores and manages questions in SQLite** for improved perf
 ### **📌 Exporting Questions**  
 To **export** questions from SQLite into categorized JavaScript files:  
 ```bash
-node src/admin/db-tools/export_questions.js
+node src/admin/db-tools/export_questions.mjs
 ```
 
 ### **📌 Updating Questions**  
 To **update** the SQLite database with the latest classified questions:  
 ```bash
-node src/admin/db-tools/update_questions.js
+node src/admin/db-tools/update_questions.mjs
 ```
 These scripts **keep the database structured and up to date**.
 
