@@ -3,13 +3,13 @@ import Exam from './components/Exam';
 import Results from './components/Results';
 import ReviewFlagged from './components/ReviewFlagged';
 import HomePage from './components/HomePage';
-import { getAllQuestions } from './questionsDatabase'; // adjust the path as needed
+import { getAllQuestions, getAvailableDomains } from './questionsDatabase'; // adjust the path as needed
 
 import useLocalStorage from './hooks/useLocalStorage';
 import { Analytics } from "@vercel/analytics/react"
 
 function App() {
-  const [questions, setQuestions] = useState([]);
+  // Removed unused 'questions' and 'setQuestions' state
   const [loading, setLoading] = useState(true);
   const [examStarted, setExamStarted] = useState(false);
   const [examFinished, setExamFinished] = useState(false);
@@ -20,22 +20,32 @@ function App() {
   const [flaggedQuestions, setFlaggedQuestions] = useLocalStorage('flaggedQuestions', []);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useLocalStorage('currentQuestionIndex', 0);
   const [timeLeft, setTimeLeft] = useLocalStorage('timeLeft', 0);
+  const [availableDomains, setAvailableDomains] = useState([]);
+  const [selectedDomains, setSelectedDomains] = useLocalStorage('selectedDomains', []);
 
-  
 
-  // Load questions from the bundled SQLite database on component mount
+  // Load available domains and potentially all questions initially (or just domains)
   useEffect(() => {
-    getAllQuestions()
-      .then(qs => {
-        setQuestions(qs);
+    setLoading(true);
+    getAvailableDomains()
+      .then(domains => {
+        setAvailableDomains(domains);
+        // Initialize selectedDomains to all available domains if it's empty
+        if (selectedDomains.length === 0 && domains.length > 0) {
+          setSelectedDomains(domains);
+        }
+        // Optionally load all questions here if needed elsewhere, or just fetch filtered ones later
+        // For now, just mark loading as false after getting domains
         setLoading(false);
       })
       .catch(err => {
-        console.error("Error loading questions:", err);
-        setLoading(false);
+        console.error("Error loading domains:", err);
+        setLoading(false); // Ensure loading stops even on error
       });
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run only once on mount, disable warning for conditional setSelectedDomains
 
+  // Load persisted state from localStorage
   useEffect(() => {
     const storedExamStarted = localStorage.getItem('examStarted');
     const storedExamFinished = localStorage.getItem('examFinished');
@@ -55,7 +65,7 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div>Loading questions...</div>;
+    return <div>Loading exam data...</div>; // Updated loading message
   }
 
   const shuffleArray = (array) => {
@@ -66,28 +76,61 @@ function App() {
     }
     return shuffled;
   };
-  console.log("Exam Questions:", questions);
+  // Removed console.log("Exam Questions:", questions); as it logged all questions before filtering
 
-  const startExam = () => {
-    const shuffledQuestions = shuffleArray(questions);
-    const selectedQuestions = shuffledQuestions.slice(0, numQuestions);
-    setExamQuestions(selectedQuestions);
-    setExamStarted(true);
-    setExamFinished(false);
-    setReviewingFlagged(false);
-    setUserAnswers({});
-    setFlaggedQuestions([]);
-    setCurrentQuestionIndex(0);
-    setTimeLeft(numQuestions * 60); // 1 minute per question
-    localStorage.setItem('examStarted', 'true');
-    localStorage.setItem('examFinished', 'false');
-    localStorage.setItem('reviewingFlagged', 'false');
+  const startExam = async () => { // Make async to await getAllQuestions
+    if (selectedDomains.length === 0) {
+      console.error("Cannot start exam with no domains selected.");
+      // Optionally show an error message to the user
+      return;
+    }
+
+    setLoading(true); // Show loading indicator while fetching/processing
+    try {
+      const filteredQuestions = await getAllQuestions(selectedDomains);
+
+      if (filteredQuestions.length === 0) {
+        console.error("No questions found for the selected domains.");
+        // Optionally show an error message to the user
+        setLoading(false);
+        return;
+      }
+
+      // Adjust numQuestions if it exceeds the number of available filtered questions
+      const actualNumQuestions = Math.min(numQuestions, filteredQuestions.length);
+      if (numQuestions > filteredQuestions.length) {
+        console.warn(`Requested ${numQuestions} questions, but only ${filteredQuestions.length} are available for the selected domains. Using ${filteredQuestions.length}.`);
+        setNumQuestions(filteredQuestions.length); // Update state if adjusted
+      }
+
+
+      const shuffledQuestions = shuffleArray(filteredQuestions);
+      const selectedQuestions = shuffledQuestions.slice(0, actualNumQuestions);
+
+      setExamQuestions(selectedQuestions);
+      setExamStarted(true);
+      setExamFinished(false);
+      setReviewingFlagged(false);
+      setUserAnswers({});
+      setFlaggedQuestions([]);
+      setCurrentQuestionIndex(0);
+      setTimeLeft(actualNumQuestions * 60); // Use actual number of questions for timer
+      localStorage.setItem('examStarted', 'true');
+      localStorage.setItem('examFinished', 'false');
+      localStorage.setItem('reviewingFlagged', 'false');
+    } catch (err) {
+      console.error("Error starting exam:", err);
+      // Optionally show an error message to the user
+    } finally {
+      setLoading(false); // Hide loading indicator
+    }
   };
 
   const finishExam = () => {
+    // Removed setUserAnswers({}) and setFlaggedQuestions([]) which were clearing results prematurely
     setExamFinished(true);
     setExamStarted(false);
-    setReviewingFlagged(false);
+    setReviewingFlagged(false); // Ensure review flag is off when finishing
     localStorage.setItem('examStarted', 'false');
     localStorage.setItem('examFinished', 'true');
     localStorage.setItem('reviewingFlagged', 'false');
@@ -98,10 +141,7 @@ function App() {
     localStorage.setItem('reviewingFlagged', 'true');
   };
 
-  const endReview = () => {
-    setReviewingFlagged(false);
-    localStorage.setItem('reviewingFlagged', 'false');
-  };
+  // Removed unused endReview function
 
   const restartExam = () => {
     setExamStarted(false);
@@ -130,7 +170,12 @@ function App() {
           numQuestions={numQuestions}
           setNumQuestions={setNumQuestions}
           startExam={startExam}
-          maxQuestions={questions.length}
+          // maxQuestions prop is less relevant now as it's handled dynamically in startExam
+          // We could pass a function to get the count based on selected domains if needed for display
+          maxQuestions={availableDomains.length > 0 ? 1000 : 0} // Placeholder, actual limit is dynamic
+          availableDomains={availableDomains}
+          selectedDomains={selectedDomains}
+          setSelectedDomains={setSelectedDomains}
         />
       ) : (
         <>

@@ -41,8 +41,8 @@ input[type="number"] {
   width: 100%;
   max-width: 400px;
   padding: 12px;
-  margin: 8px auto;
-  display: block;
+  margin: 8px ;
+  display: inline;
   border-radius: 8px;
   border: 1px solid #d1d1d1;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -136,8 +136,8 @@ input[type="number"] {
   margin-bottom: 16px;
 }
 .question-input {
-  display: block;
-  width: 100%;
+  display: inline-block;
+  width: 60%;
   margin-top: 8px;
   padding: 12px;
   border-radius: 8px;

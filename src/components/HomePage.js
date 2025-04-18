@@ -1,31 +1,114 @@
-import React from 'react';
+import React, { useState } from 'react'; // Import useState
 
-function HomePage({ numQuestions, setNumQuestions, startExam, maxQuestions }) {
+function HomePage({
+  numQuestions,
+  setNumQuestions,
+  startExam,
+  maxQuestions,
+  availableDomains,
+  selectedDomains,
+  setSelectedDomains
+}) {
+  const [showOptions, setShowOptions] = useState(false); // State for options visibility
+
+  const handleDomainChange = (domain) => {
+    setSelectedDomains(prevSelected => {
+      if (prevSelected.includes(domain)) {
+        // Prevent deselecting the last domain
+        if (prevSelected.length === 1) {
+          return prevSelected;
+        }
+        return prevSelected.filter(d => d !== domain);
+      } else {
+        return [...prevSelected, domain];
+      }
+    });
+  };
+
   return (
     <div className="homepage-container">
       <div className="homepage-inner">
-        <div className="text-center">
-          <h1 className="exam-title">Kubernetes Security KCSA Mock Exam</h1>
-          <div className="input-container">
-            <label className="input-label">
-              Number of questions:
-              <input
-                type="number"
-                value={numQuestions}
-                onChange={(e) => setNumQuestions(Math.max(1, Math.min(maxQuestions, parseInt(e.target.value) || 0)))}
-                className="question-input"
-              />
-            </label>
-          </div>
-          <button
-            onClick={startExam}
-            className="start-button"
-          >
-            Start Exam
-          </button>
-        </div>
+        {/* Removed text-center class from the main wrapper */}
+        <div>
+          <h1 className="exam-title text-center">Kubernetes Security KCSA Mock Exam</h1>
 
-        {/* ADD A SECTION ABOUT THE APP AND HOW TO USE IT */}
+          {/* Exam Setup Card */}
+          <div className="exam-setup-card">
+
+            {/* Top row: Number input and Start button */}
+            <div className="setup-top-row">
+              {/* Input Group - Label and Input separated for flex alignment */}
+              <div className="number-input-group">
+                 <label htmlFor="num-questions-input" className="input-label">Number of questions:</label>
+                 <input
+                   id="num-questions-input"
+                   type="number"
+                   value={numQuestions}
+                   onChange={(e) => setNumQuestions(Math.max(1, Math.min(maxQuestions, parseInt(e.target.value) || 0)))}
+                   className="question-input"
+                 />
+     {/* Start Button */}
+              <button
+                onClick={startExam}
+                className="start-button"
+                disabled={selectedDomains.length === 0}
+              >
+                Start Exam
+              </button>
+              </div>
+         
+            </div>
+
+            {/* Separator (Optional) */}
+            {/* <hr className="setup-separator" /> */}
+
+            {/* Extra Options Toggle - Moved below top row */}
+            <div className="extra-options-toggle">
+              <button
+                onClick={() => setShowOptions(!showOptions)}
+                className="options-toggle-button"
+              >
+                {showOptions ? 'Hide Extra Options' : 'Show Extra Options'}
+              </button>
+            </div>
+
+            {/* Domain Selection Section (Conditional) - Remains below toggle */}
+            {showOptions && availableDomains && availableDomains.length > 0 && (
+              <div className="domain-options-card">
+                {/* Added emoji to title */}
+                <h3 className="domain-selection-title">✨ Select Exam Domains</h3>
+                <p className="domain-selection-description">
+                  Choose specific domains to focus your practice exam. Only questions from the selected domains will be included.
+                </p>
+                <div className="domain-checkboxes">
+                {availableDomains.map(domain => (
+                  <div key={domain} className="domain-checkbox-item" style={{ marginBottom: '5px' }}>
+                    <input
+                      type="checkbox"
+                      id={`domain-${domain}`}
+                      value={domain}
+                      checked={selectedDomains.includes(domain)}
+                      onChange={() => handleDomainChange(domain)}
+                      className="domain-checkbox"
+                    />
+                    <label htmlFor={`domain-${domain}`} className="domain-label">
+                      {/* Replaced underscore replacement with CSS text-transform potentially */}
+                      {domain}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+            )}
+            {/* End Domain Selection Section */}
+
+          </div>
+          {/* End Exam Setup Card */}
+
+        </div> {/* Close the wrapper div */}
+
+
+        {/* Keep About, Creator, Community sections as they were */}
         <div className="about-container">
           <div className="about-header">
             <h2 className="section-title">About the App</h2>
