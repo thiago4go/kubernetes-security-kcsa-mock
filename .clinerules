@@ -1,0 +1,41 @@
+# Project Guidelines: Kubernetes Security Mock Exam App
+
+## Core Technologies
+
+*   **Frontend:** React (JavaScript)
+*   **State Management:** React Hooks (`useState`, `useEffect`, `useLocalStorage`)
+*   **Data:** Currently uses SQLite (`public/questions.sqlite`) via `sql.js`.
+*   **Styling:** Standard CSS (`src/App.css`, `src/index.css`)
+*   **Testing:** Jest (`jest.config.js`, `tests/`)
+
+## Development Practices
+
+*   **Components:** Place React components under `/src/components/`. Keep components focused and reusable where possible.
+*   **Hooks:** Custom hooks go in `/src/hooks/`. Use `useLocalStorage` for persisting exam state.
+*   **Question Data:**
+    *   Current questions reside in `public/questions.sqlite`.
+    *   Management scripts are in `/src/admin/db-tools/`.
+    *   Follow the existing schema (`id`, `domain`, `question`, `options`, `correct_answers`, `explanation`, `sources`).
+*   **Styling:** Maintain consistent styling based on existing CSS files.
+*   **Dependencies:** Manage dependencies using `npm` and `package.json`. Review `package-lock.json` changes carefully.
+
+## Documentation
+
+*   Keep `README.md` updated with setup instructions, features, and how to run the application.
+*   Document major changes or decisions, potentially in `ROADMAP.md` or dedicated ADRs if a `/docs/adr` folder is created later.
+*   Add comments to explain complex logic within the code.
+
+## Testing
+
+*   Write Jest tests for core logic, especially question handling, scoring, and state transitions. Place tests in the `tests/` directory or alongside components (`*.test.js`).
+*   Ensure question integrity tests (`tests/questionsIntegrity.test.js`) are maintained.
+
+## Code Style
+
+*   Follow standard JavaScript and React conventions.
+*   Ensure code is formatted consistently (consider adding Prettier or ESLint configuration later).
+*   Use meaningful variable and function names.
+
+## Deployment
+
+*   Update Docker configuration (`docker-compose/`) if dependencies or build steps change.
