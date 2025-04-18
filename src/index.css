@@ -39,7 +39,7 @@ button:disabled {
 
 input[type="number"] {
   width: 100%;
-  max-width: 400px;
+  max-width: 60px;
   padding: 12px;
   margin: 8px ;
   display: inline;
