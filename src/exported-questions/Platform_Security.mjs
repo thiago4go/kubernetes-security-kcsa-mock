@@ -1,6 +1,6 @@
 
 // Exported 34 questions for domain: Platform Security
-// Last revision date: 2025-04-18 18:17:45
+// Last revision date: 2025-04-18 18:33:20
 export const PlatformSecurityQuestions = [
   {
     "id": 11,
@@ -225,7 +225,7 @@ export const PlatformSecurityQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "The command `kubectl get --raw='/readyz?verbose'` is the recommended way to check the readiness and status of Kubernetes cluster components. This approach provides detailed and up-to-date information about the health of the cluster. Other commands, such as `kubectl get cs` and `kubectl get componentstatuses`, are deprecated and may not provide accurate results in newer Kubernetes versions.",
+    "explanation": "The command `kubectl get --raw='/readyz?verbose'` is the recommended way to check the readiness and status of Kubernetes cluster components. This approach provides detailed and up-to-date information about the health of the cluster. Other commands, such as `kubectl get cs` (deprecated shorthand) and `kubectl get componentstatuses` (deprecated endpoint), are no longer reliable in newer Kubernetes versions.",
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "Observability",
@@ -239,8 +239,8 @@ export const PlatformSecurityQuestions = [
         "url": "https://kubernetes.io/blog/2020/09/03/kubectl-get-componentstatus-deprecated/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-06 13:36:42"
+    "revision": 2,
+    "revision_date": "2025-04-18 18:33:20"
   },
   {
     "id": 128,
@@ -416,11 +416,11 @@ export const PlatformSecurityQuestions = [
       },
       {
         "name": "Kubernetes Official Documentation - Vertical Pod Autoscaling",
-        "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/"
+        "url": "https://kubernetes.io/docs/tasks/run-application/vertical-pod-autoscale/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 18:17:45"
+    "revision": 2,
+    "revision_date": "2025-04-18 18:33:20"
   },
   {
     "id": 196,
@@ -614,10 +614,10 @@ export const PlatformSecurityQuestions = [
       "Set the profile in the node's AppArmor configuration"
     ],
     "correct_answers": [
-      1,
-      2
+      2,
+      3
     ],
-    "explanation": "To apply an AppArmor profile to all containers in a Pod, you can use one of two methods:\n\n1. **Annotations**: Use the annotation `container.apparmor.security.beta.kubernetes.io/<container_name>: <profile_ref>` for each container in the Pod. This method has been traditionally used and is backward-compatible.\n\n2. **`appArmorProfile` field in `securityContext`**: Starting with Kubernetes v1.30, you can specify the AppArmor profile directly in the `securityContext` of a container using the `appArmorProfile` field. This method is more intuitive and avoids relying on annotations.\n\nOther options, such as setting it in the Pod's `securityContext`, Deployment metadata, or node-level configuration, are not valid methods for applying AppArmor profiles to specific containers.",
+    "explanation": "To apply an AppArmor profile to all containers in a Pod, you can use one of two methods:\n\n1. **Annotations**: Use the annotation `container.apparmor.security.beta.kubernetes.io/<container_name>: <profile_ref>` for each container in the Pod. This method has been traditionally used and is backward-compatible.\n\n2. **`appArmorProfile` field in `securityContext`**: Starting with Kubernetes v1.30, you can specify the AppArmor profile directly in the `securityContext` of a container using the `appArmorProfile` field. This method is more intuitive and avoids relying on annotations.\n\nOther options, such as setting it in the Deployment metadata or node-level configuration, are not valid methods for applying AppArmor profiles to specific containers.",
     "question_type": "multiple-choice",
     "domain": "Platform Security",
     "subdomain": "Observability",
@@ -631,8 +631,8 @@ export const PlatformSecurityQuestions = [
         "url": "https://kubernetes.io/docs/setup/release/notes/#feature-apparmor-profile-in-securitycontext"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-06 16:21:38"
+    "revision": 2,
+    "revision_date": "2025-04-18 18:33:20"
   },
   {
     "id": 236,
@@ -645,7 +645,7 @@ export const PlatformSecurityQuestions = [
       "Certificate"
     ],
     "correct_answers": [
-      1
+      2
     ],
     "explanation": "The Kubernetes resource 'CertificateSigningRequest' (CSR) is the official API object used to request a certificate signing operation. Users or components create a CSR object containing a public key and metadata; cluster administrators or automated controllers then approve and sign it. The other options are not valid Kubernetes resource kinds: 'CertificateRequest' and 'CertificateSigning' do not exist as Kubernetes resources; 'CertificateApproval' is not a resource but an action; 'Certificate' is not a Kubernetes resource for CSRs.",
     "question_type": "single-choice",
@@ -661,8 +661,8 @@ export const PlatformSecurityQuestions = [
         "url": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#certificatesigningrequest-v1-certificates-k8s-io"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 18:17:45"
+    "revision": 2,
+    "revision_date": "2025-04-18 18:33:20"
   },
   {
     "id": 237,
@@ -670,14 +670,14 @@ export const PlatformSecurityQuestions = [
     "options": [
       "kubectl sign csr <csr-name>",
       "kubectl create csr <csr-name>",
-      "kubectl approve csr <csr-name>",
       "kubectl certificate approve <csr-name>",
+      "kubectl approve csr <csr-name>",
       "kubectl csr approve <csr-name>"
     ],
     "correct_answers": [
-      3
+      2
     ],
-    "explanation": "The correct command to approve a CertificateSigningRequest (CSR) in Kubernetes is 'kubectl certificate approve <csr-name>'. This command instructs the certificate signing controller to approve the CSR, allowing the requested certificate to be issued. Other options like 'kubectl create' are used for creating resources, while 'kubectl sign' and 'kubectl csr approve' are invalid commands.",
+    "explanation": "The correct command to approve a CertificateSigningRequest (CSR) in Kubernetes is 'kubectl certificate approve <csr-name>'. This command instructs the certificate signing controller to approve the CSR, allowing the requested certificate to be issued. Other options like 'kubectl create' are used for creating resources, while 'kubectl sign', 'kubectl approve csr', and 'kubectl csr approve' are invalid commands.",
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "PKI",
@@ -691,8 +691,8 @@ export const PlatformSecurityQuestions = [
         "url": "https://kubernetes.io/docs/reference/kubectl/generated/kubectl_certificate/kubectl_certificate_approve/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-06 13:52:59"
+    "revision": 2,
+    "revision_date": "2025-04-18 18:33:20"
   },
   {
     "id": 240,
