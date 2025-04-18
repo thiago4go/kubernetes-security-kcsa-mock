@@ -98,9 +98,9 @@ These scripts **keep the database structured and up to date**.
 
 ### **🤖 AI-Powered Question Review (Advanced)**
 
-For maintainers, an experimental script `review_questions.py` uses the Perplexity AI API to automatically review and enhance questions within a specific category.
+For maintainers, experimental scripts `review_questions.py` and `refine_questions.py` use the Perplexity AI API to automatically review and enhance questions within a specific category.
 
-**⚠️ Warning:** This script modifies question files directly and relies on an external AI service. Use with caution and review the changes carefully.
+**⚠️ Warning:** These scripts modify question files directly and rely on an external AI service. Use with caution and review the changes carefully.
 
 **Prerequisites:**
 *   Python 3 installed.
@@ -110,7 +110,7 @@ For maintainers, an experimental script `review_questions.py` uses the Perplexit
     export PERPLEXITY_API_KEY='your_api_key_here'
     ```
 
-**Usage:**
+**Usage for `review_questions.py`:**
 1.  Ensure your API key is set as an environment variable.
 2.  Run the script from the project root directory, specifying the category (matching the `.mjs` filename without the extension):
     ```bash
@@ -124,6 +124,26 @@ For maintainers, an experimental script `review_questions.py` uses the Perplexit
 **What it does:**
 1.  Identifies questions in `src/exported-questions/<CategoryName>.mjs` needing review (where `revision: 0`).
 2.  Sends batches of these questions to the Perplexity API for improvements (clarity, explanations, sources).
+3.  Creates a backup (`.bak`) of the original `.mjs` file before making changes.
+4.  Updates the `.mjs` file with the AI-revised questions (setting `revision: 1` and `revision_date`).
+5.  Automatically runs `src/admin/db-tools/update_questions.mjs` and `src/admin/db-tools/export_questions.mjs` to update the SQLite database and re-export the files.
+6.  Saves suggested PR messages summarizing changes to `src/revised-questions/pr_messages_<CategoryName>.txt`.
+7.  If any critical step fails, it attempts to restore the original `.mjs` file from the backup. On success, the backup is removed.
+
+**Usage for `refine_questions.py`:**
+1.  Ensure your API key is set as an environment variable.
+2.  Run the script from the project root directory, specifying the category (matching the `.mjs` filename without the extension):
+    ```bash
+    python refine_questions.py --category <CategoryName>
+    ```
+    *Example:*
+    ```bash
+    python refine_questions.py --category Kubernetes_Security_Fundamentals
+    ```
+
+**What it does:**
+1.  Identifies questions in `src/exported-questions/<CategoryName>.mjs` needing review (where `revision: 1` by default).
+2.  Sends batches of these questions to the Perplexity API for targeted improvements (clarity, correctness, deprecation, sources).
 3.  Creates a backup (`.bak`) of the original `.mjs` file before making changes.
 4.  Updates the `.mjs` file with the AI-revised questions (setting `revision: 1` and `revision_date`).
 5.  Automatically runs `src/admin/db-tools/update_questions.mjs` and `src/admin/db-tools/export_questions.mjs` to update the SQLite database and re-export the files.
