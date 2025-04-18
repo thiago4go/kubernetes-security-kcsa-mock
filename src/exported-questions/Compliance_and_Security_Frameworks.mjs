@@ -1,10 +1,10 @@
 
 // Exported 30 questions for domain: Compliance and Security Frameworks
-// Last revision date: 2025-02-06 14:16:11
+// Last revision date: 2025-04-18 17:51:56
 export const ComplianceAndSecurityFrameworksQuestions = [
   {
     "id": 8,
-    "question": "Which NIST Special Publication provides guidelines on security and privacy controls for federal information systems?",
+    "question": "Which NIST Special Publication provides comprehensive guidelines on security and privacy controls specifically for federal information systems?",
     "options": [
       "NIST SP 800-53 Rev. 5",
       "NIST SP 800-190",
@@ -15,13 +15,22 @@ export const ComplianceAndSecurityFrameworksQuestions = [
     "correct_answers": [
       0
     ],
-    "explanation": "This publication provides guidelines on security and privacy controls.",
+    "explanation": "NIST SP 800-53 Rev. 5 is the primary publication that provides guidelines on security and privacy controls for federal information systems. It outlines a comprehensive set of controls that are crucial for protecting the confidentiality, integrity, and availability of federal information systems. NIST SP 800-190 focuses on cloud computing security, NIST SP 800-63 deals with digital identity guidelines, NIST SP 800-171 provides guidelines for protecting controlled unclassified information in nonfederal systems, and NIST SP 800-30 is about risk management.",
     "question_type": "single-choice",
     "domain": "Compliance and Security Frameworks",
     "subdomain": "Compliance Frameworks",
-    "sources": [],
-    "revision": 0,
-    "revision_date": null
+    "sources": [
+      {
+        "name": "NIST Special Publication 800-53 Rev. 5",
+        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf"
+      },
+      {
+        "name": "NIST Cybersecurity Framework",
+        "url": "https://www.nist.gov/cyberframework"
+      }
+    ],
+    "revision": 1,
+    "revision_date": "2025-04-18 17:51:56"
   },
   {
     "id": 24,
