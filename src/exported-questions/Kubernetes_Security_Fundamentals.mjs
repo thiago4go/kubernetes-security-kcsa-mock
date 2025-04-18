@@ -1,6 +1,6 @@
 
 // Exported 99 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-04-18 16:46:36
+// Last revision date: 2025-04-18 17:38:29
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -75,7 +75,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "PSA policies are applied at the namespace level. While multiple labels can be applied to a namespace, each label corresponds to a specific mode (enforce, audit, or warn), and only one PSA policy level (privileged, baseline, or restricted) can be enforced per namespace for each mode. This ensures clear and consistent policy enforcement.",
+    "explanation": "PSA policies are applied at the namespace level. Only one PSA policy level (privileged, baseline, or restricted) can be enforced per namespace for each mode (enforce, audit, or warn). This ensures clear and consistent policy enforcement.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
@@ -87,14 +87,10 @@ export const KubernetesSecurityFundamentalsQuestions = [
       {
         "name": "Red Hat Documentation",
         "url": "https://docs.redhat.com/en/documentation/openshift_dedicated/4/html/authentication_and_authorization/understanding-and-managing-pod-security-admission"
-      },
-      {
-        "name": "Innablr Blog",
-        "url": "https://www.innablr.com.au/blog/kubernetes-pod-security-using-podsecuritystandards"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-04 13:52:44"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 4,
@@ -168,9 +164,9 @@ export const KubernetesSecurityFundamentalsQuestions = [
       "They control storage access for pods"
     ],
     "correct_answers": [
-      1
+      2
     ],
-    "explanation": "Network Policies in Kubernetes use iptables rules to control communication between pods. This allows administrators to define which pods can communicate with each other, enhancing network security.",
+    "explanation": "Network Policies in Kubernetes use iptables rules to control communication between pods. This allows administrators to define which pods can communicate with each other, enhancing network security. By default, pods can communicate freely unless restricted by a Network Policy.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Network Policy",
@@ -178,14 +174,10 @@ export const KubernetesSecurityFundamentalsQuestions = [
       {
         "name": "Kubernetes Network Policies",
         "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/"
-      },
-      {
-        "name": "Network Policy Implementation",
-        "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/#implementation"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 16,
@@ -198,10 +190,9 @@ export const KubernetesSecurityFundamentalsQuestions = [
       "Access depends solely on RBAC permissions, regardless of privileged mode"
     ],
     "correct_answers": [
-      1,
-      4
+      1
     ],
-    "explanation": "Setting 'privileged: true' on a pod grants the container elevated privileges on the host system, such as access to devices and kernel capabilities, but it does not inherently grant access to Kubernetes Secrets. Access to Secrets is controlled by Kubernetes Role-Based Access Control (RBAC) policies and namespace scoping. Therefore, even privileged pods require appropriate RBAC permissions to access Secrets. The privileged flag does not override these access controls.",
+    "explanation": "Setting 'privileged: true' on a pod grants the container elevated privileges on the host system, such as access to devices and kernel capabilities, but it does not inherently grant access to Kubernetes Secrets. Access to Secrets is controlled by Kubernetes Role-Based Access Control (RBAC) policies and namespace scoping.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Secrets",
@@ -215,8 +206,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 2,
+    "revision_date": "2025-04-18 17:30:24"
   },
   {
     "id": 20,
@@ -231,7 +222,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       3
     ],
-    "explanation": "Enabling detailed auditing of request responses in Kubernetes increases the volume and detail of audit logs generated. This leads to higher storage consumption and can introduce performance overhead on the API server due to the additional processing required. While detailed auditing improves security visibility, it must be balanced against these resource impacts. It does not disable API server logging; rather, it complements it.",
+    "explanation": "Enabling detailed auditing of request responses in Kubernetes increases the volume and detail of audit logs generated, leading to higher storage consumption and potential performance overhead on the API server. While detailed auditing improves security visibility, it must be balanced against these resource impacts.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Audit Logging",
@@ -239,14 +230,10 @@ export const KubernetesSecurityFundamentalsQuestions = [
       {
         "name": "Kubernetes Official Documentation - Auditing",
         "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/"
-      },
-      {
-        "name": "CNCF Security Whitepaper - Kubernetes Auditing",
-        "url": "https://github.com/cncf/sig-security/blob/main/security-whitepaper.md#auditing"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 30,
@@ -262,7 +249,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
       0,
       1
     ],
-    "explanation": "The 'restricted' Pod Security Standard or Pod Security Admission policy applies only to pods created or updated after the policy is enforced; existing pods are not automatically remediated. Additionally, enforcement depends on correct namespace labeling (e.g., 'pod-security.kubernetes.io/enforce=restricted'). If these labels are missing or misconfigured, the policy will not be enforced on pods in that namespace. The API server supports PSS, and privileged access is not always allowed; it is controlled by policy and labels.",
+    "explanation": "The 'restricted' Pod Security Standard or Pod Security Admission policy applies only to pods created or updated after the policy is enforced; existing pods are not automatically remediated. Enforcement also depends on correct namespace labeling (e.g., 'pod-security.kubernetes.io/enforce=restricted'). If these labels are missing or misconfigured, the policy will not be enforced on pods in that namespace.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
@@ -276,8 +263,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/blog/2021/07/14/pod-security-standards-ga/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 2,
+    "revision_date": "2025-04-18 17:30:24"
   },
   {
     "id": 33,
@@ -293,7 +280,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
       0,
       1
     ],
-    "explanation": "kubeadm primarily uses TLS certificates and token-based authentication mechanisms to secure communication and authenticate components during cluster bootstrapping. TLS certificates are used for API server and client authentication, while bootstrap tokens facilitate node joining. OAuth tokens, static passwords, and biometric authentication are not part of kubeadm's default authentication methods.",
+    "explanation": "kubeadm primarily uses TLS certificates and token-based authentication mechanisms to secure communication and authenticate components during cluster bootstrapping. TLS certificates are used for API server and client authentication, while bootstrap tokens facilitate node joining.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Authentication",
@@ -307,8 +294,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 2,
+    "revision_date": "2025-04-18 17:30:24"
   },
   {
     "id": 35,
@@ -536,7 +523,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
       3,
       4
     ],
-    "explanation": "Calico, Weave Net, Cilium, and AWS VPC CNI are CNI plugins that support Network Policies. Flannel does not support them by default. As of August 2023, AWS VPC CNI supports network policies but requires them to be enabled and does not support them for Fargate or Windows containers.",
+    "explanation": "Calico, Weave Net, Cilium, and AWS VPC CNI are CNI plugins that support Network Policies. AWS VPC CNI supports network policies but requires them to be enabled and does not support them for Fargate or Windows containers. Flannel does not support Network Policies by default.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Network Policy",
@@ -554,8 +541,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-04 11:02:29"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 67,
@@ -600,7 +587,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       2
     ],
-    "explanation": "By default, Kubernetes allows all ingress and egress traffic to and from pods if no Network Policies are applied. Network Policies are opt-in and must be explicitly created to restrict traffic. Without any policies, there are no restrictions, so pods can communicate freely within and across namespaces. The other options describe behaviors that occur only when specific Network Policies are configured.",
+    "explanation": "By default, Kubernetes allows all ingress and egress traffic to pods if no Network Policies are applied. Network Policies are opt-in and must be explicitly created to restrict traffic. Without any policies, pods can send and receive traffic unrestricted. The other options describe behaviors that occur only when specific Network Policies are configured.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Network Policy",
@@ -614,8 +601,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://github.com/cncf/sig-security/blob/main/security-best-practices.md#network-policies"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 69,
@@ -832,7 +819,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "question": "What measures can you take to prevent a container from running as the root user in Kubernetes?",
     "options": [
       "Set 'runAsUser: 0' in the security context",
-      "Use a Pod Security Policy or Pod Security Admission to enforce non-root user requirements",
+      "Use a Pod Security Admission to enforce non-root user requirements",
       "It is not possible to prevent this",
       "Modify the container image to exclude root user privileges",
       "Set 'allowPrivilegeEscalation: true' in the security context"
@@ -840,7 +827,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "To enhance security, you can use Pod Security Policies (deprecated) or Pod Security Admission (current) to enforce that containers run as non-root users. This prevents potential privilege escalation attacks. Option 1 ('runAsUser: 0') explicitly allows running as root, which is insecure. Option 3 is incorrect because Kubernetes provides mechanisms to enforce non-root users. Option 4 may reduce root privileges but does not enforce non-root execution. Option 5 ('allowPrivilegeEscalation: true') enables privilege escalation, which contradicts the goal of preventing root access.",
+    "explanation": "To enhance security, you can use Pod Security Admission to enforce that containers run as non-root users. This prevents potential privilege escalation attacks. Option 1 ('runAsUser: 0') explicitly allows running as root, which is insecure. Option 3 is incorrect because Kubernetes provides mechanisms to enforce non-root users. Option 4 may reduce root privileges but does not enforce non-root execution. Option 5 ('allowPrivilegeEscalation: true') enables privilege escalation, which contradicts the goal of preventing root access.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
@@ -854,8 +841,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-06 16:21:58"
+    "revision": 2,
+    "revision_date": "2025-04-18 17:30:24"
   },
   {
     "id": 88,
@@ -900,7 +887,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       3
     ],
-    "explanation": "The NetworkPolicy object in Kubernetes is used to specify rules that control the ingress and egress traffic to and from pods. Services and Ingress objects manage access at different layers but do not define pod-level network access rules. Deployments manage pod lifecycle, and ConfigMaps store configuration data, neither controlling network traffic.",
+    "explanation": "NetworkPolicy objects in Kubernetes are used to specify rules that control the ingress and egress traffic to and from pods. Services manage access at a different layer, Ingress manages external access, Deployments manage pod lifecycle, and ConfigMaps store configuration data, none of which control pod-level network access rules.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Network Policy",
@@ -914,8 +901,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://www.cncf.io/blog/2020/07/15/understanding-kubernetes-network-policies/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 101,
@@ -1020,7 +1007,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       2
     ],
-    "explanation": "The 'cluster-admin' ClusterRole grants full cluster-wide administrative permissions. However, its scope depends on how it is bound to a user or group. When bound via a RoleBinding, its permissions are restricted to the namespace specified in the binding. When bound via a ClusterRoleBinding, it provides full control over all resources in the cluster.",
+    "explanation": "The 'cluster-admin' ClusterRole grants full cluster-wide administrative permissions. When bound via a ClusterRoleBinding, it provides full control over all resources in the cluster. When bound via a RoleBinding, its permissions are limited to the namespace specified in the binding.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Authorization",
@@ -1034,8 +1021,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/concepts/security/controlling-access/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-04 13:36:14"
+    "revision": 2,
+    "revision_date": "2025-04-18 17:30:24"
   },
   {
     "id": 143,
@@ -1230,7 +1217,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "TLS Secrets (kubernetes.io/tls) must contain 'tls.crt' and 'tls.key' entries with PEM-encoded certificates. Opaque Secrets can store arbitrary data but lack the type-specific validation and conventions required for Ingress TLS configuration.",
+    "explanation": "For configuring TLS termination in an Ingress resource, a Secret of type 'kubernetes.io/tls' is required. This type of Secret must contain 'tls.crt' and 'tls.key' entries with PEM-encoded certificates.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Secrets",
@@ -1244,8 +1231,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/concepts/configuration/secret/#secret-types"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 163,
@@ -1258,9 +1245,9 @@ export const KubernetesSecurityFundamentalsQuestions = [
       "kubectl create secret tls-secret --type=tls --cert=tls.crt --key=tls.key"
     ],
     "correct_answers": [
-      1
+      2
     ],
-    "explanation": "The correct command to create a TLS secret in Kubernetes is 'kubectl create secret tls' followed by the secret name and the paths to the certificate and key files using the --cert and --key flags. Option 1 uses the generic secret type which does not specifically create a TLS secret, and options 3, 4, and 5 use incorrect syntax or secret types. The 'docker-registry' secret type is unrelated to TLS secrets, and the other options do not follow the correct kubectl syntax for TLS secrets.",
+    "explanation": "The correct command to create a TLS secret in Kubernetes is 'kubectl create secret tls' followed by the secret name and the paths to the certificate and key files using the --cert and --key flags.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Secrets",
@@ -1274,8 +1261,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#create-secret"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 165,
@@ -1288,9 +1275,9 @@ export const KubernetesSecurityFundamentalsQuestions = [
       "linuxOptions.capabilities"
     ],
     "correct_answers": [
-      2
+      0
     ],
-    "explanation": "Linux capabilities for containers are specified under the 'securityContext.capabilities' field within the container's specification. This allows fine-grained control over the capabilities added or dropped for that specific container. The 'podSecurityContext' applies to the entire Pod and does not configure capabilities at the container level. The other options either do not exist or are incorrectly scoped fields.",
+    "explanation": "Linux capabilities for containers are specified under the 'securityContext.capabilities' field within the container's specification. This allows fine-grained control over the capabilities added or dropped for that specific container.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
@@ -1304,8 +1291,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#securitycontext-v1-core"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 166,
@@ -1320,7 +1307,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       0
     ],
-    "explanation": "To remove all Linux capabilities from a container, the 'capabilities' field under the container's securityContext should specify 'drop: ['ALL']'. This explicitly drops all added capabilities, minimizing the container's privileges. 'privileged: false' disables privileged mode but does not drop capabilities explicitly. 'allowPrivilegeEscalation: false' prevents privilege escalation but does not drop capabilities. 'runAsNonRoot: true' enforces running as a non-root user but does not affect capabilities directly. 'capabilities: {add: ['NONE']}' is invalid syntax.",
+    "explanation": "To remove all Linux capabilities from a container, the 'capabilities' field under the container's securityContext should specify 'drop: ['ALL']'. This explicitly drops all added capabilities, minimizing the container's privileges.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Pod Security Admissions",
@@ -1334,8 +1321,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://www.redhat.com/sysadmin/linux-capabilities-kubernetes"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 168,
@@ -1350,7 +1337,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "The 'namespaceSelector' in a NetworkPolicy is used to select Pods in specific namespaces as sources or destinations for ingress or egress traffic rules. It does not select the namespaces where the policy itself is applied; NetworkPolicies are always applied within the namespace they are defined. It also does not label namespaces, deny traffic directly, or enforce policies cluster-wide. Instead, it allows fine-grained control over traffic based on namespace labels.",
+    "explanation": "The 'namespaceSelector' in a NetworkPolicy is used to select Pods in specific namespaces as sources or destinations for ingress or egress traffic rules. It does not select the namespaces where the policy itself is applied; NetworkPolicies are always applied within the namespace they are defined. It also does not label namespaces, deny traffic directly, or enforce policies cluster-wide.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Network Policy",
@@ -1364,8 +1351,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://docs.projectcalico.org/security/network-policy#namespace-selector"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 2,
+    "revision_date": "2025-04-18 17:30:24"
   },
   {
     "id": 171,
@@ -1439,25 +1426,24 @@ export const KubernetesSecurityFundamentalsQuestions = [
     ],
     "correct_answers": [
       0,
-      1,
       3
     ],
-    "explanation": "Secrets, ConfigMaps, and ServiceAccounts are considered sensitive Kubernetes resources because they often contain confidential information such as credentials, API keys, and configuration data. If compromised, these resources can lead to unauthorized access, privilege escalation, or data breaches. While Pods and PersistentVolumes are important, they are not as directly sensitive as the other three, although they can become so depending on the data they handle.",
+    "explanation": "Secrets and ServiceAccounts are considered sensitive Kubernetes resources because they often contain confidential information such as credentials, API keys, and tokens. If compromised, these resources can lead to unauthorized access, privilege escalation, or data breaches. ConfigMaps generally contain non-sensitive configuration data and are less critical from a security perspective. While Pods and PersistentVolumes are important, they are not typically audited for sensitive information unless they handle sensitive data explicitly.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Auditing",
     "sources": [
       {
-        "name": "Kubernetes Documentation - Auditing",
+        "name": "Kubernetes Official Documentation - Auditing",
         "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/"
       },
       {
-        "name": "Datadog - Key Kubernetes Audit Logs for Monitoring Cluster Security",
-        "url": "https://www.datadoghq.com/blog/key-kubernetes-audit-logs-for-monitoring-cluster-security/"
+        "name": "Kubernetes Official Documentation - Secrets",
+        "url": "https://kubernetes.io/docs/concepts/configuration/secret/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-06 14:18:35"
+    "revision": 2,
+    "revision_date": "2025-04-18 17:30:24"
   },
   {
     "id": 177,
@@ -1531,7 +1517,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
       "metadata.securityContext.allowPrivilegeEscalation: false"
     ],
     "correct_answers": [
-      3
+      1
     ],
     "explanation": "The correct field to disable privilege escalation for all containers in a Pod is 'spec.containers.securityContext.allowPrivilegeEscalation: false'. This must be set individually for each container within the Pod, as there is no global 'allowPrivilegeEscalation' setting at the Pod level.",
     "question_type": "single-choice",
@@ -1551,8 +1537,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://www.redhat.com/en/blog/guide-to-kubernetes-security-context-pod-security-policy-psp"
       }
     ],
-    "revision": 2,
-    "revision_date": "2025-04-18 15:18:54"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 181,
@@ -1719,9 +1705,10 @@ export const KubernetesSecurityFundamentalsQuestions = [
     ],
     "correct_answers": [
       0,
-      2
+      2,
+      3
     ],
-    "explanation": "The commands `kubectl get sa -n dev` and `kubectl get serviceaccounts --namespace=dev` both list all ServiceAccounts in the 'dev' namespace. Option 1 (`kubectl get serviceaccount -A`) lists ServiceAccounts across all namespaces, Option 3 (`kubectl describe serviceaccounts -n dev`) provides detailed information about ServiceAccounts in the 'dev' namespace but does not list them, and Option 4 (`kubectl list sa dev`) is not a valid `kubectl` command.",
+    "explanation": "The commands `kubectl get sa -n dev`, `kubectl get serviceaccounts --namespace=dev`, and `kubectl describe serviceaccounts -n dev` all list ServiceAccounts in the 'dev' namespace. The first two provide a summary list, while `kubectl describe` provides detailed information about each ServiceAccount. Option 1 (`kubectl get serviceaccount -A`) lists ServiceAccounts across all namespaces, and Option 4 (`kubectl list sa dev`) is not a valid `kubectl` command.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Authorization",
@@ -1735,8 +1722,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands/"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-02-06 16:21:58"
+    "revision": 3,
+    "revision_date": "2025-04-18 17:38:29"
   },
   {
     "id": 190,
@@ -2685,7 +2672,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
     "correct_answers": [
       1
     ],
-    "explanation": "An empty podSelector in a NetworkPolicy selects all pods in the namespace, creating a default-deny or default-allow pattern depending on policy types specified. This powerful selector requires careful implementation to avoid over-permissive rules. The correct answer (option 1) reflects the actual behavior, while other options misrepresent NetworkPolicy mechanics: validation (option 3), scope (option 4/5), and default behaviors (option 1 clarification needed in context).",
+    "explanation": "An empty podSelector in a NetworkPolicy selects all pods in the namespace, meaning the policy applies to all pods in that namespace. The effect on traffic depends on the policy's ingress and egress rules; it does not by itself create a default-allow or default-deny behavior. Administrators should carefully design policies with empty podSelectors to avoid unintended broad application. Other options misrepresent NetworkPolicy mechanics: validation errors (option 3) do not occur due to empty selectors, scope is not limited to new pods (option 4), and cross-namespace communication (option 5) requires explicit policy rules.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Network Policy",
@@ -2699,8 +2686,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://media.defense.gov/2022/Aug/29/2003066362/-1/-1/0/CTR_KUBERNETES_HARDENING_GUIDANCE_1.2_20220829.PDF"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 16:46:36"
+    "revision": 2,
+    "revision_date": "2025-04-18 17:30:24"
   },
   {
     "id": 286,
