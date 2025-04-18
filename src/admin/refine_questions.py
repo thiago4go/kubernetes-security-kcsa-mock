@@ -13,16 +13,16 @@ import shutil # For backup
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
 MODEL_NAME = "sonar" # Reverted to potentially valid name
 BATCH_SIZE = 5
-INPUT_DIR = "src/exported-questions"
-OUTPUT_DIR = "src/revised-questions"
+INPUT_DIR = "../../src/exported-questions"
+OUTPUT_DIR = "../../src/revised-questions"
 # Delay between API calls in seconds (to avoid rate limits if necessary)
 API_CALL_DELAY = 1
 
 # --- Logging Setup ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-NODE_UPDATE_SCRIPT = "src/admin/db-tools/update_questions.mjs"
-NODE_EXPORT_SCRIPT = "src/admin/db-tools/export_questions.mjs"
+NODE_UPDATE_SCRIPT = "db-tools/update_questions.mjs"
+NODE_EXPORT_SCRIPT = "db-tools/export_questions.mjs"
 
 # --- Prompt Template ---
 PROMPT_TEMPLATE = """
