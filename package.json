@@ -47,8 +47,12 @@
     "@babel/preset-react": "^7.26.3",
     "@craco/craco": "^7.1.0",
     "babel-jest": "^29.7.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.1",
     "jest": "^27.5.1",
     "sqlite3": "^5.1.7",
+    "stream-browserify": "^3.0.0",
+    "vm-browserify": "^1.1.2",
     "webpack-node-externals": "^3.0.0"
   }
 }
