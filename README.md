@@ -15,10 +15,7 @@ Access the live version of the app here:
 
 The latest update brings **significant improvements** to align with the **KCSA curriculum** and enhance maintainability:
 
-✅ **Migration from JSON-based storage to SQLite** for better classification and performance.  
-✅ **Questions categorized by domain and subdomain** (at the database level).  
-✅ **New `sources` column** added for tracking references (currently empty—**contributions welcome!**).  
-✅ **Scripts for exporting and updating questions** from SQLite.  
+✅ **AI powered question review python script** for better clarity and accuracy. 
 ✅ **Improved exam interface & question navigation.**  
 ✅ **Select Exam Domains:** Focus your practice by choosing specific Kubernetes security domains (under "Extra Options").
 
