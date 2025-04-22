@@ -21,7 +21,9 @@ The latest update brings **significant improvements** to align with the **KCSA c
 ✅ **Scripts for exporting and updating questions** from SQLite.  
 ✅ **Improved exam interface & question navigation.**  
 ✅ **Select Exam Domains:** Focus your practice by choosing specific Kubernetes security domains (under "Extra Options").
+
 ✅ **Enhanced Explanations:** Explanations now include verified sources/references.
+
 ✅ **Domain-Specific Results:** View your score broken down by domain on the results page.
 
 ---
