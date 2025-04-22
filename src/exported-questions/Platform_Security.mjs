@@ -1,6 +1,6 @@
 
 // Exported 34 questions for domain: Platform Security
-// Last revision date: 2025-04-18 18:33:20
+// Last revision date: 2025-04-22 20:19:59
 export const PlatformSecurityQuestions = [
   {
     "id": 11,
@@ -645,7 +645,7 @@ export const PlatformSecurityQuestions = [
       "Certificate"
     ],
     "correct_answers": [
-      2
+      1
     ],
     "explanation": "The Kubernetes resource 'CertificateSigningRequest' (CSR) is the official API object used to request a certificate signing operation. Users or components create a CSR object containing a public key and metadata; cluster administrators or automated controllers then approve and sign it. The other options are not valid Kubernetes resource kinds: 'CertificateRequest' and 'CertificateSigning' do not exist as Kubernetes resources; 'CertificateApproval' is not a resource but an action; 'Certificate' is not a Kubernetes resource for CSRs.",
     "question_type": "single-choice",
@@ -661,8 +661,8 @@ export const PlatformSecurityQuestions = [
         "url": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#certificatesigningrequest-v1-certificates-k8s-io"
       }
     ],
-    "revision": 2,
-    "revision_date": "2025-04-18 18:33:20"
+    "revision": 3,
+    "revision_date": "2025-04-22 20:19:59"
   },
   {
     "id": 237,
