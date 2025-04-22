@@ -33,13 +33,18 @@ The latest update brings **significant improvements** to align with the **KCSA c
 ✔️ **Randomized question order** in every exam session  
 ✔️ **Configurable question count** per exam  
 ✔️ **Select Exam Domains:** Choose specific domains for targeted practice (under "Extra Options").
+
 ✔️ **Interactive exam interface** (one question per page)  
 ✔️ **Navigation menu** for easy question review  
 ✔️ **Flag questions** for later review  
 ✔️ **Exam countdown timer**  
+
 ✔️ **Auto-scoring & detailed explanations** with sources/references.
+
 ✔️ **Domain-Specific Scoring:** Results page shows performance per domain.
+
 ✔️ **Fully responsive design** (mobile-friendly)  
+
 ✔️ **Progress saving** to handle page refreshes or accidental closures  
 
 ---
@@ -78,9 +83,11 @@ npm start
 
 1️⃣ Select the number of questions for your exam session.  
 2️⃣ **(Optional)** Choose specific **Exam Domains** to focus your practice (under "Extra Options").
+
 3️⃣ Click **"Start Exam"** to begin.  
 4️⃣ Answer each question & navigate using **"Previous" / "Next"** buttons.  
 5️⃣ **Flag questions** for review if needed.  
+
 6️⃣ Submit the exam when finished or when the timer runs out.  
 7️⃣ Review results, correct answers, explanations, and domain scores.  
 
