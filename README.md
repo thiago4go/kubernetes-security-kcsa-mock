@@ -16,7 +16,9 @@ Access the live version of the app here:
 The latest update brings **significant improvements** to align with the **KCSA curriculum** and enhance maintainability:
 
 ✅ **AI powered question review python script** for better clarity and accuracy. 
+
 ✅ **Improved exam interface & question navigation.**  
+
 ✅ **Select Exam Domains:** Focus your practice by choosing specific Kubernetes security domains (under "Extra Options").
 
 ✅ **Enhanced Explanations:** Explanations now include verified sources/references.
