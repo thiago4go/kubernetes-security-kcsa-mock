@@ -1,244 +1,465 @@
-body {
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-  margin: 0;
-  padding: 20px;
-  background-color: #f4f4f4;
-}
-
+/* General App Styles */
 .App {
-  max-width: 800px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  max-width: 900px;
   margin: 0 auto;
-  background-color: #fff;
   padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: #1d1d1f; /* Darker text */
+  background-color: #fff;
 }
 
-h1, h2 {
+.text-center {
+  text-align: center;
+}
+
+/* Homepage Specific Styles */
+.homepage-container {
+  padding: 20px 0;
+}
+
+/* Add space between top setup section and others */
+.homepage-inner > div:first-child {
+  margin-bottom: 50px;
+}
+
+.exam-title {
+  font-size: 2.5em;
+  font-weight: 600;
+  margin-bottom: 40px; /* Increased margin */
+  color: #1d1d1f;
+  text-align: center;
+}
+
+/* Exam Setup Card Styles */
+.exam-setup-card {
+  background-color: #f5f5f7; /* Apple-like light grey */
+  border: 1px solid #d2d2d7; /* Apple-like border */
+  border-radius: 18px; /* More rounded corners */
+  padding: 30px 35px;
+  max-width: 550px; /* Slightly wider */
+  margin: 0 auto; /* Center the card */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Softer shadow */
+  text-align: center;
+}
+
+/* New style for the top row */
+.setup-top-row {
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+  align-items: center; /* Vertically center the items in the row */
+  gap: 20px; /* Space between items */
+  margin-bottom: 25px; /* Space below the top row */
+  /* flex-wrap: wrap; Removed to force items onto one line */
+}
+
+.number-input-group {
+  display: flex; /* Arrange label and input horizontally */
+  align-items: center; /* Vertically align label and input */
+  gap: 10px; /* Space between label and input */
+}
+
+.input-label {
+  /* display: block; Ensure this is not active */
+  font-size: 1em; /* Slightly larger label */
+  color: #1d1d1f; /* Darker label text */
+  /* margin-bottom: 5px; Removed */
+  font-weight: 500;
+  /* white-space: nowrap; Ensure this is not active */
+  /* No margin needed, gap handles spacing */
+}
+
+.question-input {
+  padding: 12px 18px; /* Increased padding */
+  border: 1px solid #d2d2d7;
+  border-radius: 10px; /* More rounded input */
+  font-size: 1.1em; /* Larger input text */
+  width: 100px; /* Re-added fixed width */
+  text-align: center;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.question-input:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.25); /* Adjusted focus shadow */
+  outline: none;
+}
+
+/* Extra Options Toggle Styles */
+.extra-options-toggle {
+  margin: 25px auto; /* Increased spacing */
+  align-items: center; /* Center items vertically  make all center*/
+  display: flex; /* Use flexbox for alignment */
+  justify-content: center; /* Center items horizontally */
+  gap: 10px; /* Space between items */
+}
+
+.options-toggle-button {
+  background: none;
+  border: none;
+  color: #007aff;
+  cursor: pointer;
+  font-size: 0.95em; /* Slightly larger toggle text */
+  padding: 5px;
+  text-decoration: none; /* Remove underline */
+  font-weight: 500;
+}
+
+.options-toggle-button:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+/* Domain Options Card Styles */
+.domain-options-card {
+  border: 1px solid #e5e5e5;
+  background-color: #fff; /* White background for contrast */
+  padding: 20px 25px;
+  border-radius: 12px;
+  margin-top: 20px;
+  margin-bottom: 30px; /* Increased spacing */
+  text-align: left; /* Align content left */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.domain-selection-title {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.domain-selection-description {
+  font-size: 0.9em;
+  color: #6e6e73;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.domain-checkboxes {
+  display: grid; /* Use grid for alignment */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
+  gap: 10px; /* Space between items */
+}
+
+.domain-checkbox-item {
+  display: flex;
+  align-items: center;
+}
+
+.domain-checkbox {
+  margin-right: 8px;
+  cursor: pointer;
+  /* Consider custom checkbox styles for full Apple look */
+  accent-color: #007aff; /* Style checkbox color */
+  width: 16px;
+  height: 16px;
+}
+
+.domain-label {
+  font-size: 0.95em;
+  color: #1d1d1f;
+  cursor: pointer;
+  /* Capitalize text via CSS */
+  text-transform: capitalize;
+}
+
+/* Start Button Styles */
+.start-button {
+  background-color: #007aff; /* Apple blue */
+  color: white;
+  border: none;
+  border-radius: 10px; /* Match input radius */
+  padding: 12px 30px; /* Generous padding */
+  font-size: 1.1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+  /* display: inline-block; Removed */
+  margin-top: 0; /* Ensure no extra top margin */
+  /* The parent's align-items: center should handle vertical alignment */
+}
+
+.start-button:hover {
+  background-color: #005ecf; /* Darker blue on hover */
+}
+
+.start-button:active {
+  transform: scale(0.98); /* Slight shrink on click */
+}
+
+.start-button:disabled {
+  background-color: #d2d2d7; /* Disabled grey */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+
+/* --- Keep Existing Styles Below (Exam, Results, etc.) --- */
+/* Add placeholders for other component styles if they were in this file */
+
+/* Example: Results Component Styles (Keep/Adjust existing) */
+.results {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+.results h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.results p {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.domain-scores {
+  margin: 20px 0;
+  padding: 15px; /* Increased padding */
+  border: 1px solid #e0e0e0; /* Slightly softer border */
+  border-radius: 8px; /* Consistent radius */
+  background-color: #fff; /* White background */
+}
+.domain-scores h3 {
+  margin-top: 0;
+  margin-bottom: 15px; /* More space */
+  font-size: 1.1em;
   color: #333;
 }
+.domain-scores p {
+  margin: 8px 0; /* Adjust spacing */
+  font-size: 0.95em;
+}
+.domain-scores strong {
+  color: #1d1d1f; /* Darker text for domain name */
+}
 
-button {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
+.question-review {
+  background-color: #fff; /* White background for review cards */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.question-review h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+.question-review p {
+  margin: 8px 0; /* Consistent spacing */
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+.question-review strong { /* Style for bold labels */
+  font-weight: 600;
+  color: #333;
+}
+.sources-section button {
+  background-color: #e9e9eb; /* Lighter grey button */
+  color: #333;
+  border: 1px solid #d2d2d7;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.85em;
   cursor: pointer;
-  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+.sources-section button:hover {
+  background-color: #dcdce0;
+}
+.sources-section ul {
+  text-align: left; /* Ensure list is left-aligned */
+  margin-top: 8px;
+  margin-bottom: 0;
+  padding-left: 20px; /* Indent list */
+}
+.sources-section li {
+  margin-bottom: 5px;
+  font-size: 0.9em;
+}
+.sources-section a {
+  color: #007aff;
+  text-decoration: none;
+}
+.sources-section a:hover {
+  text-decoration: underline;
 }
 
-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
+/* Add styles for other components like Exam, Navigation, ProgressBar, SideMenu if needed */
+.exam {
+  /* Styles for the main exam container */
+}
+.timer {
+  text-align: right;
+  font-weight: bold;
+  margin-bottom: 15px;
+  font-size: 1.1em;
+  color: #555;
+}
+.exam-content {
+  display: flex;
+  gap: 20px; /* Space between side menu and main content */
+}
+.main-content {
+  flex-grow: 1; /* Allow main content to take available space */
+}
+.toggle-menu-btn {
+  /* Basic styling for the toggle button */
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+  /* display: inline-block; Removed as flex item behavior is sufficient */
+  margin-top: 0; /* Ensure no extra top margin */
+  /* Align self might be needed if flex-end isn't enough, but try parent first */
+  /* align-self: flex-end; */
 }
 
-input[type="number"] {
-  width: 60px;
-  padding: 5px;
-  margin-left: 10px;
+.side-menu {
+  /* Styles for the side menu */
+  min-width: 200px; /* Example width */
+  border-right: 1px solid #eee;
+  padding-right: 15px;
 }
 
-.question {
+.progress-bar {
+  /* Styles for the progress bar */
+  width: 100%;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
   margin-bottom: 20px;
+}
+.progress-bar div {
+  height: 100%;
+  background-color: #007aff; /* Apple blue progress */
+  transition: width 0.3s ease;
 }
 
 .navigation {
+  /* Styles for the navigation buttons container */
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
 }
+.navigation button {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  font-size: 0.95em;
+}
+.navigation button:hover {
+  background-color: #eee;
+}
+.navigation button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.navigation .flag-button.flagged {
+  background-color: #ffdddd; /* Indicate flagged state */
+  border-color: #ffaaaa;
+}
 
-.progress-bar {
-  width: 100%;
-  height: 20px;
-  background-color: #e0e0e0;
-  border-radius: 10px;
+.question {
+  /* Styles for the question display area */
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #eee;
   margin-bottom: 20px;
-  position: relative;
 }
-
-.progress {
-  height: 100%;
-  background-color: #4CAF50;
-  border-radius: 10px;
-  transition: width 0.3s ease-in-out;
-}
-
-.progress-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #333;
-  font-weight: bold;
-}
-
-.timer {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.question-review {
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
-
-.exam-content {
-  display: flex;
-  position: relative;
-}
-
-.side-menu {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 250px;
-  padding: 20px;
-  background-color: #f0f0f0;
-  border-right: 1px solid #ddd;
-  z-index: 10;
-  overflow-y: auto;
-  transition: transform 0.3s ease-in-out;
-}
-
-.side-menu h3 {
+.question h2 {
   margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.3em;
+  line-height: 1.4;
 }
-
-.side-menu ul {
-  list-style-type: none;
-  padding: 0;
+.question form div {
+  margin-bottom: 10px;
 }
-
-.side-menu li {
-  padding: 10px;
-  cursor: pointer; /* This line ensures the pointer cursor on hover */
-  border-bottom: 1px solid #ddd;
-}
-
-.side-menu li:hover {
-  background-color: #e0e0e0;
-}
-
-.side-menu li.active {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.side-menu li.flagged {
-  color: #f44336;
-}
-
-.side-menu li.answered {
-  font-weight: bold;
-}
-
-.main-content {
-  flex-grow: 1;
-  padding: 20px;
-  margin-left: 0;
-  transition: margin-left 0.3s ease-in-out;
-}
-
-.toggle-menu-btn {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 20;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.close-menu-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-@media (max-width: 768px) {
-  .side-menu {
-    width: 100%;
-    transform: translateX(-100%);
-  }
-
-  .side-menu.open {
-    transform: translateX(0);
-  }
-}
-
-@media (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-
-  .App {
-    padding: 10px;
-  }
-
-  button {
-    padding: 8px 16px;
-    font-size: 14px;
-  }
-}
-
-.side-menu li {
-  padding: 10px;
-  cursor: pointer;
-  border-bottom: 1px solid #ddd;
-  display: flex;
-  justify-content: space-between;
+.question label {
+  display: flex; /* Align checkbox/radio with text */
   align-items: center;
+  cursor: pointer;
+  font-size: 1em;
+}
+.question input[type="radio"],
+.question input[type="checkbox"] {
+  margin-right: 10px;
+  cursor: pointer;
+  accent-color: #007aff; /* Style radio/checkbox color */
+  width: 18px; /* Slightly larger */
+  height: 18px;
 }
 
-.side-menu li:hover {
-  background-color: #e0e0e0;
+/* Styles for About, Creator, Community sections (Add or adjust as needed) */
+.about-container, .creator-container, .community-container {
+  background-color: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 20px 25px;
+  margin-top: 30px; /* Ensure spacing */
 }
-
-.side-menu li.active {
-  background-color: #4CAF50;
-  color: white;
+.section-title {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e5e5;
 }
-
-.side-menu li.flagged .flag-icon {
-  color: #f44336;
+.about-text, .creator-content p, .community-content p {
+  font-size: 0.95em;
+  line-height: 1.6;
+  color: #333;
 }
-
-.side-menu li.answered .answered-icon {
-  color: #4CAF50;
+.github-link, .link {
+  color: #007aff;
+  text-decoration: none;
+  font-weight: 500;
 }
-
-.question-number {
-  flex-grow: 1;
+.github-link:hover, .link:hover {
+  text-decoration: underline;
 }
-
-.question-indicators {
+.creator-details dt, .community-details dt {
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 5px;
+}
+.creator-details dd, .community-details dd {
+  margin-left: 0;
+  margin-bottom: 15px;
+  font-size: 0.95em;
+}
+.image-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.responsive-image {
+  max-width: 150px; /* Control image size */
+  height: auto;
+  border-radius: 50%; /* Circular image */
+  border: 3px solid #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.links {
   display: flex;
-  gap: 5px;
+  gap: 15px;
+}
+.community-logo img {
+  max-width: 100px;
+  height: auto;
+  margin-top: 10px;
 }
 
-.flag-icon,
-.answered-icon,
-.active-icon {
-  font-size: 16px;
-}
-
+/* Utility classes */
+.mt-2 { margin-top: 0.5rem; } /* Example utility class */

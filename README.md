@@ -20,6 +20,9 @@ The latest update brings **significant improvements** to align with the **KCSA c
 ✅ **New `sources` column** added for tracking references (currently empty—**contributions welcome!**).  
 ✅ **Scripts for exporting and updating questions** from SQLite.  
 ✅ **Improved exam interface & question navigation.**  
+✅ **Select Exam Domains:** Focus your practice by choosing specific Kubernetes security domains (under "Extra Options").
+✅ **Enhanced Explanations:** Explanations now include verified sources/references.
+✅ **Domain-Specific Results:** View your score broken down by domain on the results page.
 
 ---
 
@@ -28,11 +31,13 @@ The latest update brings **significant improvements** to align with the **KCSA c
 ✔️ **290+ Carefully crafted questions** (UPDATED)  
 ✔️ **Randomized question order** in every exam session  
 ✔️ **Configurable question count** per exam  
+✔️ **Select Exam Domains:** Choose specific domains for targeted practice (under "Extra Options").
 ✔️ **Interactive exam interface** (one question per page)  
 ✔️ **Navigation menu** for easy question review  
 ✔️ **Flag questions** for later review  
 ✔️ **Exam countdown timer**  
-✔️ **Auto-scoring & detailed explanations**  
+✔️ **Auto-scoring & detailed explanations** with sources/references.
+✔️ **Domain-Specific Scoring:** Results page shows performance per domain.
 ✔️ **Fully responsive design** (mobile-friendly)  
 ✔️ **Progress saving** to handle page refreshes or accidental closures  
 
@@ -71,11 +76,12 @@ npm start
 ## **📌 Usage**  
 
 1️⃣ Select the number of questions for your exam session.  
-2️⃣ Click **"Start Exam"** to begin.  
-3️⃣ Answer each question & navigate using **"Previous" / "Next"** buttons.  
-4️⃣ **Flag questions** for review if needed.  
-5️⃣ Submit the exam when finished or when the timer runs out.  
-6️⃣ Review results, correct answers, and explanations.  
+2️⃣ **(Optional)** Choose specific **Exam Domains** to focus your practice (under "Extra Options").
+3️⃣ Click **"Start Exam"** to begin.  
+4️⃣ Answer each question & navigate using **"Previous" / "Next"** buttons.  
+5️⃣ **Flag questions** for review if needed.  
+6️⃣ Submit the exam when finished or when the timer runs out.  
+7️⃣ Review results, correct answers, explanations, and domain scores.  
 
 ---
 
@@ -202,8 +208,8 @@ Our goal is to **continuously improve the KCSA Mock Exam App** by keeping the qu
 
 #### **🛠 Planned Enhancements:**  
 - **[Ongoing]** **Keep Questions Updated** – Ensure alignment with **latest KCSA exam domains** and security best practices.  
-- [ ] **Use Classified Questions by Domain Exam** – Improve UX for **targeted learning** domain.  
-- [ ] **Improve Explanations with Sources** – Add **verified references** to help users understand correct answers.  
+- [X] **Use Classified Questions by Domain Exam** – Improve UX for **targeted learning** domain.  
+- [X] **Improve Explanations with Sources** – Add **verified references** to help users understand correct answers.  
 - [ ] **Advanced Analytics & Learning Insights** – Track **weakest topics**, **attempt history**, and **improvement trends**.  
 - [ ] **Implement Spaced Repetition System (SRS)** – Prioritize difficult questions for better retention. 
 - [ ] **Enhance Community Collaboration** – Open a **public issue tracker** for reporting **errors and missing sources**.  
