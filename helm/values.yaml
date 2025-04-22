@@ -1,0 +1,86 @@
+# Namespace configuration
+namespace:
+  create: true  # Whether to create the namespace if it doesn't exist
+  name: kcsa-prod  # Name of the namespace to deploy to
+  psa:
+    enforce: restricted  # Pod Security Admission level to enforce
+    audit: baseline      # PSA audit level
+    warn: baseline       # PSA warning level
+
+# Environment name used in labels or naming
+env:
+  name: production  # Environment identifier
+
+# Labels applied to Kubernetes objects
+labels:
+  app: "kcsa-mock"  # Base app label
+  additional:
+    version: "v1"  # Additional custom label
+
+# Docker image configuration
+image:
+  repository: "registry.gitlab.com/devops_gabs/kcsa-mock"  # Image repository
+  tag: "latest"  # Image tag to use
+  pullPolicy: "IfNotPresent"  # Image pull policy
+
+# Kubernetes Service definition
+service:
+  name: "kcsa-mock-prod"  # Name of the service
+  port: 3000  # Port exposed by the service
+  targetPort: 3000  # Port the container listens on
+  type: ClusterIP  # Internal cluster-facing service
+
+# Resource requests and limits
+resources:
+  requests:
+    cpu: "50m"  # Minimum CPU the container is guaranteed
+    memory: "128Mi"  # Minimum memory the container is guaranteed
+  limits:
+    cpu: "200m"  # Maximum CPU the container can use
+    memory: "512Mi"  # Maximum memory the container can use
+
+# Number of pod replicas
+replicaCount: 1  # Initial number of replicas
+
+# Annotations for deployment, service, and ingress
+annotations:
+  deployment:
+    description: "Mock service for kcsa exam"  # Description of the deployment
+    maintainer: "contato@gabrielandre.com.br"  # Contact for the deployment
+  service:
+    description: "Mock service for kcsa exam"  # Description of the service
+    maintainer: "contato@gabrielandre.com.br"  # Contact for the service
+  ingress:
+    description: "Ingress for mock service"  # Description of the ingress
+
+# Ingress configuration
+ingress:
+  name: "kcsa-mock-ingress"  # Ingress resource name
+  tls:
+    enabled: false  # Whether TLS is enabled
+    issuer: "letsencrypt-prod"  # TLS certificate issuer
+    secretName: "kcsa-mock-tls"  # Secret name for TLS cert
+  hosts:
+    - host: "kcsa.gabrielandre.com.br"  # Ingress hostname
+      paths:
+        - /  # Path handled by this ingress
+
+# Network Policy settings
+networkPolicy:
+  enabled: true  # Enable or disable NetworkPolicy
+
+# Horizontal Pod Autoscaler configuration
+hpa:
+  enabled: true  # Enable HPA
+  minReplicas: 1  # Minimum number of replicas
+  maxReplicas: 5  # Maximum number of replicas
+  targetMemoryUtilization: 80  # Target memory usage percentage for scaling
+
+# RBAC configuration
+rbac:
+  serviceAccountName: "kcsa-mock-service-account"  # ServiceAccount to use for this deployment
+
+# Pod Disruption Budget settings
+pdb:
+  enabled: true  # Enable PodDisruptionBudget
+  minAvailable: 1  # Minimum number of pods that must be available during disruptions

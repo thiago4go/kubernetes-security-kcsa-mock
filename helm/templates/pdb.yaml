@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: kcsa-mock-pdb
+  namespace: {{ .Values.namespace.name }}
+spec:
+  minAvailable: {{ .Values.pdb.minAvailable | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ .Values.labels.app | default "kcsa-mock" }}

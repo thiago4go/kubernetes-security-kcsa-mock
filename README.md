@@ -77,6 +77,10 @@ npm start
 ### **📌 Docker Compose Deploy**  
 
 [Documentation](docker-compose/README.md)
+
+### **📌 Helm Kubernetes Deploy**  
+
+[Documentation](helm/README.md)
 ---
 
 ## **📌 Usage**  
