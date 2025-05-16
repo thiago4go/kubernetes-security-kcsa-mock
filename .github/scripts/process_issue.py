@@ -275,7 +275,7 @@ def find_question_file(question_id=None, question_text=None, correct_answer=None
     logging.warning("Could not find a matching question in any file")
     return None
 
-def run_refine_script(question_domain, question_id=None, revision=0):
+def run_refine_script(question_domain, question_id=None):
     """Run the refine_questions.py script for the given domain."""
     logging.info(f"Running refine script for domain: {question_domain}")
     
@@ -283,7 +283,6 @@ def run_refine_script(question_domain, question_id=None, revision=0):
         "python3", 
         REFINE_SCRIPT, 
         "--category", question_domain,
-        "--revision", str(revision)
     ]
     
     # Add question ID parameter if provided
@@ -462,8 +461,9 @@ def main():
         success = run_review_script(question_info["domain"], question_info["id"])
     else:
         # Run the refine script for targeted fixes
-        # For revision, we use 1 as the default to target questions that have already been through initial processing
-        success = run_refine_script(question_info["domain"], question_info["id"], revision=1)
+        # Try both revision 0 and 1 if the first attempt fails
+        success = run_refine_script(question_info["domain"], question_info["id"])
+
     
     if not success:
         logging.error("Script execution failed")
