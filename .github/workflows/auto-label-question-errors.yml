@@ -1,0 +1,100 @@
+name: Auto-label Issues
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  auto-label:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    
+    steps:
+      - name: Check issue for patterns and apply labels
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GH_PAT}}
+          script: |
+            const issue = context.payload.issue;
+            let labelsToAdd = [];
+            
+            // ------- Question Error Detection -------
+            // Skip if already labeled
+            if (!issue.labels.some(label => label.name === 'question-error')) {
+              // Check for question error patterns in title or body
+              const questionErrorPatterns = [
+                /question error/i,
+                /incorrect answer/i,
+                /wrong answer/i,
+                /error.*answer/i,
+                /answer.*error/i,
+                /error.*question/i,
+                /question.*wrong/i,
+                /explanation.*wrong/i,
+                /explanation.*incorrect/i,
+                /error.*explanation/i
+              ];
+              
+              // Check title
+              const titleHasPattern = questionErrorPatterns.some(pattern => pattern.test(issue.title));
+              
+              // Check body
+              const bodyHasPattern = issue.body && questionErrorPatterns.some(pattern => pattern.test(issue.body));
+              
+              // Check for question: and correct answer: patterns in body
+              const hasQuestionFormat = issue.body && 
+                (/question:.*your answer:.*correct answer:/is.test(issue.body) || 
+                 /Question:.*(?:correct|actual) answer:/is.test(issue.body));
+              
+              // Add label if any check passes
+              if (titleHasPattern || bodyHasPattern || hasQuestionFormat) {
+                console.log('Detected question error issue, adding label');
+                labelsToAdd.push('question-error');
+              }
+            }
+            
+            // ------- Feature Request Detection -------
+            // Skip if already labeled
+            if (!issue.labels.some(label => label.name === 'enhancement')) {
+              // Check for feature request patterns
+              const featurePatterns = [
+                /\[feature request\]/i,
+                /feature request/i,
+                /enhancement/i,
+                /new feature/i,
+                /add feature/i,
+                /feature idea/i,
+                /suggestion/i,
+                /would be nice/i,
+                /as a user.*I want/i,
+                /user story/i
+              ];
+              
+              // Check title and body for feature patterns
+              const titleHasFeaturePattern = featurePatterns.some(pattern => pattern.test(issue.title));
+              const bodyHasFeaturePattern = issue.body && featurePatterns.some(pattern => pattern.test(issue.body));
+              
+              // Check for user story format
+              const hasUserStoryFormat = issue.body && 
+                (/as a.*I want.*so that/is.test(issue.body));
+              
+              // Add label if any check passes
+              if (titleHasFeaturePattern || bodyHasFeaturePattern || hasUserStoryFormat) {
+                console.log('Detected feature request, adding enhancement label');
+                labelsToAdd.push('enhancement');
+              }
+            }
+            
+            // ------- Apply all collected labels -------
+            if (labelsToAdd.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labelsToAdd
+              });
+              console.log(`Added labels: ${labelsToAdd.join(', ')}`);
+            } else {
+              console.log('No labels to add');
+            }

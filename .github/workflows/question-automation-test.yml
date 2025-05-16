@@ -1,0 +1,52 @@
+name: Question Automation Self-Test
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/scripts/**'
+      - '.github/workflows/question-fix-automation.yml'
+      - 'src/admin/refine_questions.py'
+      - 'src/admin/review_questions.py'
+  workflow_dispatch:
+    inputs:
+      testTitle:
+        description: 'Test issue title'
+        required: true
+        default: 'Test error on question #1'
+      testBody:
+        description: 'Test issue body'
+        required: true
+        default: 'Domain: Kubernetes_Security_Fundamentals\n\nProblem: This is a test issue.\n\nNeeds comprehensive review: No'
+
+jobs:
+  test-question-automation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Node.js dependencies
+        run: npm install
+
+      - name: Install Python dependencies
+        run: |
+          pip install requests
+
+      - name: Run test script in dry-run mode
+        env:
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
+        run: |
+          cd .github/scripts
+          python test_automation.py --title "${{ github.event.inputs.testTitle || 'Test error on question #1' }}" --body "${{ github.event.inputs.testBody || 'Domain: Kubernetes_Security_Fundamentals\n\nProblem: This is a test issue.\n\nNeeds comprehensive review: No' }}" --dry-run

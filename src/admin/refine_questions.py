@@ -11,7 +11,7 @@ import shutil # For backup
 
 # --- Configuration ---
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
-MODEL_NAME = "sonar" # Reverted to potentially valid name
+MODEL_NAME = "sonar-pro" # Reverted to potentially valid name
 BATCH_SIZE = 5
 INPUT_DIR = "../../src/exported-questions"
 OUTPUT_DIR = "../../src/revised-questions"
@@ -26,48 +26,67 @@ NODE_EXPORT_SCRIPT = "db-tools/export_questions.mjs"
 
 # --- Prompt Template ---
 PROMPT_TEMPLATE = """
-Please analyze the provided JSON array of question objects. Your task is to identify and revise questions ONLY if they meet specific criteria: incorrectness, lack of clarity, or use of deprecated information. Do NOT make stylistic changes or rephrase content that is already accurate and clear.
+Please analyze the provided JSON array of question objects. Your primary task is to meticulously identify and revise questions *only* if they meet specific criteria: factual incorrectness, lack of clarity for a KCSA-level audience, or the use of significantly deprecated Kubernetes information. You must *not* make stylistic changes or rephrase content that is already accurate, clear, and current.
 
-1.  **Identify Necessary Revisions:** Analyze each question object. Suggest revisions *only* if the question, options, correct answers, or explanation meet one or more of the following criteria:
-    *   **Incorrect:** Contains factually inaccurate information regarding Kubernetes concepts, features, or best practices.
-    *   **Unclear:** Is ambiguous, poorly worded, lacks essential context for the target audience (Kubernetes practitioners), or could be easily misinterpreted.
-    *   **Deprecated:** Refers to outdated Kubernetes features, APIs, or practices that are no longer recommended or relevant in current versions.
+1.  **Identify Necessary Revisions (Strict Criteria):**
+    Carefully examine each question object. Propose revisions *only* if the question, its options, the designated correct answers, or the explanation meet one or more of the following conditions:
+    * **Incorrect:** Contains factually inaccurate information regarding Kubernetes concepts, features, security best practices, or KCSA-relevant tooling.
+    * **Unclear/Ambiguous:** The question is worded in a way that is ambiguous, lacks crucial context for understanding by someone with KCSA-level knowledge, or could be easily misinterpreted, thereby failing to accurately assess knowledge.
+    * **Deprecated Information:** Refers to Kubernetes features, API versions (e.g., beta APIs that have long graduated or been removed), commands, or practices that are significantly outdated (e.g., deprecated for more than 1-2 years or superseded by clear, widely adopted alternatives) and no longer relevant for current Kubernetes versions (assume target is recent stable versions, e.g., v1.27+ as of May 2025) or KCSA exam objectives.
 
-2.  **Perform Targeted Revisions:** If a question meets the criteria above, revise *only the necessary parts* (question text, options, correct answers, explanation) to correct the inaccuracy, improve clarity, or update deprecated information.
+2.  **Perform Minimal, Targeted Revisions:**
+    * If a question meets the criteria above, revise *only the specific parts* (e.g., a single option, a sentence in the explanation, the question phrasing) that are incorrect, unclear, or deprecated.
+    * The goal is to correct/update, not to rewrite extensively if other parts of the question remain valid.
+    * Ensure revisions maintain or improve alignment with KCSA-level understanding and terminology.
 
-3.  **Update Sources (If Applicable):** If revisions are made, ensure the provided sources still support the updated content. If existing sources are insufficient or outdated, replace or add reputable, current sources (official documentation, respected industry standards). Aim for at least two relevant sources for revised questions. If no revisions are needed, keep the original sources.
+3.  **Update Sources (Conditionally):**
+    * If revisions were made (especially for incorrectness or deprecated information), critically evaluate the existing sources.
+    * Replace or add new sources *only if* the original sources no longer support the corrected/updated content or if they themselves point to deprecated information.
+    * New or replacement sources must be authoritative and current (e.g., official Kubernetes documentation for the relevant feature, CNCF blogs, reputable Kubernetes security references). Aim for at least two robust sources supporting any revised content.
+    * If no revisions are made to the question content, or if original sources still adequately support minor clarifications, retain the original sources.
 
-4.  **Maintain Structure and Metadata:** For *revised* questions, update the `revision` field to `1` and set `revision_date` to today's date (`{today_date}`). For questions *not* needing revision, return the original object unchanged, including its original `revision` and `revision_date` values (likely `0` and `null` based on input filtering).
+4.  **Preserve Original Content and Metadata where No Revision is Warranted:**
+    * If a question *does not* meet any of the criteria in point 1, return the original question object *completely unchanged*. This includes its `id`, `question`, `options`, `correct_answers`, `explanation`, `question_type`, `domain`, `subdomain`, `sources`, original `revision` value, and original `revision_date`.
 
-5.  **Output Structured JSON:** The output MUST be a valid JSON array containing *all* original questions processed in the batch, with revisions applied *only* where necessary based on the criteria above. The structure for EACH question object (revised or original) within the response array should strictly follow this format:
+5.  **Output Structured JSON (Strict Adherence):**
+    The output MUST be a single, valid JSON array containing *all* question objects from the input batch.
+    * For questions that were revised, update the `revision` field by incrementing its previous value (or setting to `1` if it was `0` or `null`). Set `revision_date` to **2025-05-16**.
+    * For questions *not* revised, all fields, including `revision` and `revision_date`, must remain identical to the input.
 
+    The structure for EACH question object (whether revised or original) in the response array must strictly follow:
     ```json
     {
-      "id": <question_id>,
+      "id": "<question_id>", // Unchanged
       "question": "<question_text>", // Revised only if incorrect/unclear/deprecated
-      "options": [
+      "options": [ // Array revised only if options were incorrect/unclear/deprecated
         "<option_1_text>",
         "<option_2_text>",
         "<option_3_text>",
         "<option_4_text>",
         "<option_5_text>"
-      ], // Revised only if incorrect/unclear/deprecated
+      ],
       "correct_answers": [ <correct_option_index_1>, ... ], // Revised only if incorrect
       "explanation": "<explanation_text>", // Revised only if incorrect/unclear/deprecated
-      "question_type": "<question_type>", // Revised only if updated
-      "domain": "<domain>", // Keep original
-      "subdomain": "<subdomain>", // Keep original
-      "sources": [
+      "question_type": "<question_type>", // Unchanged unless the nature of the fix requires it (rare)
+      "domain": "<domain>", // Unchanged
+      "subdomain": "<subdomain>", // Unchanged
+      "sources": [ // Updated only if revision occurred AND original sources became invalid/insufficient
         { "name": "<source_1_name>", "url": "<source_1_url>" },
-        { "name": "<source_2_name>", "url": "<source_2_url>" },
-        ...
-      ], // Updated only if revision occurred or original sources invalid
-      "revision": <original_revision_or_1>, // 1 if revised this run, else original value
-      "revision_date": "<original_date_or_YYYY-MM-DD>" // Today's date if revised, else original value
+        { "name": "<source_2_name>", "url": "<source_2_url>" }
+      ],
+      "revision": <updated_or_original_revision_value>,
+      "revision_date": "<2025-05-16_or_original_revision_date>"
     }
     ```
 
-6.  **Generate PR Messages (for Revised Questions):** For *each question that was revised*, create a concise pull request (PR) message summarizing the *specific reason* for the change (e.g., "Corrected factual error in explanation", "Clarified ambiguous wording", "Updated deprecated API reference") and the nature of the revision. Return these PR messages separately after the JSON block, prefixed with "--- PR MESSAGES ---" and separated by double newlines (\n\n). Do *not* generate PR messages for unchanged questions.
+6.  **Generate PR Messages (Only for Revised Questions):**
+    * After the JSON block, provide a concise PR message *only for each question that was actually revised*.
+    * Prefix this section with "--- PR MESSAGES ---".
+    * Each message must clearly state:
+        * The `id` of the question.
+        * The *specific reason* for the revision (e.g., "Corrected factual error regarding etcd backup procedures in explanation.", "Clarified ambiguous wording in question related to NetworkPolicy ingress rules.", "Updated deprecated `kubectl run` flag to current equivalent.", "Replaced outdated API version for PodSecurityPolicy with information on Pod Security Admission.").
+        * A brief summary of the change (e.g., "Explanation now states X instead of Y.", "Question rephrased for clarity.", "Option C updated from Z to A and relevant source added.").
+    * Separate PR messages with double newlines (`\n\n`). Do *not* generate PR messages for unchanged questions.
 
 ---
 Input JSON Array of Questions:

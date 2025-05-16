@@ -1,4 +1,3 @@
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues](https://img.shields.io/github/issues/thiago4go/kubernetes-security-kcsa-mock)](https://github.com/thiago4go/kubernetes-security-kcsa-mock/issues)
 [![GitHub stars](https://img.shields.io/github/stars/thiago4go/kubernetes-security-kcsa-mock)](https://github.com/thiago4go/kubernetes-security-kcsa-mock/stargazers)
@@ -29,22 +28,15 @@ Preparing for security certifications requires practice. This KCSA Mock Exam Sim
     * Select specific Kubernetes security domains for targeted practice.
 * **Interactive Interface:**
     * One question displayed per page for focused attention.
-    * Easy navigation menu.
-    * Flag questions for later review.
-* **Exam Simulation:**
-    * Countdown timer to simulate exam conditions.
-    * Auto-scoring upon completion.
-* **Detailed Feedback:**
-    * In-depth explanations for each question, often with sources.
-    * Domain-specific scoring to pinpoint areas needing improvement.
-* **User-Friendly Design:**
-    * Fully responsive for use on desktops, tablets, and mobile devices.
-    * Saves progress automatically to handle accidental page refreshes or closures.
-* **Data Management:** Uses SQLite for efficient database management of questions.
-* **Question Management Scripts:** Includes scripts for:
-    * Exporting questions.
-    * Updating questions.
-    * AI-powered scripts for reviewing and refining questions.
+    * Progress tracking to monitor your advancement.
+    * Mark questions for review.
+    * Summary page with final score and domain-specific performance.
+* **Detailed Explanations:** Each question includes a comprehensive explanation of the correct answer.
+* **Domain Categorization:** Questions are organized by specific Kubernetes security domains for targeted study.
+* **Responsive Design:** Access the simulator on various devices without sacrificing functionality.
+* **AI-Powered Question Improvements:** Questions are continuously improved using the Perplexity API and community feedback.
+* **Automated Error Handling:** Our automated GitHub Actions workflow processes question error reports and creates pull requests with fixes.
+* **Community-Driven:** Question errors reported via GitHub issues are automatically processed, fixed using AI, and submitted as pull requests for review.
 
 ## 🎯 Target Audience
 
@@ -56,8 +48,6 @@ This tool is ideal for:
 
 ## 🛠️ Getting Started
 
-*(This section assumes the project can be run locally or has a publicly hosted version. Adjust as necessary.)*
-
 ### Prerequisites
 
 * Basic understanding of Kubernetes concepts.
@@ -68,90 +58,61 @@ This tool is ideal for:
 
 *(If there's a live demo or hosted version, provide the URL here)*
 
-1.  Navigate to: `[Your_Hosted_App_URL_Here]`
+1.  Navigate to: 🔗 [**Kubernetes Security KCSA Mock Exam**](https://kubernetes-security-kcsa-mock.vercel.app/)
 2.  Configure your desired exam settings (number of questions, domains).
 3.  Start the exam!
 
 ### Option 2: Running Locally
 
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/thiago4go/kubernetes-security-kcsa-mock.git](https://github.com/thiago4go/kubernetes-security-kcsa-mock.git)
-    cd kubernetes-security-kcsa-mock
-    ```
-2.  **Set up the environment:**
-    *(Provide specific instructions here, e.g., Python virtual environment, installing dependencies)*
-    ```bash
-    # Example for Python:
-    # python -m venv venv
-    # source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-    # pip install -r requirements.txt
-    ```
-3.  **Initialize the database (if needed):**
-    *(Provide instructions if there's a setup script for SQLite)*
-    ```bash
-    # Example:
-    # python init_db.py
-    ```
-4.  **Run the application:**
-    *(Provide command to start the web server)*
-    ```bash
-    # Example for Flask:
-    # flask run
-    # Or:
-    # python app.py
-    ```
-5.  Open your web browser and go to `http://localhost:PORT` (e.g., `http://localhost:5000`).
+### **📌 Prerequisites**  
+- Node.js (v14 or later)  
+- npm (v6 or later)  
+
+ **📌 Installation**  
+1️⃣ **Clone the repository:**  
+```bash
+git clone https://github.com/thiago4go/kubernetes-security-kcsa-mock.git
+```
+2️⃣ **Navigate to the project directory:**  
+```bash
+cd kubernetes-security-kcsa-mock
+```
+3️⃣ **Install dependencies:**  
+```bash
+npm install
+```
+4️⃣ **Start the development server:**  
+```bash
+npm start
+```
+5️⃣ Open your browser and visit **`http://localhost:3000`** to use the application.  
+
+### Option 3: Running on Docker
+## **📌 Docker Compose Deploy**  
+
+[Documentation](docker-compose/README.md)
+---
 
 ## 📚 Question Structure & Domains
 
-The questions are organized based on the official KCSA exam domains, which may include (but are not limited to):
+The questions are organized based on the official KCSA exam domains:
 
-* Cluster Setup & Hardening
-* System Hardening
-* Network Security
-* Pod Security
-* Secrets Management
-* RBAC and Service Accounts
-* Supply Chain Security
-* Monitoring, Logging, and Runtime Security
+## Question Metadata
 
-*(Verify and update this list based on the actual domains covered in the app)*
+Here is the current metadata for our questions:
+<place-holder for question metadata>
+
+<end of place-holder>
 
 ## 🤝 Contributing
 
 Contributions are welcome and greatly appreciated! Whether it's adding new questions, improving existing ones, enhancing the application features, or fixing bugs, your help can make this tool even better.
 
-### How to Contribute:
+### **🛠 How to Update Questions**  
+We welcome contributions to improve the **question bank**!  
+If you spot an error, want to add references, or update a question, follow these steps:  
 
-1.  **Fork the repository.**
-2.  **Create a new branch** for your feature or bug fix:
-    ```bash
-    git checkout -b feature/your-feature-name
-    ```
-    or
-    ```bash
-    git checkout -b fix/issue-description
-    ```
-3.  **Make your changes.**
-    * **Adding Questions:** Follow the existing format for questions. Ensure you provide clear explanations and sources where possible. Use the provided scripts if they assist in this process.
-    * **Code Changes:** Adhere to the project's coding style and conventions. Add comments where necessary.
-4.  **Test your changes thoroughly.**
-5.  **Commit your changes:**
-    ```bash
-    git commit -m "feat: Add amazing new feature" # or "fix: Resolve specific bug"
-    ```
-6.  **Push to your forked repository:**
-    ```bash
-    git push origin feature/your-feature-name
-    ```
-7.  **Open a Pull Request** against the `main` (or `master`) branch of the original repository. Provide a clear description of your changes.
-
-### Using Question Management Scripts
-
-The project includes scripts to help manage the question bank, including AI-powered tools for review. Refer to the documentation or comments within these scripts for usage instructions.
-
-*(Consider adding a separate `CONTRIBUTING.md` for more detailed guidelines if the project grows)*
+📖 **See [CONTRIBUTING.md](CONTRIBUTING.md) for details.**  
 
 ## 📜 License
 

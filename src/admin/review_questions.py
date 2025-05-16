@@ -11,7 +11,7 @@ import shutil # For backup
 
 # --- Configuration ---
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
-MODEL_NAME = "sonar" # Reverted to potentially valid name
+MODEL_NAME = "sonar-pro" # Reverted to potentially valid name
 BATCH_SIZE = 5
 INPUT_DIR = "../../src/exported-questions"
 OUTPUT_DIR = "../../src/revised-questions"
@@ -27,49 +27,72 @@ NODE_EXPORT_SCRIPT = "db-tools/export_questions.mjs"
 # --- Prompt Template ---
 # Note: Ensure the JSON placeholder is exactly where the batch goes.
 PROMPT_TEMPLATE = """
-Please analyze the provided JSON array of question objects and improve the quality of each question as described below.
+Please analyze the provided JSON array of question objects. Your primary goal is to revise each question to align closely with the style, content, and difficulty level of the Kubernetes and Cloud Native Security Associate (KCSA) exam.
 
-1. **Enhance Question Clarity and Context:** Ensure the question is clear, concise, and unambiguous. Provide sufficient context for the question to be understood by the target audience. If necessary, rephrase the question for better clarity.
+For each question object, perform the following enhancements:
 
-2. **Improve Explanation Quality:** Enhance the explanation to provide a more in-depth understanding of the correct answers and why the other options are incorrect. The explanation should be informative and easy to understand.
+1.  **KCSA Alignment & Question Clarity:**
+    * **Relevance:** Ensure the question directly tests knowledge or skills outlined in the official KCSA exam curriculum domains (e.g., Cluster Setup, Cluster Hardening, System Hardening, Minimize Microservice Vulnerabilities, Supply Chain Security, Monitoring, Logging, and Runtime Security).
+    * **Scenario-Based (where appropriate):** If the original question can be framed as a practical scenario a KCSA candidate might encounter, revise it accordingly.
+    * **Clarity and Precision:** The question must be unambiguous, concise, and use terminology consistent with Kubernetes and cloud-native security best practices. Clearly define the context or environment if necessary.
+    * **Target Audience:** Assume the question is for individuals preparing for the KCSA exam.
 
-3. **Add Relevant Sources:** Include at least two reputable sources that support the question, correct answers, and explanation. Sources should be authoritative and relevant to the topic. Prefer official documentation, academic papers, or well-respected industry resources.
+2.  **Option and Distractor Quality (KCSA Focus):**
+    * **Correct Answers:** Verify the correctness of the indicated answer(s) based on current Kubernetes and cloud-native security principles.
+    * **Plausible Distractors:** Ensure incorrect options (distractors) are plausible but clearly wrong. They should reflect common misunderstandings or misconfigurations relevant to KCSA-level knowledge. Avoid trivially incorrect options.
+    * **Uniqueness:** Each option should be distinct.
 
-4. **Output Structured JSON:** The output must be a valid JSON object containing ONLY the revised questions. The structure for EACH revised question object within the response array should be:
+3.  **Explanation Enhancement (KCSA Context):**
+    * **Conceptual Depth:** Improve the explanation to thoroughly clarify *why* the correct answer(s) are correct from a KCSA perspective. Explain the underlying Kubernetes security concepts or mechanisms involved.
+    * **Distractor Rationale:** Clearly explain *why each incorrect option is wrong*, referencing specific KCSA domain knowledge or best practices.
+    * **Practical Implications:** Where relevant, briefly mention the security implications or benefits related to the correct answer.
 
-```json
-{
-  "id": <question_id>,
-  "question": "<improved_question_text>",
-  "options": [
-    "<option_1_text>",
-    "<option_2_text>",
-    "<option_3_text>",
-    "<option_4_text>",
-    "<option_5_text>"
-  ],
-  "correct_answers": [ <correct_option_index_1>, <correct_option_index_2>, ... ],
-  "explanation": "<improved_explanation_text>",
-  "question_type": "<question_type>",
-  "domain": "<domain>",
-  "subdomain": "<subdomain>",
-  "sources": [
+4.  **Authoritative KCSA-Relevant Sources:**
+    * **Minimum Two Sources:** Include at least two reputable and current sources that directly support the question's topic, the correct answer(s), and the explanation.
+    * **Prioritize Official Documentation:** Strongly prefer sources like the official Kubernetes documentation (kubernetes.io/docs/), CNCF (Cloud Native Computing Foundation) publications, and well-respected security blogs or resources focused on Kubernetes and cloud-native technologies (e.g., NSA/CISA Kubernetes Hardening Guide, Falco documentation, Trivy documentation, etc.).
+    * **Specificity:** Link to specific pages or sections where possible, not just the root domain.
+
+5.  **Strict JSON Output Structure:**
+    * The output must be a single, valid JSON array containing ONLY the revised question objects.
+    * Adhere precisely to the following structure for EACH revised question object:
+
+    ```json
     {
-      "name": "<source_1_name>",
-      "url": "<source_1_url>"
-    },
-    {
-      "name": "<source_2_name>",
-      "url": "<source_2_url>"
-    },
-    ...
-  ],
-  "revision": 1, // Set revision to 1
-  "revision_date": "<revision_date_YYYY-MM-DD>" // Set to today's date
-}
-```
+      "id": "<original_question_id_or_new_uuid_if_not_present>",
+      "question": "<KCSA_aligned_improved_question_text>",
+      "options": [
+        "<option_1_text>",
+        "<option_2_text>",
+        "<option_3_text>",
+        "<option_4_text>",
+        "<option_5_text>" // Include 4 to 5 options, typical for KCSA
+      ],
+      "correct_answers": [ <0-indexed_correct_option_index_1>, <0-indexed_correct_option_index_2>, ... ],
+      "explanation": "<KCSA_contextual_improved_explanation_text>",
+      "question_type": "<single-choice|multiple-choice>", // Reflect KCSA exam style
+      "domain": "<KCSA_Exam_Domain_e.g.,_Cluster_Hardening>", // Map to official KCSA domains
+      "subdomain": "<Specific_topic_within_the_KCSA_domain_e.g.,_Network_Policies>",
+      "sources": [
+        {
+          "name": "<source_1_name_e.g.,_Kubernetes_Documentation_-_Network_Policies>",
+          "url": "<source_1_url>"
+        },
+        {
+          "name": "<source_2_name_e.g.,_CNCF_Blog_-_Securing_Your_Cluster>",
+          "url": "<source_2_url>"
+        }
+        // Add more sources if highly relevant
+      ],
+      "revision": 1, // Set revision to 1 for this iteration
+      "revision_date": "<current_date_YYYY-MM-DD>" // Set to today's date
+    }
+    ```
 
-5. **Generate PR Messages:** Create a concise and informative pull request (PR) message for each question, summarizing the changes made. Return these PR messages separately after the JSON block, perhaps prefixed with "--- PR MESSAGES ---" and separated by double newlines (\n\n).
+6.  **Pull Request (PR) Messages:**
+    * After the JSON block, provide a concise PR message for *each* revised question.
+    * Prefix this section with "--- PR MESSAGES ---".
+    * Each message should summarize the key improvements made to the question, specifically highlighting how it now better aligns with the KCSA exam objectives (e.g., "Revised question to focus on RBAC, a key KCSA topic in Cluster Hardening. Improved distractors to test common RBAC misconfigurations. Added official Kubernetes RBAC documentation as a source.").
+    * Separate PR messages with double newlines (`\n\n`).
 
 ---
 Input JSON Array of Questions:

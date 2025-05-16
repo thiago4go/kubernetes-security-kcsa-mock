@@ -1,0 +1,141 @@
+name: Test Question Automation Scripts
+
+on:
+  push:
+    paths:
+      - '.github/scripts/**'
+      - 'src/admin/**'
+      - '.github/workflows/test-question-automation.yml'
+  pull_request:
+    paths:
+      - '.github/scripts/**'
+      - 'src/admin/**'
+      - '.github/workflows/test-question-automation.yml'
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  test-scripts:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          npm install
+          pip install requests
+
+      - name: Set script permissions
+        run: |
+          chmod +x .github/scripts/*.py
+          chmod +x src/admin/*.py
+          ls -la .github/scripts/
+          ls -la src/admin/
+          
+      - name: Set up test environment
+        run: |
+          mkdir -p .github/scripts/test-data/exported-questions
+          mkdir -p .github/scripts/test-data/revised-questions
+          mkdir -p .github/scripts/test-data/public
+          
+          # Create sample test data
+          cat > .github/scripts/test-data/exported-questions/Kubernetes_Security_Fundamentals.mjs << 'EOL'
+          export const Kubernetes_Security_Fundamentals = [
+            {
+              "id": 1,
+              "question": "How do Network Policies work in Kubernetes?",
+              "options": [
+                "They use iptables rules to control pod communication",
+                "They are enforced by the kube-scheduler",
+                "They require all pods to be isolated by default",
+                "They can only restrict traffic between namespaces"
+              ],
+              "answer": 0,
+              "explanation": "Network Policies are implemented through the Container Network Interface (CNI) plugin and typically use iptables rules to enforce traffic restrictions between pods."
+            },
+            {
+              "id": 2,
+              "question": "Which component is responsible for authenticating API requests in Kubernetes?",
+              "options": [
+                "kube-scheduler",
+                "kube-proxy",
+                "kube-apiserver",
+                "kubelet"
+              ],
+              "answer": 2,
+              "explanation": "The kube-apiserver is responsible for processing and validating requests."
+            }
+          ];
+          EOL
+          
+          # Create test Node scripts
+          cat > .github/scripts/test-data/update_questions.mjs << 'EOL'
+          console.log('TEST: Running update_questions.mjs');
+          console.log('TEST: Successfully updated database with revised questions');
+          EOL
+          
+          cat > .github/scripts/test-data/export_questions.mjs << 'EOL'
+          console.log('TEST: Running export_questions.mjs');
+          console.log('TEST: Successfully exported questions from database');
+          EOL
+
+      - name: Test process_issue.py extraction
+        run: |
+          cd .github/scripts
+          python test_question_identifier.py --test-issue
+
+      - name: Test find_question_file with known IDs
+        run: |
+          cd .github/scripts
+          python test_question_identifier.py --test-id 1
+          python test_question_identifier.py --test-id 42
+
+      - name: Test find_question_file with sample text
+        run: |
+          cd .github/scripts
+          python test_question_identifier.py --test-text "What is the main purpose of Network Policies in Kubernetes?"
+          python test_question_identifier.py --test-text "Which kubectl command is used to view the logs of a pod?"
+
+      - name: Lint Python scripts
+        run: |
+          pip install pycodestyle
+          pycodestyle --max-line-length=120 .github/scripts/*.py
+          pycodestyle --max-line-length=120 src/admin/*.py
+
+      - name: Check for Python syntax errors
+        run: |
+          python -m py_compile .github/scripts/*.py
+          python -m py_compile src/admin/*.py
+          
+      - name: Test the full workflow with process_issue.py
+        run: |
+          cd .github/scripts
+          python process_issue.py \
+            "Error in Network Policies question" \
+            "Domain: Kubernetes Security Fundamentals
+
+          Question: How do Network Policies work in Kubernetes?
+
+          Your answer: They use iptables rules to control pod communication
+
+          Correct answer: They are enforced by the kube-scheduler
+
+          Explanation: Network Policies in Kubernetes use iptables rules." \
+            1001
+            
+      - name: Check output files
+        run: |
+          ls -la .github/scripts/test-data/revised-questions/
+          cat .github/scripts/test-data/revised-questions/Kubernetes_Security_Fundamentals.mjs || echo "File not found"
