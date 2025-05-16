@@ -1,0 +1,121 @@
+name: Update README with JSON Metadata
+
+on:
+  push:
+    branches:
+      - main # Or your default branch (e.g., master)
+    paths:
+      - 'src/questions_metadata.json' # Trigger only when this JSON file changes
+      - '.github/workflows/update-readme.yml' # Or the name of this workflow file, to allow workflow changes to trigger it
+
+permissions:
+  contents: write # Required to commit changes back to the repository
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Update README.md with JSON content
+        run: |
+          python << 'EOF'
+          import json
+          import re
+          import os
+
+          # --- Configuration ---
+          # IMPORTANT: The export_questions.mjs script seems to create questions_metadata.json at the root.
+          # If your file is indeed at the root, change json_file_path to 'questions_metadata.json'
+          json_file_path = 'src/questions_metadata.json' # As specified in your request
+          readme_file_path = 'README.md'
+          placeholder_start_tag = '<place-holder for question metadata>'
+          placeholder_end_tag = '<end of place-holder>'
+          # --- End Configuration ---
+
+          def update_readme():
+              # Check if JSON file exists
+              if not os.path.exists(json_file_path):
+                  print(f"Error: JSON file not found at '{json_file_path}'. Please ensure the path is correct.")
+                  print(f"Your 'export_questions.mjs' script might be creating 'questions_metadata.json' at the repository root.")
+                  exit(1)
+
+              # Read JSON content
+              try:
+                  with open(json_file_path, 'r', encoding='utf-8') as f:
+                      metadata = json.load(f)
+              except json.JSONDecodeError as e:
+                  print(f"Error decoding JSON from '{json_file_path}': {e}")
+                  exit(1)
+              except Exception as e:
+                  print(f"Error reading '{json_file_path}': {e}")
+                  exit(1)
+
+              # Format JSON content as a Markdown code block
+              json_content_md = f"```json\n{json.dumps(metadata, indent=2)}\n```"
+
+              # Check if README file exists
+              if not os.path.exists(readme_file_path):
+                  print(f"Error: README file not found at '{readme_file_path}'.")
+                  # Optionally, you could create it here with placeholders if desired
+                  exit(1)
+
+              # Read README content
+              try:
+                  with open(readme_file_path, 'r', encoding='utf-8') as f:
+                      readme_content = f.read()
+              except Exception as e:
+                  print(f"Error reading '{readme_file_path}': {e}")
+                  exit(1)
+
+              # Escape placeholder tags for regex and construct the pattern
+              escaped_start_tag = re.escape(placeholder_start_tag)
+              escaped_end_tag = re.escape(placeholder_end_tag)
+              pattern = re.compile(f"({escaped_start_tag})(.*?)({escaped_end_tag})", re.DOTALL)
+
+              # Check if placeholders exist
+              if not pattern.search(readme_content):
+                  print(f"Error: Placeholders '{placeholder_start_tag}' and '{placeholder_end_tag}' not found in '{readme_file_path}'.")
+                  print("Please add them to your README.md, for example:")
+                  print(f"""
+                  ## Question Metadata
+                  {placeholder_start_tag}
+                  {placeholder_end_tag}
+                  """)
+                  exit(1)
+
+              # Replace content between placeholders
+              # The replacement includes a newline before and after the JSON block for better formatting
+              new_readme_content = pattern.sub(f"\\1\n{json_content_md}\n\\3", readme_content)
+
+              # Write updated content back to README only if it changed
+              if new_readme_content != readme_content:
+                  try:
+                      with open(readme_file_path, 'w', encoding='utf-8') as f:
+                          f.write(new_readme_content)
+                      print(f"Successfully updated '{readme_file_path}' with content from '{json_file_path}'")
+                  except Exception as e:
+                      print(f"Error writing to '{readme_file_path}': {e}")
+                      exit(1)
+              else:
+                  print(f"No changes needed in '{readme_file_path}'. Content is already up-to-date.")
+
+          if __name__ == "__main__":
+              update_readme()
+          EOF
+
+      - name: Commit and push if README changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: Update README with questions_metadata.json content"
+          file_pattern: README.md # Only commit if README.md has changed
+          # Optional: Specify a different branch to commit to if needed
+          # commit_user_name: my-github-actions-bot # Default is "GitHub Action"
+          # commit_user_email: my-github-actions-bot@users.noreply.github.com # Default is "actions@github.com"
+          # commit_author: Author <actions@github.com> # Default uses the committer
