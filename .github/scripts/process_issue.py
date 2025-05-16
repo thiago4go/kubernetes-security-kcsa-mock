@@ -20,10 +20,10 @@ logging.basicConfig(
 
 # Constants
 # For testing, use our local test scripts
-REFINE_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_refine_questions.py")
-REVIEW_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_review_questions.py")
-NODE_UPDATE_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test-data/update_questions.mjs")
-NODE_EXPORT_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test-data/export_questions.mjs")
+# REFINE_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_refine_questions.py")
+# REVIEW_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_review_questions.py")
+# NODE_UPDATE_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test-data/update_questions.mjs")
+# NODE_EXPORT_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test-data/export_questions.mjs")
 
 # Fallback to real scripts if test scripts don't exist
 if not os.path.exists(REFINE_SCRIPT):
@@ -50,15 +50,27 @@ def extract_question_info(title, body):
         "correct_answer": None     # Correct answer text to help with identification
     }
     
-    # Extract question ID from title or body (e.g., "Erro on answer #61")
+
+    # Extract question ID from title (e.g., "Erro on answer #61" or "Erro on answer id: 16")
     id_match = re.search(r'#(\d+)', title)
     if id_match:
         question_info["id"] = int(id_match.group(1))
     else:
-        # Look for ID in the body
-        id_match = re.search(r'#(\d+)', body)
+        # Try alternative format with 'id:' in title
+        id_match = re.search(r'id:\s*(\d+)', title, re.IGNORECASE)
         if id_match:
             question_info["id"] = int(id_match.group(1))
+        else:
+            # Look for ID in the body
+            id_match = re.search(r'#(\d+)', body)
+            if id_match:
+                question_info["id"] = int(id_match.group(1))
+            else:
+                # Try alternative format with 'id:' in body
+                id_match = re.search(r'id:\s*(\d+)', body, re.IGNORECASE)
+                if id_match:
+                    question_info["id"] = int(id_match.group(1))
+  
     
     # Look for domain information in the body (improved regex pattern)
     domain_patterns = [
@@ -99,12 +111,25 @@ def extract_question_info(title, body):
     elif "question" in title.lower() or "question text" in body.lower():
         question_info["error_type"] = "question"
     
-    # Map common domain variations to standard file names
-    domain_mapping = {
-        'kubernetes_security_fundamentals': 'kubernetes_security',
-        'kubernetes_security': 'kubernetes_security'
-        # Add more mappings as needed
-    }
+    # Dynamically load domain mappings from /src/questions_metadata.json
+    domain_mapping = {}
+    metadata_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "src", "questions_metadata.json")
+    if os.path.exists(metadata_path):
+        try:
+            with open(metadata_path, "r", encoding="utf-8") as f:
+                domains_data = json.load(f)
+                # The file contains domain names as keys and question counts as values
+                for domain_key in domains_data.keys():
+                    # Convert to lowercase with underscores for consistent mapping
+                    normalized_key = domain_key.lower()
+                    # Map each domain to itself (for normalization)
+                    domain_mapping[normalized_key] = domain_key
+                    # Also map without underscores
+                    domain_mapping[normalized_key.replace('_', ' ')] = domain_key
+        except Exception as e:
+            logging.warning(f"Could not load domain mapping from metadata: {e}")
+    else:
+        logging.warning(f"questions_metadata.json not found at {metadata_path}")
     
     if question_info["domain"] and question_info["domain"] in domain_mapping:
         question_info["domain"] = domain_mapping[question_info["domain"]]
