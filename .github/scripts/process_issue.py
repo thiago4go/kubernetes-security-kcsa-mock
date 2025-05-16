@@ -289,6 +289,7 @@ def run_refine_script(question_domain, question_id=None):
     if question_id is not None:
         cmd.extend(["--question-id", str(question_id)])
     
+    logging.info(f"Command: {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)
     
     if result.returncode != 0:
@@ -311,7 +312,7 @@ def run_review_script(question_domain, question_id=None):
     # Add question ID parameter if provided
     if question_id is not None:
         cmd.extend(["--question-id", str(question_id)])
-    
+    logging.info(f"Command: {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)
     
     if result.returncode != 0:
