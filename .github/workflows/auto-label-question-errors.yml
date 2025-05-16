@@ -1,4 +1,4 @@
-name: Auto-label Issues
+name: Auto-label Issues (Primary)
 
 on:
   issues:
@@ -8,93 +8,91 @@ jobs:
   auto-label:
     runs-on: ubuntu-latest
     permissions:
-      issues: write
+      issues: write # Required to add labels
     
     steps:
       - name: Check issue for patterns and apply labels
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7 # Use a more recent version if desired/compatible
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issue = context.payload.issue;
+            if (!issue) {
+              console.log('No issue found in context.payload. Skipping.');
+              return;
+            }
+            if (typeof issue.body !== 'string') { // Basic check for issue body
+              console.log('Issue body is not a string or is null. Skipping body checks.');
+            }
+
             let labelsToAdd = [];
+            const existingLabelNames = issue.labels.map(label => label.name);
             
             // ------- Question Error Detection -------
-            // Skip if already labeled
-            if (!issue.labels.some(label => label.name === 'question-error')) {
-              // Check for question error patterns in title or body
+            if (!existingLabelNames.includes('question-error')) {
               const questionErrorPatterns = [
                 /question error/i,
                 /incorrect answer/i,
                 /wrong answer/i,
-                /error.*answer/i,
-                /answer.*error/i,
-                /error.*question/i,
-                /question.*wrong/i,
+                /error.*answer/i, // error related to answer
+                /answer.*error/i, // answer has an error
+                /error.*question/i, // error in the question
+                /question.*wrong/i, // question is wrong
                 /explanation.*wrong/i,
                 /explanation.*incorrect/i,
                 /error.*explanation/i
               ];
               
-              // Check title
               const titleHasPattern = questionErrorPatterns.some(pattern => pattern.test(issue.title));
-              
-              // Check body
               const bodyHasPattern = issue.body && questionErrorPatterns.some(pattern => pattern.test(issue.body));
               
-              // Check for question: and correct answer: patterns in body
+              // More specific check for common question reporting format
               const hasQuestionFormat = issue.body && 
-                (/question:.*your answer:.*correct answer:/is.test(issue.body) || 
-                 /Question:.*(?:correct|actual) answer:/is.test(issue.body));
+                (/question:[\s\S]*your answer:[\s\S]*correct answer:/is.test(issue.body) || 
+                 /Question:[\s\S]*(?:correct answer:|actual answer:)/is.test(issue.body));
               
-              // Add label if any check passes
               if (titleHasPattern || bodyHasPattern || hasQuestionFormat) {
-                console.log('Detected question error issue, adding label');
+                console.log('Detected patterns indicative of a question error. Adding "question-error" label.');
                 labelsToAdd.push('question-error');
               }
             }
             
-            // ------- Feature Request Detection -------
-            // Skip if already labeled
-            if (!issue.labels.some(label => label.name === 'enhancement')) {
-              // Check for feature request patterns
+            // ------- Feature Request / Enhancement Detection -------
+            if (!existingLabelNames.includes('enhancement')) {
               const featurePatterns = [
-                /\[feature request\]/i,
-                /feature request/i,
-                /enhancement/i,
-                /new feature/i,
-                /add feature/i,
-                /feature idea/i,
-                /suggestion/i,
-                /would be nice/i,
-                /as a user.*I want/i,
-                /user story/i
+                /\[feature request\]/i, /feature request/i, /enhancement/i,
+                /new feature/i, /add feature/i, /feature idea/i, /suggestion/i,
+                /would be nice/i, /as a user.*i want/i, /user story/i
               ];
               
-              // Check title and body for feature patterns
               const titleHasFeaturePattern = featurePatterns.some(pattern => pattern.test(issue.title));
               const bodyHasFeaturePattern = issue.body && featurePatterns.some(pattern => pattern.test(issue.body));
+              const hasUserStoryFormat = issue.body && /as a.*i want.*so that/is.test(issue.body);
               
-              // Check for user story format
-              const hasUserStoryFormat = issue.body && 
-                (/as a.*I want.*so that/is.test(issue.body));
-              
-              // Add label if any check passes
               if (titleHasFeaturePattern || bodyHasFeaturePattern || hasUserStoryFormat) {
-                console.log('Detected feature request, adding enhancement label');
+                console.log('Detected patterns indicative of a feature request. Adding "enhancement" label.');
                 labelsToAdd.push('enhancement');
               }
             }
             
-            // ------- Apply all collected labels -------
-            if (labelsToAdd.length > 0) {
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue.number,
-                labels: labelsToAdd
-              });
-              console.log(`Added labels: ${labelsToAdd.join(', ')}`);
+            // ------- Apply all collected labels (unique) -------
+            const uniqueLabelsToAdd = [...new Set(labelsToAdd)]; // Ensure no duplicate labels if logic overlaps
+
+            if (uniqueLabelsToAdd.length > 0) {
+              console.log(`Attempting to add labels: ${uniqueLabelsToAdd.join(', ')} to issue #${issue.number}`);
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  labels: uniqueLabelsToAdd
+                });
+                console.log(`Successfully added labels: ${uniqueLabelsToAdd.join(', ')}`);
+              } catch (error) {
+                console.error(`Error adding labels: ${error.message}`);
+                // Optionally, you could create a comment on the issue if labeling fails
+                // For example: if it's a permission issue or the label doesn't exist in the repo
+              }
             } else {
-              console.log('No labels to add');
+              console.log('No new labels to add for issue #${issue.number}.');
             }

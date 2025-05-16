@@ -5,10 +5,11 @@ on:
     types:
       - opened
       - edited
-      - labeled
+      - labeled # This is the key trigger after auto-labeling
 
 jobs:
   process-question-issues:
+    # This condition is critical and should now work reliably after auto-labeling
     if: contains(github.event.issue.labels.*.name, 'question-error') && !contains(github.event.issue.labels.*.name, 'skip-automation')
     runs-on: ubuntu-latest
     permissions:
@@ -21,26 +22,27 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # Consider v4
         with:
-          node-version: '20'
+          node-version: '20' # Keep or update as per your project's needs
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # Consider v5
         with:
-          python-version: '3.10'
+          python-version: '3.10' # Keep or update
 
       - name: Install Node.js dependencies
-        run: npm install
+        run: npm install # Ensure you have a package.json if this is needed at the root
 
       - name: Install Python dependencies
         run: |
-          pip install requests
+          python -m pip install --upgrade pip
+          pip install requests # Add other Python dependencies if process_issue.py needs them
 
       - name: Set script permissions
         run: |
           chmod +x .github/scripts/*.py
-          chmod +x src/admin/*.py
+          chmod +x src/admin/*.py  # If scripts are directly in src/admin
           mkdir -p src/revised-questions
 
       - name: Parse issue content and process question
@@ -48,48 +50,65 @@ jobs:
         env:
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Optional: Set LOG_LEVEL for the Python script if you want more/less verbose logs
-          # LOG_LEVEL: DEBUG 
+          LOG_LEVEL: INFO # Or DEBUG for more verbose output from the Python script
         run: |
-          # The shell-based domain extraction can remain as a preliminary step,
-          # but the Python script also has its own robust domain extraction.
-          # You might not strictly need this shell part anymore if the Python script is reliable.
-          DOMAIN_SHELL=$(echo "${{ github.event.issue.body }}" | grep -i "domain:" | head -n 1 | sed -E 's/.*[Dd]omain:\s*([^()\n]*).*/\1/' | tr -d '[:punct:]' | tr ' ' '_' | tr '[:upper:]' '[:lower:]')
-          echo "Shell extracted domain (fallback/info): $DOMAIN_SHELL"
+          echo "Attempting to process issue #${{ github.event.issue.number }} titled: ${{ github.event.issue.title }}"
           
           # Encode the issue body to Base64
-          # Using -w 0 for base64 ensures no line wrapping, which is good for command line args
           ISSUE_BODY_B64=$(echo "${{ github.event.issue.body }}" | base64 -w 0)
+          if [ -z "$ISSUE_BODY_B64" ]; then
+            echo "Warning: Issue body is empty after base64 encoding attempt."
+            # Decide if you want to pass an empty string or handle differently
+          fi
           
           # Run the Python script with title, BASE64 ENCODED BODY, and issue number
+          # Ensure the path to process_issue.py is correct
           python .github/scripts/process_issue.py "${{ github.event.issue.title }}" "$ISSUE_BODY_B64" "${{ github.event.issue.number }}"
           
-          echo "Python script processing completed" # Renamed for clarity from "Processing completed"
+          echo "Python script processing step completed for issue #${{ github.event.issue.number }}"
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+      - name: Create Pull Request if changes were made
+        # This step will only run if the previous steps successfully modified files
+        # and those files are part of the git repository.
+        uses: peter-evans/create-pull-request@v6 # Consider v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "fix: update question from issue #${{ github.event.issue.number }}"
-          title: "fix: update question from issue #${{ github.event.issue.number }}"
+          commit-message: "fix(question): Update from issue #${{ github.event.issue.number }}"
+          title: "Fix: Update question based on Issue #${{ github.event.issue.number }}"
           body: |
-            This PR fixes the question error reported in issue #${{ github.event.issue.number }}.
+            This PR addresses issue #${{ github.event.issue.number }}: "${{ github.event.issue.title }}".
+
+            The question content was processed and updated based on the report.
             
-            Issue title: ${{ github.event.issue.title }}
+            - AI-assisted refinement might have been applied.
+            - Database and exported question files were updated.
             
-            ## Changes Made
-            - Updated question content using AI-assisted refinement
-            - Updated the SQLite database
-            - Exported updated questions to JavaScript files
-            
-            This PR was created automatically by the question processing system. Please review the changes before merging.
+            This PR was created automatically. Please review the changes before merging.
           labels: "question-fix, automated-pr"
           branch: "fix/question-issue-${{ github.event.issue.number }}"
-          delete-branch: true
-          
-      - name: Add comment on PR failure
-        if: failure()
-        uses: actions/github-script@v6
+          delete-branch: true # Deletes the branch once the PR is merged or closed
+          # add-paths: | # Uncomment and specify if you only want to include changes from specific paths
+          #   src/exported-questions/
+          #   src/questions_metadata.json 
+          #   src/your-database-file.sqlite # If applicable
+
+      - name: Comment on issue if processing completed but no PR was created
+        # This can happen if the Python script ran but made no file changes detectable by create-pull-request
+        if: steps.process_issue.outcome == 'success' && steps.create-pull-request.outputs.pull-request-operation == 'closed' # Heuristic: PR closed often means no changes
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }},
+              body: '✅ Automated processing for Issue #${{ github.event.issue.number }} completed. No file changes were detected that required a Pull Request. The issue might have been resolved by the script without file modifications, or the reported error did not lead to changes.'
+            });
+
+      - name: Add comment on overall job failure (if not covered by PR failure)
+        if: failure() && steps.create-pull-request.outcome != 'success' # Or a more specific condition
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

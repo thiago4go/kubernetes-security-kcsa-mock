@@ -1,50 +1,51 @@
-name: Issue Management
+name: Issue Helper Utilities
 
 on:
   issues:
     types:
       - opened
-      - edited
+      # - edited # Decide if you want this on every edit too
 
 jobs:
-  auto-label-issues:
+  assist-issue-submitter:
     runs-on: ubuntu-latest
     permissions:
-      issues: write
-      pull-requests: write
-    if: ${{ !contains(github.event.issue.labels.*.name, 'question-error') && contains(github.event.issue.title, 'Error') && contains(github.event.issue.title, '#') }}
+      issues: write # For commenting
+    
     steps:
-      - name: Add label to question error issues
-        uses: actions/github-script@v6
+      - name: Add comment for question reports missing 'Domain'
+        # This condition now checks if 'question-error' IS present (meaning it's a confirmed question error)
+        # but the body still lacks 'Domain:'.
+        if: contains(github.event.issue.labels.*.name, 'question-error') && !contains(github.event.issue.body, 'Domain:')
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issue = context.payload.issue;
-            
-            // Check if this looks like a question error issue (title contains "Error" and "#" followed by numbers)
-            const questionErrorPattern = /(Error|Erro)\s+on\s+(question|answer|explanation)\s+#\d+/i;
-            if (questionErrorPattern.test(issue.title)) {
-              console.log(`Adding question-error label to issue #${issue.number}: ${issue.title}`);
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue.number,
-                labels: ['question-error']
-              });
+            if (!issue) {
+              console.log('No issue found in context.payload. Skipping.');
+              return;
             }
-      
-      - name: Add comment for malformatted question error reports
-        if: ${{ contains(github.event.issue.title, '#') && !contains(github.event.issue.body, 'Domain:') }}
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const issue = context.payload.issue;
             
-            console.log(`Adding comment to potentially malformatted issue #${issue.number}`);
-            await github.rest.issues.createComment({
+            // Check if a similar comment already exists to avoid spamming
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue.number,
-              body: `Thank you for reporting this issue. For the automated question fixing system to work properly, please include the domain information in your issue description using the format:\n\n\`\`\`\nDomain: Kubernetes_Security_Fundamentals\n\`\`\`\n\nThis helps the system identify which file contains the question that needs to be fixed.`
             });
+            const alreadyCommented = comments.some(comment => 
+              comment.user.login === 'github-actions[bot]' && 
+              comment.body.includes("please include the domain information")
+            );
+
+            if (!alreadyCommented) {
+              console.log(`Issue #${issue.number} is labeled 'question-error' but missing 'Domain:'. Adding guidance comment.`);
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `Thank you for reporting this question error! For the automated fixing system to work effectively, please ensure the issue description includes the domain information using the format:\n\n\`\`\`\nDomain: Name_Of_The_Domain (e.g., Kubernetes_Security_Fundamentals)\n\`\`\`\n\nThis helps the system pinpoint the question. You can edit your issue to add this information.`
+              });
+            } else {
+              console.log('Guidance comment for missing domain already exists on issue #${issue.number}.');
+            }
