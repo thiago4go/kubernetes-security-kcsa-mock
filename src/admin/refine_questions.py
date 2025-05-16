@@ -11,7 +11,7 @@ import shutil # For backup
 
 # --- Configuration ---
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
-MODEL_NAME = "sonar" # Reverted to potentially valid name
+MODEL_NAME = "sonar-pro" # Reverted to potentially valid name
 BATCH_SIZE = 5
 INPUT_DIR = "../../src/exported-questions"
 OUTPUT_DIR = "../../src/revised-questions"
@@ -26,48 +26,67 @@ NODE_EXPORT_SCRIPT = "db-tools/export_questions.mjs"
 
 # --- Prompt Template ---
 PROMPT_TEMPLATE = """
-Please analyze the provided JSON array of question objects. Your task is to identify and revise questions ONLY if they meet specific criteria: incorrectness, lack of clarity, or use of deprecated information. Do NOT make stylistic changes or rephrase content that is already accurate and clear.
+Please analyze the provided JSON array of question objects. Your primary task is to meticulously identify and revise questions *only* if they meet specific criteria: factual incorrectness, lack of clarity for a KCSA-level audience, or the use of significantly deprecated Kubernetes information. You must *not* make stylistic changes or rephrase content that is already accurate, clear, and current.
 
-1.  **Identify Necessary Revisions:** Analyze each question object. Suggest revisions *only* if the question, options, correct answers, or explanation meet one or more of the following criteria:
-    *   **Incorrect:** Contains factually inaccurate information regarding Kubernetes concepts, features, or best practices.
-    *   **Unclear:** Is ambiguous, poorly worded, lacks essential context for the target audience (Kubernetes practitioners), or could be easily misinterpreted.
-    *   **Deprecated:** Refers to outdated Kubernetes features, APIs, or practices that are no longer recommended or relevant in current versions.
+1.  **Identify Necessary Revisions (Strict Criteria):**
+    Carefully examine each question object. Propose revisions *only* if the question, its options, the designated correct answers, or the explanation meet one or more of the following conditions:
+    * **Incorrect:** Contains factually inaccurate information regarding Kubernetes concepts, features, security best practices, or KCSA-relevant tooling.
+    * **Unclear/Ambiguous:** The question is worded in a way that is ambiguous, lacks crucial context for understanding by someone with KCSA-level knowledge, or could be easily misinterpreted, thereby failing to accurately assess knowledge.
+    * **Deprecated Information:** Refers to Kubernetes features, API versions (e.g., beta APIs that have long graduated or been removed), commands, or practices that are significantly outdated (e.g., deprecated for more than 1-2 years or superseded by clear, widely adopted alternatives) and no longer relevant for current Kubernetes versions (assume target is recent stable versions, e.g., v1.27+ as of May 2025) or KCSA exam objectives.
 
-2.  **Perform Targeted Revisions:** If a question meets the criteria above, revise *only the necessary parts* (question text, options, correct answers, explanation) to correct the inaccuracy, improve clarity, or update deprecated information.
+2.  **Perform Minimal, Targeted Revisions:**
+    * If a question meets the criteria above, revise *only the specific parts* (e.g., a single option, a sentence in the explanation, the question phrasing) that are incorrect, unclear, or deprecated.
+    * The goal is to correct/update, not to rewrite extensively if other parts of the question remain valid.
+    * Ensure revisions maintain or improve alignment with KCSA-level understanding and terminology.
 
-3.  **Update Sources (If Applicable):** If revisions are made, ensure the provided sources still support the updated content. If existing sources are insufficient or outdated, replace or add reputable, current sources (official documentation, respected industry standards). Aim for at least two relevant sources for revised questions. If no revisions are needed, keep the original sources.
+3.  **Update Sources (Conditionally):**
+    * If revisions were made (especially for incorrectness or deprecated information), critically evaluate the existing sources.
+    * Replace or add new sources *only if* the original sources no longer support the corrected/updated content or if they themselves point to deprecated information.
+    * New or replacement sources must be authoritative and current (e.g., official Kubernetes documentation for the relevant feature, CNCF blogs, reputable Kubernetes security references). Aim for at least two robust sources supporting any revised content.
+    * If no revisions are made to the question content, or if original sources still adequately support minor clarifications, retain the original sources.
 
-4.  **Maintain Structure and Metadata:** For *revised* questions, update the `revision` field to `1` and set `revision_date` to today's date (`{today_date}`). For questions *not* needing revision, return the original object unchanged, including its original `revision` and `revision_date` values (likely `0` and `null` based on input filtering).
+4.  **Preserve Original Content and Metadata where No Revision is Warranted:**
+    * If a question *does not* meet any of the criteria in point 1, return the original question object *completely unchanged*. This includes its `id`, `question`, `options`, `correct_answers`, `explanation`, `question_type`, `domain`, `subdomain`, `sources`, original `revision` value, and original `revision_date`.
 
-5.  **Output Structured JSON:** The output MUST be a valid JSON array containing *all* original questions processed in the batch, with revisions applied *only* where necessary based on the criteria above. The structure for EACH question object (revised or original) within the response array should strictly follow this format:
+5.  **Output Structured JSON (Strict Adherence):**
+    The output MUST be a single, valid JSON array containing *all* question objects from the input batch.
+    * For questions that were revised, update the `revision` field by incrementing its previous value (or setting to `1` if it was `0` or `null`). Set `revision_date` to **2025-05-16**.
+    * For questions *not* revised, all fields, including `revision` and `revision_date`, must remain identical to the input.
 
+    The structure for EACH question object (whether revised or original) in the response array must strictly follow:
     ```json
     {
-      "id": <question_id>,
+      "id": "<question_id>", // Unchanged
       "question": "<question_text>", // Revised only if incorrect/unclear/deprecated
-      "options": [
+      "options": [ // Array revised only if options were incorrect/unclear/deprecated
         "<option_1_text>",
         "<option_2_text>",
         "<option_3_text>",
         "<option_4_text>",
         "<option_5_text>"
-      ], // Revised only if incorrect/unclear/deprecated
+      ],
       "correct_answers": [ <correct_option_index_1>, ... ], // Revised only if incorrect
       "explanation": "<explanation_text>", // Revised only if incorrect/unclear/deprecated
-      "question_type": "<question_type>", // Revised only if updated
-      "domain": "<domain>", // Keep original
-      "subdomain": "<subdomain>", // Keep original
-      "sources": [
+      "question_type": "<question_type>", // Unchanged unless the nature of the fix requires it (rare)
+      "domain": "<domain>", // Unchanged
+      "subdomain": "<subdomain>", // Unchanged
+      "sources": [ // Updated only if revision occurred AND original sources became invalid/insufficient
         { "name": "<source_1_name>", "url": "<source_1_url>" },
-        { "name": "<source_2_name>", "url": "<source_2_url>" },
-        ...
-      ], // Updated only if revision occurred or original sources invalid
-      "revision": <original_revision_or_1>, // 1 if revised this run, else original value
-      "revision_date": "<original_date_or_YYYY-MM-DD>" // Today's date if revised, else original value
+        { "name": "<source_2_name>", "url": "<source_2_url>" }
+      ],
+      "revision": <updated_or_original_revision_value>,
+      "revision_date": "<2025-05-16_or_original_revision_date>"
     }
     ```
 
-6.  **Generate PR Messages (for Revised Questions):** For *each question that was revised*, create a concise pull request (PR) message summarizing the *specific reason* for the change (e.g., "Corrected factual error in explanation", "Clarified ambiguous wording", "Updated deprecated API reference") and the nature of the revision. Return these PR messages separately after the JSON block, prefixed with "--- PR MESSAGES ---" and separated by double newlines (\n\n). Do *not* generate PR messages for unchanged questions.
+6.  **Generate PR Messages (Only for Revised Questions):**
+    * After the JSON block, provide a concise PR message *only for each question that was actually revised*.
+    * Prefix this section with "--- PR MESSAGES ---".
+    * Each message must clearly state:
+        * The `id` of the question.
+        * The *specific reason* for the revision (e.g., "Corrected factual error regarding etcd backup procedures in explanation.", "Clarified ambiguous wording in question related to NetworkPolicy ingress rules.", "Updated deprecated `kubectl run` flag to current equivalent.", "Replaced outdated API version for PodSecurityPolicy with information on Pod Security Admission.").
+        * A brief summary of the change (e.g., "Explanation now states X instead of Y.", "Question rephrased for clarity.", "Option C updated from Z to A and relevant source added.").
+    * Separate PR messages with double newlines (`\n\n`). Do *not* generate PR messages for unchanged questions.
 
 ---
 Input JSON Array of Questions:
@@ -356,25 +375,159 @@ def run_node_script(script_path):
 
 # --- Main Execution ---
 
+def refine_single_question(category_name, question_id, target_revision=1):
+    """
+    Process a single question by ID using the AI refinement process.
+    This is a targeted version of the main refinement workflow.
+    
+    Args:
+        category_name (str): The name of the category (domain) file
+        question_id (int): The ID of the specific question to refine
+        target_revision (int): The revision number to target (default: 1)
+    
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    logging.info(f"Processing single question: {question_id} in category: {category_name}")
+    
+    # Set up filepaths
+    filepath = os.path.join(INPUT_DIR, f"{category_name}.mjs")
+    backup_filepath = filepath + ".bak"
+    output_filepath = os.path.join(OUTPUT_DIR, f"{category_name}.mjs") 
+    
+    # Check if file exists
+    if not os.path.exists(filepath):
+        logging.error(f"Input file not found: {filepath}")
+        return False
+    
+    # Get API Key
+    try:
+        api_key = get_api_key()
+    except ValueError as e:
+        logging.error(e)
+        return False
+    
+    # Backup original file
+    try:
+        shutil.copy2(filepath, backup_filepath)
+        logging.info(f"Created backup: {backup_filepath}")
+    except Exception as e:
+        logging.error(f"Failed to create backup file for {filepath}: {e}")
+        return False
+    
+    try:
+        # Parse original file
+        header_comments, variable_name, original_questions = parse_mjs_file(filepath)
+        if not original_questions or not variable_name:
+            logging.error(f"Failed to parse original file {filepath}. Restoring from backup.")
+            raise Exception("Parsing failed")
+        
+        # Find the specific question by ID
+        target_question = filter_questions_by_id(original_questions, question_id)
+        if not target_question:
+            logging.error(f"Question ID {question_id} not found in {filepath}.")
+            return False
+        
+        # Process single question via API
+        prompt = format_prompt(target_question)
+        api_response = call_perplexity_api(api_key, prompt, 1)  # Process just 1 question
+        
+        if not api_response:
+            logging.error(f"API call failed for question {question_id}.")
+            raise Exception("API call failed")
+        
+        # Parse API response
+        revised_questions, pr_messages = parse_api_response(api_response)
+        if not revised_questions:
+            logging.warning(f"API call completed, but no revised question was successfully parsed.")
+            # Not marking as failure - might just mean no revision was needed
+            return True
+        
+        # Ensure the output directory exists
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        
+        # Merge results - replace the original question with the revised one
+        updated_questions = []
+        revision_count = 0
+        revised_map = {q['id']: q for q in revised_questions}
+        
+        for q in original_questions:
+            if q['id'] == question_id and question_id in revised_map:
+                updated_questions.append(revised_map[question_id])
+                revision_count += 1
+            else:
+                updated_questions.append(q)
+        
+        logging.info(f"Processed {revision_count} questions with revisions.")
+        
+        # Save the updated file
+        if not reconstruct_and_save_mjs(output_filepath, header_comments, variable_name, updated_questions):
+            raise Exception(f"Failed to save updated file: {output_filepath}")
+        
+        # Save PR messages
+        if pr_messages:
+            save_pr_messages(OUTPUT_DIR, category_name, pr_messages)
+        
+        # Success - don't remove backup yet
+        logging.info(f"Successfully processed question ID {question_id} in category: {category_name}")
+        return True
+        
+    except Exception as e:
+        logging.error(f"An error occurred while processing question {question_id}: {e}")
+        # Restore backup if needed
+        try:
+            if os.path.exists(backup_filepath):
+                shutil.copy2(backup_filepath, filepath)
+                logging.info(f"Restored original file {filepath} from {backup_filepath}")
+        except Exception as restore_e:
+            logging.error(f"Failed to restore backup: {restore_e}")
+        
+        return False
+
+def filter_questions_by_id(questions, question_id):
+    """
+    Filter questions to find a specific question by ID.
+    Returns a list containing just that question, or empty list if not found.
+    """
+    for q in questions:
+        if q.get("id") == question_id:
+            return [q]
+    
+    logging.error(f"Question ID {question_id} not found")
+    return []
+
 def main():
     """Main function to orchestrate the question review process."""
     parser = argparse.ArgumentParser(description="Refine Kubernetes security questions using Perplexity API based on specific criteria.")
     parser.add_argument("--category", required=True, help="The category name (e.g., Kubernetes_Security_Fundamentals) corresponding to the .mjs file.")
     parser.add_argument("--revision", type=int, default=1, help="The revision number to target for refinement (default: 1).")
+    parser.add_argument("--question-id", type=int, help="Specific question ID to refine (optional)")
     args = parser.parse_args()
 
     category_name = args.category
     target_revision = args.revision
+    question_id = args.question_id
     filepath = os.path.join(INPUT_DIR, f"{category_name}.mjs")
     backup_filepath = filepath + ".bak"
     overall_success = False # Flag to track if all steps succeed for cleanup
 
     logging.info(f"Starting question review process for category: {category_name}")
-
-    # --- 1. Check if file exists ---
-    if not os.path.exists(filepath):
-        logging.error(f"Input file not found: {filepath}")
-        return
+    
+    # Process single question if question-id is provided
+    if question_id is not None:
+        success = refine_single_question(category_name, question_id, target_revision)
+        if success:
+            logging.info(f"Successfully processed question ID {question_id}")
+            # Run Node scripts for database update
+            if run_node_script(NODE_UPDATE_SCRIPT) and run_node_script(NODE_EXPORT_SCRIPT):
+                overall_success = True
+        else:
+            logging.error(f"Failed to process question ID {question_id}")
+    else:
+        # --- 1. Check if file exists ---
+        if not os.path.exists(filepath):
+            logging.error(f"Input file not found: {filepath}")
+            return
 
     # --- 2. Get API Key ---
     try:

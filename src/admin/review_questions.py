@@ -11,7 +11,7 @@ import shutil # For backup
 
 # --- Configuration ---
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
-MODEL_NAME = "sonar" # Reverted to potentially valid name
+MODEL_NAME = "sonar-pro" # Reverted to potentially valid name
 BATCH_SIZE = 5
 INPUT_DIR = "../../src/exported-questions"
 OUTPUT_DIR = "../../src/revised-questions"
@@ -354,27 +354,165 @@ def run_node_script(script_path):
     except Exception as e:
         logging.error(f"An unexpected error occurred running {script_path}: {e}")
         return False
+    
+def review_single_question(category_name, question_id):
+    """
+    Process a single question by ID using the AI refinement process.
+    This is a targeted version of the main refinement workflow.
+    
+    Args:
+        category_name (str): The name of the category (domain) file
+        question_id (int): The ID of the specific question to refine
+        target_revision (int): The revision number to target (default: 1)
+    
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    logging.info(f"Processing single question: {question_id} in category: {category_name}")
+    
+    # Set up filepaths
+    filepath = os.path.join(INPUT_DIR, f"{category_name}.mjs")
+    backup_filepath = filepath + ".bak"
+    output_filepath = os.path.join(OUTPUT_DIR, f"{category_name}.mjs") 
+    
+    # Check if file exists
+    if not os.path.exists(filepath):
+        logging.error(f"Input file not found: {filepath}")
+        return False
+    
+    # Get API Key
+    try:
+        api_key = get_api_key()
+    except ValueError as e:
+        logging.error(e)
+        return False
+    
+    # Backup original file
+    try:
+        shutil.copy2(filepath, backup_filepath)
+        logging.info(f"Created backup: {backup_filepath}")
+    except Exception as e:
+        logging.error(f"Failed to create backup file for {filepath}: {e}")
+        return False
+    
+    try:
+        # Parse original file
+        header_comments, variable_name, original_questions = parse_mjs_file(filepath)
+        if not original_questions or not variable_name:
+            logging.error(f"Failed to parse original file {filepath}. Restoring from backup.")
+            raise Exception("Parsing failed")
+        
+        # Find the specific question by ID
+        target_question = filter_questions_by_id(original_questions, question_id)
+        if not target_question:
+            logging.error(f"Question ID {question_id} not found in {filepath}.")
+            return False
+        
+        # Process single question via API
+        prompt = format_prompt(target_question)
+        api_response = call_perplexity_api(api_key, prompt, 1)  # Process just 1 question
+        
+        if not api_response:
+            logging.error(f"API call failed for question {question_id}.")
+            raise Exception("API call failed")
+        
+        # Parse API response
+        revised_questions, pr_messages = parse_api_response(api_response)
+        if not revised_questions:
+            logging.warning(f"API call completed, but no revised question was successfully parsed.")
+            # Not marking as failure - might just mean no revision was needed
+            return True
+        
+        # Ensure the output directory exists
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        
+        # Merge results - replace the original question with the revised one
+        updated_questions = []
+        revision_count = 0
+        revised_map = {q['id']: q for q in revised_questions}
+        
+        for q in original_questions:
+            if q['id'] == question_id and question_id in revised_map:
+                updated_questions.append(revised_map[question_id])
+                revision_count += 1
+            else:
+                updated_questions.append(q)
+        
+        logging.info(f"Processed {revision_count} questions with revisions.")
+        
+        # Save the updated file
+        if not reconstruct_and_save_mjs(output_filepath, header_comments, variable_name, updated_questions):
+            raise Exception(f"Failed to save updated file: {output_filepath}")
+        
+        # Save PR messages
+        if pr_messages:
+            save_pr_messages(OUTPUT_DIR, category_name, pr_messages)
+        
+        # Success - don't remove backup yet
+        logging.info(f"Successfully processed question ID {question_id} in category: {category_name}")
+        return True
+        
+    except Exception as e:
+        logging.error(f"An error occurred while processing question {question_id}: {e}")
+        # Restore backup if needed
+        try:
+            if os.path.exists(backup_filepath):
+                shutil.copy2(backup_filepath, filepath)
+                logging.info(f"Restored original file {filepath} from {backup_filepath}")
+        except Exception as restore_e:
+            logging.error(f"Failed to restore backup: {restore_e}")
+        
+        return False
+
+def filter_questions_by_id(questions, question_id):
+    """
+    Filter questions to find a specific question by ID.
+    Returns a list containing just that question, or empty list if not found.
+    """
+    for q in questions:
+        if q.get("id") == question_id:
+            return [q]
+    
+    logging.error(f"Question ID {question_id} not found")
+    return []
+
 
 
 # --- Main Execution ---
+
+
 
 def main():
     """Main function to orchestrate the question review process."""
     parser = argparse.ArgumentParser(description="Review and update Kubernetes security questions using Perplexity API.")
     parser.add_argument("--category", required=True, help="The category name (e.g., Kubernetes_Security_Fundamentals) corresponding to the .mjs file.")
+    parser.add_argument("--question-id", type=int, help="Specific question ID to refine (optional)")
     args = parser.parse_args()
-
+    
     category_name = args.category
+    question_id = args.question_id
     filepath = os.path.join(INPUT_DIR, f"{category_name}.mjs")
     backup_filepath = filepath + ".bak"
     overall_success = False # Flag to track if all steps succeed for cleanup
 
     logging.info(f"Starting question review process for category: {category_name}")
 
-    # --- 1. Check if file exists ---
-    if not os.path.exists(filepath):
-        logging.error(f"Input file not found: {filepath}")
-        return
+ # Process single question if question-id is provided
+    if question_id is not None:
+        success = review_single_question(category_name, question_id)
+        if success:
+            logging.info(f"Successfully processed question ID {question_id}")
+            # Run Node scripts for database update
+            if run_node_script(NODE_UPDATE_SCRIPT) and run_node_script(NODE_EXPORT_SCRIPT):
+                overall_success = True
+        else:
+            logging.error(f"Failed to process question ID {question_id}")
+    else:
+        # --- 1. Check if file exists ---
+        if not os.path.exists(filepath):
+            logging.error(f"Input file not found: {filepath}")
+            return
+
 
     # --- 2. Get API Key ---
     try:

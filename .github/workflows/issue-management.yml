@@ -1,0 +1,49 @@
+name: Issue Management
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+
+jobs:
+  auto-label-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    if: ${{ !contains(github.event.issue.labels.*.name, 'question-error') && contains(github.event.issue.title, 'Error') && contains(github.event.issue.title, '#') }}
+    steps:
+      - name: Add label to question error issues
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            
+            // Check if this looks like a question error issue (title contains "Error" and "#" followed by numbers)
+            const questionErrorPattern = /(Error|Erro)\s+on\s+(question|answer|explanation)\s+#\d+/i;
+            if (questionErrorPattern.test(issue.title)) {
+              console.log(`Adding question-error label to issue #${issue.number}: ${issue.title}`);
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: ['question-error']
+              });
+            }
+      
+      - name: Add comment for malformatted question error reports
+        if: ${{ contains(github.event.issue.title, '#') && !contains(github.event.issue.body, 'Domain:') }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            
+            console.log(`Adding comment to potentially malformatted issue #${issue.number}`);
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `Thank you for reporting this issue. For the automated question fixing system to work properly, please include the domain information in your issue description using the format:\n\n\`\`\`\nDomain: Kubernetes_Security_Fundamentals\n\`\`\`\n\nThis helps the system identify which file contains the question that needs to be fixed.`
+            });

@@ -46,7 +46,7 @@ jobs:
       - name: Commit and push changes to staging branch
         if: success()
         env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
@@ -71,7 +71,7 @@ jobs:
         if: success()
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: staging
           base: main
           title: "🔄 Auto-update Questions Database"
