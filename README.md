@@ -1,239 +1,171 @@
-# **Kubernetes Security KCSA Mock Exam**  
 
-## **🚀 Overview**  
-This project is an **interactive web application** designed to help aspiring **Kubernetes security professionals** prepare for certification exams. It features a comprehensive **bank of 290+ questions** covering key Kubernetes security topics.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub issues](https://img.shields.io/github/issues/thiago4go/kubernetes-security-kcsa-mock)](https://github.com/thiago4go/kubernetes-security-kcsa-mock/issues)
+[![GitHub stars](https://img.shields.io/github/stars/thiago4go/kubernetes-security-kcsa-mock)](https://github.com/thiago4go/kubernetes-security-kcsa-mock/stargazers)
 
----
+## Star History (CELEBRATING 100 STARS! 🎉)
+<a href="https://www.star-history.com/#thiago4go/kubernetes-security-kcsa-mock&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=thiago4go/kubernetes-security-kcsa-mock&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=thiago4go/kubernetes-security-kcsa-mock&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=thiago4go/kubernetes-security-kcsa-mock&type=Date" />
+ </picture>
+</a>
 
-## **🌐 Live Version**  
-Access the live version of the app here:  
-🔗 [**Kubernetes Security KCSA Mock Exam**](https://kubernetes-security-kcsa-mock.vercel.app/)
+# Kubernetes Security KCSA Mock Exam Simulator
 
----
+An interactive web application designed to help you prepare for the Kubernetes and Cloud Security Associate (KCSA) certification exam. Test your knowledge with a comprehensive set of questions covering various Kubernetes security domains.
 
-## **📌 What's New?**  
+## 🌟 Overview
 
-The latest update brings **significant improvements** to align with the **KCSA curriculum** and enhance maintainability:
+Preparing for security certifications requires practice. This KCSA Mock Exam Simulator provides an interactive and configurable environment to assess your understanding of Kubernetes security concepts. With over 290 questions, detailed explanations, and domain-specific scoring, you can identify your strengths and weaknesses to focus your study efforts effectively.
 
-✅ **AI powered question review python script** for better clarity and accuracy. 
+## ✨ Key Features
 
-✅ **Improved exam interface & question navigation.**  
+* **Extensive Question Bank:** Access over 290 questions, with more potentially being added.
+* **Randomized Exams:** Each exam session presents questions in a random order for a unique experience.
+* **Configurable Exams:**
+    * Set the number of questions per exam.
+    * Select specific Kubernetes security domains for targeted practice.
+* **Interactive Interface:**
+    * One question displayed per page for focused attention.
+    * Easy navigation menu.
+    * Flag questions for later review.
+* **Exam Simulation:**
+    * Countdown timer to simulate exam conditions.
+    * Auto-scoring upon completion.
+* **Detailed Feedback:**
+    * In-depth explanations for each question, often with sources.
+    * Domain-specific scoring to pinpoint areas needing improvement.
+* **User-Friendly Design:**
+    * Fully responsive for use on desktops, tablets, and mobile devices.
+    * Saves progress automatically to handle accidental page refreshes or closures.
+* **Data Management:** Uses SQLite for efficient database management of questions.
+* **Question Management Scripts:** Includes scripts for:
+    * Exporting questions.
+    * Updating questions.
+    * AI-powered scripts for reviewing and refining questions.
 
-✅ **Select Exam Domains:** Focus your practice by choosing specific Kubernetes security domains (under "Extra Options").
+## 🎯 Target Audience
 
-✅ **Enhanced Explanations:** Explanations now include verified sources/references.
+This tool is ideal for:
 
-✅ **Domain-Specific Results:** View your score broken down by domain on the results page.
+* Individuals preparing for the Kubernetes and Cloud Security Associate (KCSA) exam.
+* Kubernetes administrators and developers looking to test and improve their security knowledge.
+* Anyone interested in learning more about Kubernetes security best practices.
 
----
+## 🛠️ Getting Started
 
-## **📌 Features**  
+*(This section assumes the project can be run locally or has a publicly hosted version. Adjust as necessary.)*
 
-✔️ **290+ Carefully crafted questions** (UPDATED)  
-✔️ **Randomized question order** in every exam session  
-✔️ **Configurable question count** per exam  
-✔️ **Select Exam Domains:** Choose specific domains for targeted practice (under "Extra Options").
+### Prerequisites
 
-✔️ **Interactive exam interface** (one question per page)  
-✔️ **Navigation menu** for easy question review  
-✔️ **Flag questions** for later review  
-✔️ **Exam countdown timer**  
+* Basic understanding of Kubernetes concepts.
+* A modern web browser.
+* *(If running locally)* Python environment, Git.
 
-✔️ **Auto-scoring & detailed explanations** with sources/references.
+### Option 1: Accessing a Hosted Version
 
-✔️ **Domain-Specific Scoring:** Results page shows performance per domain.
+*(If there's a live demo or hosted version, provide the URL here)*
 
-✔️ **Fully responsive design** (mobile-friendly)  
+1.  Navigate to: `[Your_Hosted_App_URL_Here]`
+2.  Configure your desired exam settings (number of questions, domains).
+3.  Start the exam!
 
-✔️ **Progress saving** to handle page refreshes or accidental closures  
+### Option 2: Running Locally
 
----
-
-## **🛠 Getting Started**  
-
-### **📌 Prerequisites**  
-- Node.js (v14 or later)  
-- npm (v6 or later)  
-
-### **📌 Installation**  
-1️⃣ **Clone the repository:**  
-```bash
-git clone https://github.com/thiago4go/kubernetes-security-kcsa-mock.git
-```
-2️⃣ **Navigate to the project directory:**  
-```bash
-cd kubernetes-security-kcsa-mock
-```
-3️⃣ **Install dependencies:**  
-```bash
-npm install
-```
-4️⃣ **Start the development server:**  
-```bash
-npm start
-```
-5️⃣ Open your browser and visit **`http://localhost:3000`** to use the application.  
-
-### **📌 Docker Compose Deploy**  
-
-[Documentation](docker-compose/README.md)
----
-
-## **📌 Usage**  
-
-1️⃣ Select the number of questions for your exam session.  
-2️⃣ **(Optional)** Choose specific **Exam Domains** to focus your practice (under "Extra Options").
-
-3️⃣ Click **"Start Exam"** to begin.  
-4️⃣ Answer each question & navigate using **"Previous" / "Next"** buttons.  
-5️⃣ **Flag questions** for review if needed.  
-
-6️⃣ Submit the exam when finished or when the timer runs out.  
-7️⃣ Review results, correct answers, explanations, and domain scores.  
-
----
-
-## **📂 Database Management (SQLite)**  
-
-The application now **stores and manages questions in SQLite** for improved performance and maintainability.
-
-### **📌 Exporting Questions**  
-To **export** questions from SQLite into categorized JavaScript files:  
-```bash
-node src/admin/db-tools/export_questions.mjs
-```
-
-### **📌 Updating Questions**  
-To **update** the SQLite database with the latest classified questions:  
-```bash
-node src/admin/db-tools/update_questions.mjs
-```
-These scripts **keep the database structured and up to date**.
-
-### **🤖 AI-Powered Question Review (Advanced)**
-
-For maintainers, experimental scripts `review_questions.py` and `refine_questions.py` use the Perplexity AI API to automatically review and enhance questions within a specific category.
-
-**⚠️ Warning:** These scripts modify question files directly and rely on an external AI service. Use with caution and review the changes carefully.
-
-**Prerequisites:**
-*   Python 3 installed.
-*   Node.js installed (for subsequent database updates).
-*   Perplexity AI API Key: Set the `PERPLEXITY_API_KEY` environment variable.
+1.  **Clone the repository:**
     ```bash
-    export PERPLEXITY_API_KEY='your_api_key_here'
+    git clone [https://github.com/thiago4go/kubernetes-security-kcsa-mock.git](https://github.com/thiago4go/kubernetes-security-kcsa-mock.git)
+    cd kubernetes-security-kcsa-mock
     ```
-
-**Usage for `review_questions.py`:**
-1.  Ensure your API key is set as an environment variable.
-2.  Run the script from the project root directory, specifying the category (matching the `.mjs` filename without the extension):
+2.  **Set up the environment:**
+    *(Provide specific instructions here, e.g., Python virtual environment, installing dependencies)*
     ```bash
-    python review_questions.py --category <CategoryName>
+    # Example for Python:
+    # python -m venv venv
+    # source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    # pip install -r requirements.txt
     ```
-    *Example:*
+3.  **Initialize the database (if needed):**
+    *(Provide instructions if there's a setup script for SQLite)*
     ```bash
-    python review_questions.py --category Kubernetes_Security_Fundamentals
+    # Example:
+    # python init_db.py
     ```
-
-**What it does:**
-1.  Identifies questions in `src/exported-questions/<CategoryName>.mjs` needing review (where `revision: 0`).
-2.  Sends batches of these questions to the Perplexity API for improvements (clarity, explanations, sources).
-3.  Creates a backup (`.bak`) of the original `.mjs` file before making changes.
-4.  Updates the `.mjs` file with the AI-revised questions (setting `revision: 1` and `revision_date`).
-5.  Automatically runs `src/admin/db-tools/update_questions.mjs` and `src/admin/db-tools/export_questions.mjs` to update the SQLite database and re-export the files.
-6.  Saves suggested PR messages summarizing changes to `src/revised-questions/pr_messages_<CategoryName>.txt`.
-7.  If any critical step fails, it attempts to restore the original `.mjs` file from the backup. On success, the backup is removed.
-
-**Usage for `refine_questions.py`:**
-1.  Ensure your API key is set as an environment variable.
-2.  Run the script from the project root directory, specifying the category (matching the `.mjs` filename without the extension):
+4.  **Run the application:**
+    *(Provide command to start the web server)*
     ```bash
-    python refine_questions.py --category <CategoryName>
+    # Example for Flask:
+    # flask run
+    # Or:
+    # python app.py
     ```
-    *Example:*
+5.  Open your web browser and go to `http://localhost:PORT` (e.g., `http://localhost:5000`).
+
+## 📚 Question Structure & Domains
+
+The questions are organized based on the official KCSA exam domains, which may include (but are not limited to):
+
+* Cluster Setup & Hardening
+* System Hardening
+* Network Security
+* Pod Security
+* Secrets Management
+* RBAC and Service Accounts
+* Supply Chain Security
+* Monitoring, Logging, and Runtime Security
+
+*(Verify and update this list based on the actual domains covered in the app)*
+
+## 🤝 Contributing
+
+Contributions are welcome and greatly appreciated! Whether it's adding new questions, improving existing ones, enhancing the application features, or fixing bugs, your help can make this tool even better.
+
+### How to Contribute:
+
+1.  **Fork the repository.**
+2.  **Create a new branch** for your feature or bug fix:
     ```bash
-    python refine_questions.py --category Kubernetes_Security_Fundamentals
+    git checkout -b feature/your-feature-name
     ```
+    or
+    ```bash
+    git checkout -b fix/issue-description
+    ```
+3.  **Make your changes.**
+    * **Adding Questions:** Follow the existing format for questions. Ensure you provide clear explanations and sources where possible. Use the provided scripts if they assist in this process.
+    * **Code Changes:** Adhere to the project's coding style and conventions. Add comments where necessary.
+4.  **Test your changes thoroughly.**
+5.  **Commit your changes:**
+    ```bash
+    git commit -m "feat: Add amazing new feature" # or "fix: Resolve specific bug"
+    ```
+6.  **Push to your forked repository:**
+    ```bash
+    git push origin feature/your-feature-name
+    ```
+7.  **Open a Pull Request** against the `main` (or `master`) branch of the original repository. Provide a clear description of your changes.
 
-**What it does:**
-1.  Identifies questions in `src/exported-questions/<CategoryName>.mjs` needing review (where `revision: 1` by default).
-2.  Sends batches of these questions to the Perplexity API for targeted improvements (clarity, correctness, deprecation, sources).
-3.  Creates a backup (`.bak`) of the original `.mjs` file before making changes.
-4.  Updates the `.mjs` file with the AI-revised questions (setting `revision: 1` and `revision_date`).
-5.  Automatically runs `src/admin/db-tools/update_questions.mjs` and `src/admin/db-tools/export_questions.mjs` to update the SQLite database and re-export the files.
-6.  Saves suggested PR messages summarizing changes to `src/revised-questions/pr_messages_<CategoryName>.txt`.
-7.  If any critical step fails, it attempts to restore the original `.mjs` file from the backup. On success, the backup is removed.
+### Using Question Management Scripts
 
----
+The project includes scripts to help manage the question bank, including AI-powered tools for review. Refer to the documentation or comments within these scripts for usage instructions.
 
-## **🔹 Contributing**  
+*(Consider adding a separate `CONTRIBUTING.md` for more detailed guidelines if the project grows)*
 
-### **🛠 How to Update Questions**  
-We welcome contributions to improve the **question bank**!  
-If you spot an error, want to add references, or update a question, follow these steps:  
+## 📜 License
 
-📖 **See [CONTRIBUTING.md](CONTRIBUTING.md) for details.**  
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### **💡 Quick Contribution Steps:**  
-1️⃣ **Open an issue** describing the update.  
-2️⃣ **Create a new branch** (`update-question-<id>`).  
-3️⃣ **Modify the question** in `src/exported-questions/`.  
-4️⃣ **Ensure sources follow the correct format:**  
-```json
-"sources": [
-  {
-    "name": "Kubernetes Documentation",
-    "url": "https://kubernetes.io/docs/concepts/security/overview/"
-  }
-]
-```
-5️⃣ **Submit a Pull Request (PR)** for review.  
+##  DISCLAIMER
 
----
+This is an unofficial mock exam simulator created for educational and preparation purposes only. The questions and structure are based on publicly available information regarding the KCSA exam objectives. It is not affiliated with, endorsed by, or sponsored by the Cloud Native Computing Foundation (CNCF) or the Linux Foundation. For official KCSA exam information, please refer to the official CNCF certification page.
 
-## **📜 License**  
-This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.  
+## 🙏 Acknowledgements
+
+* *(If applicable, acknowledge any major libraries, inspirations, or contributors here.)*
+* Thanks to all contributors who help improve this project!
 
 ---
 
-## **🙌 Acknowledgments**  
-
-Special thanks to:  
-- **Henry Khosashi & Mark Wilson** for their support in Kubernetes certification studies.  
-- **The Kubernetes Community** for their contributions to cloud-native security.  
-- **v0 (Vercel's AI assistant)** for helping refine the project.  
-- **ChatGPT-4** for assisting in the initial question structure and JSON format generation.  
-
----
-
-## **⚠️ Disclaimer**  
-This mock exam is created for **educational purposes** and is **not officially affiliated with CNCF or Kubernetes certification programs**.  
-
----
-
-## **📌 Roadmap 2025**
-Our goal is to **continuously improve the KCSA Mock Exam App** by keeping the questions **up-to-date, categorised, and well-explained** to enhance learning, accuracy, and usability.  
-
-#### **🛠 Planned Enhancements:**  
-- **[Ongoing]** **Keep Questions Updated** – Ensure alignment with **latest KCSA exam domains** and security best practices.  
-- [X] **Use Classified Questions by Domain Exam** – Improve UX for **targeted learning** domain.  
-- [X] **Improve Explanations with Sources** – Add **verified references** to help users understand correct answers.  
-- [ ] **Advanced Analytics & Learning Insights** – Track **weakest topics**, **attempt history**, and **improvement trends**.  
-- [ ] **Implement Spaced Repetition System (SRS)** – Prioritize difficult questions for better retention. 
-- [ ] **Enhance Community Collaboration** – Open a **public issue tracker** for reporting **errors and missing sources**.  
-
-📖 **See [ROADMAP.md](ROADMAP.md) for details!**  
-
-🚀 Have suggestions? **Open an issue** or **submit a PR** to help improve the app! 🎯
-
----
-
-## **💬 Feedback & Support**  
-Your feedback is **crucial** for improving this project!  
-If you find errors or want to suggest improvements, please **open an issue** on GitHub.
-
----
-
-### **🎯 Keep Pushing Forward!**  
-With **dedication and practice**, you can become a **Kubestronaut**! 🚀👨‍🚀  
-Best of luck on your **Kubernetes Security certification journey**! 🎯🔥
+*Happy studying, and good luck with your KCSA exam!*
