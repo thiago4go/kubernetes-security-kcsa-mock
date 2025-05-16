@@ -19,21 +19,10 @@ logging.basicConfig(
 )
 
 # Constants
-# For testing, use our local test scripts
-# REFINE_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_refine_questions.py")
-# REVIEW_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_review_questions.py")
-# NODE_UPDATE_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test-data/update_questions.mjs")
-# NODE_EXPORT_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test-data/export_questions.mjs")
-
-# Fallback to real scripts if test scripts don't exist
-if not os.path.exists(REFINE_SCRIPT):
-    REFINE_SCRIPT = "src/admin/refine_questions.py"
-if not os.path.exists(REVIEW_SCRIPT):
-    REVIEW_SCRIPT = "src/admin/review_questions.py"
-if not os.path.exists(NODE_UPDATE_SCRIPT):
-    NODE_UPDATE_SCRIPT = "src/admin/db-tools/update_questions.mjs"
-if not os.path.exists(NODE_EXPORT_SCRIPT):
-    NODE_EXPORT_SCRIPT = "src/admin/db-tools/export_questions.mjs"
+REFINE_SCRIPT = "src/admin/refine_questions.py"
+REVIEW_SCRIPT = "src/admin/review_questions.py"
+NODE_UPDATE_SCRIPT = "src/admin/db-tools/update_questions.mjs"
+NODE_EXPORT_SCRIPT = "src/admin/db-tools/export_questions.mjs"
 
 
 def extract_question_info(title, body):
