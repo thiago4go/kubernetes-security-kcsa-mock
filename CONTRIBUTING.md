@@ -14,7 +14,60 @@ There are multiple ways to contribute:
 # **🛠 How to Contribute**  
 
 ## **1️⃣ Contributing to Question Updates**  
-### **1️⃣ Open an Issue**  
+
+### **1️⃣ Reporting Question Errors (Automated Process)**
+To report errors in questions, answers, or explanations:
+
+1. **Create an issue** using the "Question Error Report" template or with the following format:
+   - **Title**: Include a clear description of the error (e.g., "Error on answer about Network Policies")
+   - **Body**: Include the following information:
+     ```
+     Question ID: #42 (if known)
+     
+     Domain: Kubernetes_Security_Fundamentals
+
+     Question: [The current question text]
+     
+     Options:
+     - Option 1
+     - Option 2
+     - Option 3
+     - Option 4
+     
+     Your answer: [The answer currently marked as correct]
+
+     Correct answer: [What you believe should be correct]
+
+     Problem: [Description of the problem]
+
+     Suggested fix: [Your suggested fix, if any]
+     
+     References:
+     1. [Link to supporting documentation]
+     2. [Link to supporting documentation]
+     
+     [Optional] Needs comprehensive review: Yes
+     ```
+   - The system will automatically add the `question-error` label when it matches the error report pattern
+   - Our automated workflow will process the issue and:
+     1. Identify the specific question based on ID, text, or correct answer
+     2. Use AI-assisted refinement to fix the question
+     3. Update the database with the corrected information
+     4. Create a pull request with the changes for review
+
+2. **Automated processing** will:
+   - Identify the relevant question (even if you don't know the exact ID)
+   - Run the appropriate question revision script
+   - Update the database
+   - Create a pull request with the changes
+   - Add a comment to your issue when complete
+
+3. **Review the PR** that was automatically created to verify the changes
+
+### **1️⃣ Manual Question Update Process**
+For more complex updates or when the automated process is not suitable:
+
+1. **Open an Issue**  
 Before making changes, **open an issue** in the repository to describe:  
 - The **question ID** you are updating.  
 - The **problem with the question** (e.g., incorrect answer, missing explanation, outdated reference).  
@@ -160,4 +213,4 @@ Your contributions make the **KCSA Mock Exam App** better for **everyone**!
 
 📖 **See [ROADMAP.md](ROADMAP.md) for upcoming features!**  
 
-🚀 Let's make Kubernetes security education **accessible, accurate, and effective**! 🎯🔥  
+🚀 Let's make Kubernetes security education **accessible, accurate, and effective**! 🎯🔥

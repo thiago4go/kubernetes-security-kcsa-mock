@@ -1,0 +1,87 @@
+name: Question Fix Automation
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+      - labeled
+
+jobs:
+  process-question-issues:
+    if: contains(github.event.issue.labels.*.name, 'question-error') && !contains(github.event.issue.labels.*.name, 'skip-automation')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Node.js dependencies
+        run: npm install
+
+      - name: Install Python dependencies
+        run: |
+          pip install requests
+
+      - name: Set script permissions
+        run: |
+          chmod +x .github/scripts/*.py
+          chmod +x src/admin/*.py
+          mkdir -p src/revised-questions
+
+      - name: Parse issue content and process question
+        id: process_issue
+        env:
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          python .github/scripts/process_issue.py "${{ github.event.issue.title }}" "${{ github.event.issue.body }}" "${{ github.event.issue.number }}"
+          echo "Processing completed"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GH_PAT }}
+          commit-message: "fix: update question from issue #${{ github.event.issue.number }}"
+          title: "fix: update question from issue #${{ github.event.issue.number }}"
+          body: |
+            This PR fixes the question error reported in issue #${{ github.event.issue.number }}.
+            
+            Issue title: ${{ github.event.issue.title }}
+            
+            ## Changes Made
+            - Updated question content using AI-assisted refinement
+            - Updated the SQLite database
+            - Exported updated questions to JavaScript files
+            
+            This PR was created automatically by the question processing system. Please review the changes before merging.
+          labels: "question-fix, automated-pr"
+          branch: "fix/question-issue-${{ github.event.issue.number }}"
+          delete-branch: true
+          
+      - name: Add comment on PR failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }},
+              body: '❌ Automation failed: The question processing workflow encountered an error. Please check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.'
+            });
