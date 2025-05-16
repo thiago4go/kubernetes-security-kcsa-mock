@@ -48,14 +48,23 @@ jobs:
         env:
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Optional: Set LOG_LEVEL for the Python script if you want more/less verbose logs
+          # LOG_LEVEL: DEBUG 
         run: |
-          # Extract domain from issue body as fallback
-          DOMAIN=$(echo "${{ github.event.issue.body }}" | grep -i "domain:" | head -n 1 | sed -E 's/.*[Dd]omain:\s*([^()\n]*).*/\1/' | tr -d '[:punct:]' | tr ' ' '_' | tr '[:upper:]' '[:lower:]')
-          echo "Extracted domain: $DOMAIN"
+          # The shell-based domain extraction can remain as a preliminary step,
+          # but the Python script also has its own robust domain extraction.
+          # You might not strictly need this shell part anymore if the Python script is reliable.
+          DOMAIN_SHELL=$(echo "${{ github.event.issue.body }}" | grep -i "domain:" | head -n 1 | sed -E 's/.*[Dd]omain:\s*([^()\n]*).*/\1/' | tr -d '[:punct:]' | tr ' ' '_' | tr '[:upper:]' '[:lower:]')
+          echo "Shell extracted domain (fallback/info): $DOMAIN_SHELL"
           
-          # Run the script with extracted info
-          python .github/scripts/process_issue.py "${{ github.event.issue.title }}" "${{ github.event.issue.body }}" "${{ github.event.issue.number }}"
-          echo "Processing completed"
+          # Encode the issue body to Base64
+          # Using -w 0 for base64 ensures no line wrapping, which is good for command line args
+          ISSUE_BODY_B64=$(echo "${{ github.event.issue.body }}" | base64 -w 0)
+          
+          # Run the Python script with title, BASE64 ENCODED BODY, and issue number
+          python .github/scripts/process_issue.py "${{ github.event.issue.title }}" "$ISSUE_BODY_B64" "${{ github.event.issue.number }}"
+          
+          echo "Python script processing completed" # Renamed for clarity from "Processing completed"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5

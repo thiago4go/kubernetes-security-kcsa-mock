@@ -2,6 +2,7 @@
 """
 Script to process GitHub issues related to question errors and run the appropriate
 question processing scripts.
+This script is designed to work with live question data.
 """
 import os
 import sys
@@ -10,478 +11,494 @@ import json
 import subprocess
 import logging
 import shutil
-from datetime import datetime
+# from datetime import datetime # Not explicitly used, can be removed if not needed for other logic
 
 # Configure logging
+# Consider adding a more detailed format if needed, e.g., include function name
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    level=LOG_LEVEL,
+    format='%(asctime)s - %(levelname)s - [%(funcName)s:%(lineno)d] - %(message)s'
 )
 
 # Constants
-REFINE_SCRIPT = "src/admin/refine_questions.py"
-REVIEW_SCRIPT = "src/admin/review_questions.py"
-NODE_UPDATE_SCRIPT = "src/admin/db-tools/update_questions.mjs"
-NODE_EXPORT_SCRIPT = "src/admin/db-tools/export_questions.mjs"
+# Assuming this script is in .github/scripts/
+# Adjust paths if the script is moved or CWD is different during execution
+PROJECT_ROOT_OFFSET = "../.." # From .github/scripts/ to project root
+SRC_DIR = os.path.join(PROJECT_ROOT_OFFSET, "src")
+EXPORTED_QUESTIONS_DIR = os.path.join(SRC_DIR, "exported-questions")
+METADATA_FILE = os.path.join(SRC_DIR, "questions_metadata.json")
+
+ADMIN_SCRIPTS_DIR = os.path.join(SRC_DIR, "admin")
+REFINE_SCRIPT = os.path.join(ADMIN_SCRIPTS_DIR, "refine_questions.py")
+REVIEW_SCRIPT = os.path.join(ADMIN_SCRIPTS_DIR, "review_questions.py")
+
+DB_TOOLS_DIR = os.path.join(ADMIN_SCRIPTS_DIR, "db-tools")
+NODE_UPDATE_SCRIPT = os.path.join(DB_TOOLS_DIR, "update_questions.mjs")
+NODE_EXPORT_SCRIPT = os.path.join(DB_TOOLS_DIR, "export_questions.mjs")
 
 
 def extract_question_info(title, body):
     """Extract question information from issue title and body."""
-    logging.info("Extracting question information from issue")
+    logging.info("Extracting question information from issue content.")
     logging.debug(f"Received Title: {title}")
-    logging.debug(f"Received Body:\n{body[:500]}...") # Log beginning of body for context
+    # Log only a portion of the body to avoid flooding logs, but enough for context
+    logging.debug(f"Received Body (first 500 chars):\n{body[:500]}...")
 
     question_info = {
-        "id": None,
-        "domain": None,
-        "error_type": "content",
-        "needs_review": False,
-        "question_text": None,
-        "correct_answer": None
+        "id": None,             # Internal ID of the question, if found
+        "domain": None,         # The domain/category of the question
+        "error_type": "content",# Default error type
+        "needs_review": False,  # Flag for comprehensive review vs. targeted refine
+        "question_text": None,  # The actual text of the question
+        "correct_answer": None  # The text of the correct answer
     }
 
-    # Extract question ID from title (e.g., "Error on answer #61" or "Error on answer id: 16")
-    # This ID refers to the internal question ID, not the GitHub issue number.
-    id_match_title = re.search(r'#(\d+)', title)
-    if id_match_title:
-        question_info["id"] = int(id_match_title.group(1))
-        logging.info(f"Found question ID #{question_info['id']} in title.")
-    else:
-        id_match_title_alt = re.search(r'id:\s*(\d+)', title, re.IGNORECASE)
-        if id_match_title_alt:
-            question_info["id"] = int(id_match_title_alt.group(1))
-            logging.info(f"Found question ID {question_info['id']} with 'id:' in title.")
+    # --- ID Extraction (from title or body, looking for internal question ID) ---
+    # Order of preference: title with #, title with id:, body with "question id:", body with "id:"
+    id_patterns = [
+        (r'#(\d+)', title, "title (#)"),
+        (r'\bid\s*:\s*(\d+)', title, "title (id:)"),
+        (r'question\s+id\s*[:#]?\s*(\d+)', body, "body (question id)"),
+        (r'(?<!\w)id\s*[:#]\s*(\d+)', body, "body (id:)") # (?<!\w) to avoid matching 'quizid' etc.
+    ]
+    for pattern, text_source, desc in id_patterns:
+        match = re.search(pattern, text_source, re.IGNORECASE)
+        if match:
+            question_info["id"] = int(match.group(1))
+            logging.info(f"Found potential question ID '{question_info['id']}' from {desc}.")
+            break # Take the first ID found
 
-    # If not found in title, look for ID in the body
-    if question_info["id"] is None:
-        id_match_body = re.search(r'question\s+id\s*[:#]?\s*(\d+)', body, re.IGNORECASE) # More flexible ID search
-        if id_match_body:
-            question_info["id"] = int(id_match_body.group(1))
-            logging.info(f"Found question ID #{question_info['id']} in body.")
-        else:
-            # Try alternative format with 'id:' in body
-            id_match_body_alt = re.search(r'\bid\s*[:#]?\s*(\d+)', body, re.IGNORECASE)
-            if id_match_body_alt:
-                question_info["id"] = int(id_match_body_alt.group(1))
-                logging.info(f"Found question ID {question_info['id']} with 'id:' in body (alternative).")
-
-
-    # Extract the question text itself. Looks for "Question:" possibly with markdown,
-    # and captures until a common next section or end of string.
+    # --- Question Text Extraction ---
+    # Regex tries to capture text after "Question:" and before common subsequent section headers
+    # or a significant break (double newline).
     question_pattern = re.compile(
-        r'(?i)(?:\*\*Question\*\*|Question)\s*:\s*(.+?)(?=\n\s*(?:\*\*Your answer:|\*\*Correct answer:|\*\*Explanation:|\*\*Error:|Domain:|$)|$)',
+        r'(?i)(?:\*\*Question\*\*|Question)\s*:\s*' # Header
+        r'(.+?)'                                  # Actual question (non-greedy)
+        # Lookahead for end: double newline OR newline + known section OR end of string
+        r'(?=\n\s*\n|\n\s*(?:Your answer:|Correct answer:|Explanation:|Error:|Domain:|$))',
         re.DOTALL
     )
     question_match = question_pattern.search(body)
     if question_match:
         question_info["question_text"] = question_match.group(1).strip()
-        logging.info(f"Extracted question text: '{question_info['question_text'][:100]}...'")
+        logging.info(f"Extracted question text (first 100 chars): '{question_info['question_text'][:100]}...'")
     else:
         logging.warning("Could not extract question text using primary pattern.")
-        # Fallback for question text if primary fails (e.g. simple body with just the question)
-        if not question_info["question_text"] and "Your answer:" not in body and "Correct answer:" not in body and "Explanation:" not in body:
-             # Attempt to grab content before "Domain:" if it exists and other markers are absent
-            fallback_question_match = re.search(r'^(.*?)(?=\n\s*Domain:|$)', body, re.DOTALL | re.IGNORECASE)
-            if fallback_question_match:
-                potential_text = fallback_question_match.group(1).strip()
-                # Avoid grabbing the issue title if it's the only thing there.
-                if potential_text and len(potential_text) > 20 and potential_text.lower() != title.lower() : # Heuristic
-                    question_info["question_text"] = potential_text
-                    logging.info(f"Extracted question text (fallback): '{question_info['question_text'][:100]}...'")
 
-
-    # Extract the correct answer. Similar logic for delimiters.
+    # --- Correct Answer Extraction ---
     correct_answer_pattern = re.compile(
-        r'(?i)(?:\*\*Correct answer\*\*|Correct answer)\s*:\s*(.+?)(?=\n\s*(?:\*\*Explanation:|\*\*Error:|Domain:|$)|$)',
+        r'(?i)(?:\*\*Correct answer\*\*|Correct answer)\s*:\s*' # Header
+        r'(.+?)'                                             # Actual answer (non-greedy)
+        # Lookahead for end: double newline OR newline + known section OR end of string
+        r'(?=\n\s*\n|\n\s*(?:Explanation:|Error:|Domain:|$))',
         re.DOTALL
     )
     correct_answer_match = correct_answer_pattern.search(body)
     if correct_answer_match:
         question_info["correct_answer"] = correct_answer_match.group(1).strip()
-        logging.info(f"Extracted correct answer: '{question_info['correct_answer'][:100]}...'")
+        logging.info(f"Extracted correct answer (first 100 chars): '{question_info['correct_answer'][:100]}...'")
     else:
-        logging.warning("Could not extract correct answer.")
+        logging.warning("Could not extract correct answer text.")
 
-    # Look for domain information in the body
-    domain_patterns = [
-        r'(?i)\*\*?Domain\*\*?\s*:\s*([^\n]+)', # Handles optional markdown
-        r'(?i)Domain[^\w]*\s*(\w[\w\s_-]+)' # More general
-    ]
-    for pattern in domain_patterns:
-        domain_match = re.search(pattern, body) # re.IGNORECASE is in pattern now
-        if domain_match:
-            domain = domain_match.group(1).strip()
-            domain = domain.lower().replace(' ', '_') # Normalize
-            question_info["domain"] = domain
-            logging.info(f"Found domain: {domain} in body.")
-            break
-    if not question_info["domain"]:
-        logging.warning("Could not extract domain from body using standard patterns.")
+    # --- Domain Extraction (from body) ---
+    domain_pattern_body = re.compile(
+        r'(?i)(?:\*\*Domain\*\*|Domain)\s*:\s*([^\n]+)', # Capture line after "Domain:"
+        re.DOTALL
+    )
+    domain_match_body = domain_pattern_body.search(body)
+    if domain_match_body:
+        domain_raw = domain_match_body.group(1).strip()
+        # Normalize: lowercase, replace spaces with underscores, remove trailing punctuation
+        domain_normalized = re.sub(r'[^\w\s-]', '', domain_raw).lower().replace(' ', '_')
+        question_info["domain"] = domain_normalized
+        logging.info(f"Found domain '{domain_normalized}' in body (raw: '{domain_raw}').")
+    else:
+        logging.warning("Could not extract domain from body using 'Domain:' pattern.")
 
-
-    # Determine if this is a content error or needs full review
+    # --- Needs Review Flag ---
     if "needs full review" in body.lower() or "needs comprehensive review" in body.lower():
         question_info["needs_review"] = True
-        logging.info("Issue flagged for full review.")
+        logging.info("Issue flagged for 'full review'.")
 
-    # Determine error type based on title or key phrases in body
-    if "answer" in title.lower() or "correct answer" in body.lower() or "your answer" in body.lower(): # Added "your answer"
+    # --- Error Type Determination ---
+    # Simple keyword matching in title or body
+    if any(keyword in title.lower() for keyword in ["answer", "correct answer"]):
         question_info["error_type"] = "answer"
-    elif "explanation" in title.lower() or "explanation" in body.lower():
+    elif any(keyword in body.lower() for keyword in ["correct answer:", "your answer:"]):
+        question_info["error_type"] = "answer"
+    elif "explanation" in title.lower() or "explanation:" in body.lower():
         question_info["error_type"] = "explanation"
-    elif "question" in title.lower() or "question text" in body.lower(): # "question text" might be too broad
+    elif "question" in title.lower(): # Less specific, might need care
         question_info["error_type"] = "question"
-    logging.info(f"Determined error type: {question_info['error_type']}")
+    logging.info(f"Determined error type: '{question_info['error_type']}'.")
 
-    # Dynamically load domain mappings from /src/questions_metadata.json
-    domain_mapping = {}
-    # Assuming the script is run from repository root or .github/scripts
-    metadata_path_candidates = [
-        "src/questions_metadata.json",
-        "../../src/questions_metadata.json" # If script is in .github/scripts/
-    ]
-    metadata_path = None
-    for candidate in metadata_path_candidates:
-        if os.path.exists(candidate):
-            metadata_path = candidate
-            break
-    
-    if metadata_path:
+    # --- Domain Mapping using metadata.json ---
+    if os.path.exists(METADATA_FILE):
         try:
-            with open(metadata_path, "r", encoding="utf-8") as f:
-                domains_data = json.load(f)
-                for domain_key in domains_data.keys():
-                    normalized_key = domain_key.lower().replace(" ", "_") # Ensure consistent normalization
-                    domain_mapping[normalized_key] = domain_key
-                    # Map variations for robustness
-                    domain_mapping[domain_key.lower()] = domain_key
-                    domain_mapping[domain_key.replace(" ", "_")] = domain_key
-
-
-            if question_info["domain"] and question_info["domain"] in domain_mapping:
-                original_extracted_domain = question_info["domain"]
-                question_info["domain"] = domain_mapping[question_info["domain"]]
-                logging.info(f"Mapped extracted domain '{original_extracted_domain}' to '{question_info['domain']}' using metadata.")
-            elif question_info["domain"]:
-                 logging.warning(f"Extracted domain '{question_info['domain']}' not found in metadata mapping.")
+            with open(METADATA_FILE, "r", encoding="utf-8") as f:
+                domains_data = json.load(f) # Expected to be a dict like {"Domain_Name_Proper_Case": count}
+            
+            if question_info["domain"]: # If a domain was extracted
+                extracted_domain_normalized = question_info["domain"] # Already normalized
+                # Find a match in metadata keys (case-insensitive and underscore/space insensitive)
+                mapped_domain = None
+                for proper_case_domain in domains_data.keys():
+                    metadata_normalized = proper_case_domain.lower().replace(' ', '_')
+                    if extracted_domain_normalized == metadata_normalized:
+                        mapped_domain = proper_case_domain
+                        break
+                
+                if mapped_domain:
+                    question_info["domain"] = mapped_domain
+                    logging.info(f"Mapped extracted domain '{extracted_domain_normalized}' to '{mapped_domain}' using metadata.")
+                else:
+                    logging.warning(f"Extracted domain '{extracted_domain_normalized}' not found in {METADATA_FILE} keys for mapping.")
+            else:
+                logging.info("No domain extracted from issue body to map using metadata.")
+        except json.JSONDecodeError:
+            logging.error(f"Error decoding JSON from metadata file: {METADATA_FILE}")
         except Exception as e:
-            logging.warning(f"Could not load or process domain mapping from metadata at {metadata_path}: {e}")
+            logging.error(f"Error loading or processing domain metadata from {METADATA_FILE}: {e}")
     else:
-        logging.warning(f"questions_metadata.json not found in candidate paths.")
-    
-    logging.info(f"Final extracted info before returning: {json.dumps(question_info, indent=2)}")
+        logging.warning(f"Metadata file not found at {METADATA_FILE}. Cannot map domain names.")
+
+    logging.info(f"Final extracted info: {json.dumps(question_info, indent=2)}")
     return question_info
 
 
-def find_question_file(question_id=None, question_text=None, correct_answer=None):
+def find_question_in_files(question_id_to_find=None, text_to_find=None, answer_to_find=None, domain_to_search=None):
     """
-    Find which file contains the question with the given ID or content.
-    (Keeping existing structure, assuming test_question_finder.py might be used)
+    Finds a question by ID, text, or answer within .mjs files in the EXPORTED_QUESTIONS_DIR.
+    If domain_to_search is provided, searches only in that domain's file.
+    Returns a tuple (domain_filename_without_ext, question_id_found) or None.
     """
-    test_finder_path = os.path.join(os.path.dirname(__file__), "test_question_finder.py")
-    if os.path.exists(test_finder_path):
-        try:
-            sys.path.append(os.path.dirname(__file__))
-            from test_question_finder import find_question
-            logging.info("Using test question finder function")
-            return find_question(question_id, question_text, correct_answer)
-        except ImportError:
-            logging.warning("Could not import test question finder, falling back to default implementation")
-            # Fall through to default implementation below if import fails
-        except Exception as e:
-            logging.error(f"Error loading test_question_finder: {e}. Falling back to default.")
+    logging.info(f"Searching for question in production files. ID: {question_id_to_find}, Text Hint: '{str(text_to_find)[:50]}...', Domain hint: {domain_to_search}")
 
-
-    # Handle path - check if we're in the .github/scripts directory or in the repo root
-    exported_dir_candidates = ["../../src/exported-questions", "src/exported-questions"]
-    exported_dir = None
-    for candidate in exported_dir_candidates:
-        if os.path.exists(candidate):
-            exported_dir = candidate
-            break
-    if not exported_dir:
-        logging.error("Could not find exported questions directory.")
+    if not os.path.isdir(EXPORTED_QUESTIONS_DIR):
+        logging.error(f"Exported questions directory not found: {EXPORTED_QUESTIONS_DIR}")
         return None
-    
-    logging.info(f"Using exported questions directory: {exported_dir}")
 
-    # Strategy 1: Find by ID if available
-    if question_id is not None: # Explicitly check for not None
-        logging.info(f"Searching for question by ID: {question_id}")
-        for filename in os.listdir(exported_dir):
-            if not filename.endswith('.mjs'):
-                continue
-            filepath = os.path.join(exported_dir, filename)
+    files_to_scan = []
+    if domain_to_search:
+        # Construct filename from domain: replace spaces with underscores, ensure .mjs
+        # This assumes domain_to_search is already the proper case or can be matched
+        # to a filename based on common patterns (e.g. "Kubernetes_Security_Fundamentals.mjs")
+        potential_filename = f"{domain_to_search.replace(' ', '_')}.mjs"
+        filepath = os.path.join(EXPORTED_QUESTIONS_DIR, potential_filename)
+        if os.path.exists(filepath):
+            files_to_scan.append(filepath)
+            logging.info(f"Targeting specific domain file: {filepath}")
+        else:
+            logging.warning(f"Specified domain file '{potential_filename}' not found in {EXPORTED_QUESTIONS_DIR}. Scanning all files.")
+            files_to_scan = [os.path.join(EXPORTED_QUESTIONS_DIR, f) for f in os.listdir(EXPORTED_QUESTIONS_DIR) if f.endswith('.mjs')]
+    else:
+        files_to_scan = [os.path.join(EXPORTED_QUESTIONS_DIR, f) for f in os.listdir(EXPORTED_QUESTIONS_DIR) if f.endswith('.mjs')]
+
+    if not files_to_scan:
+        logging.warning(f"No .mjs files found to scan in {EXPORTED_QUESTIONS_DIR}")
+        return None
+
+    # --- Strategy 1: Find by ID (most reliable) ---
+    if question_id_to_find is not None:
+        logging.debug(f"Strategy 1: Searching for question_id = {question_id_to_find}")
+        for filepath in files_to_scan:
             try:
                 with open(filepath, 'r', encoding='utf-8') as f:
                     content = f.read()
-                    # More robust ID check, allowing for spaces around comma and colon
-                    if re.search(rf'"id"\s*:\s*{question_id}\s*,', content):
-                        domain_name = filename.replace('.mjs', '')
-                        logging.info(f"Found question ID {question_id} in file {domain_name}")
-                        return (domain_name, question_id)
+                # Regex to find "id": <id>, allowing for spaces
+                if re.search(rf'"id"\s*:\s*{question_id_to_find}\s*,', content):
+                    domain_name_from_file = os.path.splitext(os.path.basename(filepath))[0]
+                    logging.info(f"Found question ID {question_id_to_find} in file: {filepath} (Domain: {domain_name_from_file})")
+                    return (domain_name_from_file, question_id_to_find)
             except Exception as e:
-                logging.warning(f"Error reading file {filepath} during ID search: {e}")
-        logging.info(f"Question ID {question_id} not found via direct ID search strategy.")
+                logging.error(f"Error reading/searching file {filepath} for ID: {e}")
+        logging.info(f"Question ID {question_id_to_find} not found via direct ID search strategy.")
 
-
-    # Strategy 2-3: Find by question text if available
-    if question_text:
-        clean_question = re.sub(r'\s+', ' ', question_text).strip().lower() # Normalize to lower for comparison
-        logging.info(f"Searching for question by text (normalized): {clean_question[:50]}...")
-        
-        for filename in os.listdir(exported_dir):
-            if not filename.endswith('.mjs'):
-                continue
-            filepath = os.path.join(exported_dir, filename)
+    # --- Strategy 2: Find by Question Text (if provided) ---
+    if text_to_find:
+        normalized_text_to_find = re.sub(r'\s+', ' ', text_to_find).strip().lower()
+        logging.debug(f"Strategy 2: Searching by question text (normalized): '{normalized_text_to_find[:70]}...'")
+        for filepath in files_to_scan:
             try:
                 with open(filepath, 'r', encoding='utf-8') as f:
                     content = f.read()
-                # Extract all question objects more reliably
-                # This pattern looks for JSON objects with "id" and "question" keys
+                # Regex to extract all question objects with "id" and "question"
+                # ((?:\\.|[^"])*) captures string content, handling escaped quotes
                 for match in re.finditer(r'{\s*"id"\s*:\s*(\d+)\s*,\s*"question"\s*:\s*"((?:\\.|[^"])*)"', content):
                     found_id = int(match.group(1))
                     found_question_raw = match.group(2)
-                    # Basic unescaping for comparison (e.g., \\" to ")
                     found_question_unescaped = found_question_raw.replace('\\"', '"').replace('\\n', '\n')
-                    found_question_clean = re.sub(r'\s+', ' ', found_question_unescaped).strip().lower()
+                    normalized_file_question = re.sub(r'\s+', ' ', found_question_unescaped).strip().lower()
+
+                    if normalized_text_to_find == normalized_file_question:
+                        domain_name_from_file = os.path.splitext(os.path.basename(filepath))[0]
+                        logging.info(f"Found exact question text match in {filepath} (Domain: {domain_name_from_file}, ID: {found_id})")
+                        return (domain_name_from_file, found_id)
                     
-                    if clean_question == found_question_clean:
-                        domain_name = filename.replace('.mjs', '')
-                        logging.info(f"Found exact question text match in {domain_name}, question ID: {found_id}")
-                        return (domain_name, found_id)
-                    
-                    # Consider using a library for fuzzy matching if partials are important
-                    # For now, keeping simple substring or word set overlap
-                    if (len(clean_question) > 15 and
-                        (clean_question in found_question_clean or
-                         found_question_clean in clean_question or
-                         (len(set(clean_question.split()) & set(found_question_clean.split())) > len(clean_question.split()) / 2))):
-                        domain_name = filename.replace('.mjs', '')
-                        logging.info(f"Found partial question text match in {domain_name}, question ID: {found_id}")
-                        return (domain_name, found_id) # Return first good partial match
+                    # Optional: Add fuzzy matching here if needed (e.g., Levenshtein distance)
+                    # from difflib import SequenceMatcher
+                    # if SequenceMatcher(None, normalized_text_to_find, normalized_file_question).ratio() > 0.85: # Example threshold
+                    #    logging.info(f"Found fuzzy text match (ratio > 0.85) in {filepath} (ID: {found_id})")
+                    #    return (os.path.splitext(os.path.basename(filepath))[0], found_id)
+
             except Exception as e:
-                logging.warning(f"Error reading/parsing file {filepath} during text search: {e}")
-        logging.info(f"Question text '{clean_question[:50]}...' not found via text search strategy.")
+                logging.error(f"Error reading/searching file {filepath} for text: {e}")
+        logging.info(f"Question text '{normalized_text_to_find[:70]}...' not found via text search strategy.")
 
-    # Strategy 4: Find by correct answer if available (less reliable, use with caution)
-    if correct_answer:
-        clean_answer = re.sub(r'\s+', ' ', correct_answer).strip().lower()
-        logging.info(f"Searching for question by correct answer (normalized): {clean_answer[:50]}...")
-        # This strategy is complex and can be error-prone.
-        # Consider if it's truly needed or if improving ID/text extraction is better.
-        # For now, commenting out detailed implementation to focus on ID/text.
-        logging.warning("Search by correct answer is complex and currently not fully implemented in this fallback.")
+    # --- Strategy 3: Find by Correct Answer Text (less reliable, use if other methods fail) ---
+    if answer_to_find:
+        normalized_answer_to_find = re.sub(r'\s+', ' ', answer_to_find).strip().lower()
+        logging.debug(f"Strategy 3: Searching by correct answer text (normalized): '{normalized_answer_to_find[:70]}...'")
+        # This strategy can be complex if answers are long or questions have multiple correct options.
+        # A simplified version might look for the answer text within the "options" array
+        # at the index specified by "correct_answers".
+        # Due to complexity and lower reliability, keeping this brief.
+        logging.warning("Search by correct answer text is a complex strategy and might not be fully effective here.")
 
-
-    logging.warning("Could not find a matching question in any file using available strategies.")
+    logging.warning("Could not identify the specific question using available strategies.")
     return None
 
-def run_refine_script(question_domain, question_id=None):
-    """Run the refine_questions.py script for the given domain."""
-    if not question_domain:
-        logging.error("Cannot run refine script: question_domain is not provided.")
-        return False
-    logging.info(f"Running refine script for domain: {question_domain}" + (f", ID: {question_id}" if question_id is not None else ""))
-    
-    cmd = [
-        "python3", 
-        REFINE_SCRIPT, 
-        "--category", question_domain,
-    ]
-    
-    if question_id is not None: # Ensure ID is explicitly passed if available
-        cmd.extend(["--question-id", str(question_id)])
-    
-    logging.info(f"Refine script command: {' '.join(cmd)}")
-    result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
-    
-    if result.returncode != 0:
-        logging.error(f"Error running refine script. Return code: {result.returncode}")
-        logging.error(f"Refine script STDERR:\n{result.stderr}")
-        logging.error(f"Refine script STDOUT:\n{result.stdout}") # Log stdout too on error
-        return False
-        
-    logging.info(f"Refine script STDOUT:\n{result.stdout}")
-    if result.stderr: # Log stderr even on success if not empty
-        logging.info(f"Refine script STDERR (non-fatal or warnings):\n{result.stderr}")
-    return True
 
-def run_review_script(question_domain, question_id=None):
-    """Run the review_questions.py script for the given domain."""
-    if not question_domain:
-        logging.error("Cannot run review script: question_domain is not provided.")
-        return False
-    logging.info(f"Running review script for domain: {question_domain}" + (f", ID: {question_id}" if question_id is not None else ""))
-    
-    cmd = [
-        "python3", 
-        REVIEW_SCRIPT, 
-        "--category", question_domain
-    ]
-    
+def run_script(script_path, category, question_id=None):
+    """Helper to run refine or review scripts."""
+    if not os.path.exists(script_path):
+        logging.error(f"Script not found: {script_path}")
+        return False, ""
+
+    cmd = ["python3", script_path, "--category", category]
     if question_id is not None:
         cmd.extend(["--question-id", str(question_id)])
 
-    logging.info(f"Review script command: {' '.join(cmd)}")
-    result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
-    
-    if result.returncode != 0:
-        logging.error(f"Error running review script. Return code: {result.returncode}")
-        logging.error(f"Review script STDERR:\n{result.stderr}")
-        logging.error(f"Review script STDOUT:\n{result.stdout}")
-        return False
+    logging.info(f"Executing command: {' '.join(cmd)}")
+    try:
+        # Set CWD to project root if scripts expect that for relative paths (e.g. to db-tools)
+        # This assumes process_issue.py is in .github/scripts
+        process = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', check=False, cwd=PROJECT_ROOT_OFFSET)
+        stdout = process.stdout
+        stderr = process.stderr
+
+        if process.returncode != 0:
+            logging.error(f"Error running {os.path.basename(script_path)}. Return code: {process.returncode}")
+            if stdout: logging.error(f"STDOUT:\n{stdout}")
+            if stderr: logging.error(f"STDERR:\n{stderr}")
+            return False, stdout + stderr
         
-    logging.info(f"Review script STDOUT:\n{result.stdout}")
-    if result.stderr:
-        logging.info(f"Review script STDERR (non-fatal or warnings):\n{result.stderr}")
-    return True
+        logging.info(f"{os.path.basename(script_path)} STDOUT:\n{stdout if stdout else '(empty)'}")
+        if stderr:
+            logging.warning(f"{os.path.basename(script_path)} STDERR (may contain warnings):\n{stderr}")
+        return True, stdout
+    except FileNotFoundError:
+        logging.error(f"Python3 interpreter or script {script_path} not found. Ensure it's in PATH and executable.")
+        return False, "Python3 or script not found."
+    except Exception as e:
+        logging.error(f"An unexpected error occurred while running {script_path}: {e}")
+        return False, str(e)
 
-def run_node_scripts():
-    """Run the Node.js scripts to update the database and export questions."""
-    logging.info("Running Node.js update script")
-    
-    update_result = subprocess.run(["node", NODE_UPDATE_SCRIPT], capture_output=True, text=True, encoding='utf-8')
-    if update_result.returncode != 0:
-        logging.error(f"Error running update script. Return code: {update_result.returncode}")
-        logging.error(f"Node Update STDERR:\n{update_result.stderr}")
-        logging.error(f"Node Update STDOUT:\n{update_result.stdout}")
-        return False
-    logging.info(f"Update script output:\n{update_result.stdout}")
-    if update_result.stderr:
-        logging.info(f"Update script STDERR (non-fatal or warnings):\n{update_result.stderr}")
-    
-    logging.info("Running Node.js export script")
-    export_result = subprocess.run(["node", NODE_EXPORT_SCRIPT], capture_output=True, text=True, encoding='utf-8')
-    if export_result.returncode != 0:
-        logging.error(f"Error running export script. Return code: {export_result.returncode}")
-        logging.error(f"Node Export STDERR:\n{export_result.stderr}")
-        logging.error(f"Node Export STDOUT:\n{export_result.stdout}")
-        return False
-    logging.info(f"Export script output:\n{export_result.stdout}")
-    if export_result.stderr:
-        logging.info(f"Export script STDERR (non-fatal or warnings):\n{export_result.stderr}")
-    return True
 
-def create_comment_on_issue(issue_number, message):
-    """Create a comment on the GitHub issue using the GitHub CLI."""
-    logging.info(f"Attempting to add comment to issue #{issue_number}")
+def run_node_scripts_wrapper():
+    """Wrapper to run Node.js update and export scripts."""
+    scripts_to_run = {
+        "Update": NODE_UPDATE_SCRIPT,
+        "Export": NODE_EXPORT_SCRIPT
+    }
+    all_success = True
+
+    for script_name, script_path in scripts_to_run.items():
+        if not os.path.exists(script_path):
+            logging.error(f"Node.js {script_name} script not found: {script_path}")
+            all_success = False
+            continue
+        
+        logging.info(f"Running Node.js {script_name} script: {script_path}")
+        try:
+            # Node scripts might also need CWD set if they use relative paths from project root
+            process = subprocess.run(["node", script_path], capture_output=True, text=True, encoding='utf-8', check=False, cwd=PROJECT_ROOT_OFFSET)
+            stdout = process.stdout
+            stderr = process.stderr
+
+            if process.returncode != 0:
+                logging.error(f"Error running Node.js {script_name} script. Return code: {process.returncode}")
+                if stdout: logging.error(f"STDOUT:\n{stdout}")
+                if stderr: logging.error(f"STDERR:\n{stderr}")
+                all_success = False
+            else:
+                logging.info(f"Node.js {script_name} script STDOUT:\n{stdout if stdout else '(empty)'}")
+                if stderr:
+                    logging.warning(f"Node.js {script_name} script STDERR (may contain warnings):\n{stderr}")
+        except FileNotFoundError:
+            logging.error("'node' command not found. Please ensure Node.js is installed and in PATH.")
+            all_success = False
+        except Exception as e:
+            logging.error(f"An unexpected error occurred running Node.js {script_name} script: {e}")
+            all_success = False
+            
+    return all_success
+
+
+def create_comment_on_issue_wrapper(issue_number, message):
+    """Wrapper to create a comment on GitHub issue using 'gh' CLI."""
+    logging.info(f"Attempting to add comment to GitHub issue #{issue_number}")
     
     if not shutil.which("gh"):
-        logging.warning("`gh` CLI not found. Skipping comment creation. Message for issue #{issue_number}:\n{message}")
-        return True # Non-fatal if gh is not present for local testing
-    
+        logging.warning("'gh' CLI not found. Skipping comment creation. Message for issue #{issue_number}:\n{message}")
+        return True # Non-fatal for local testing or if gh CLI isn't critical path
+
     cmd = ["gh", "issue", "comment", str(issue_number), "--body", message]
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True, encoding='utf-8')
-        logging.info(f"Successfully commented on issue #{issue_number}. Output:\n{result.stdout}")
+        # Ensure GITHUB_TOKEN is available in env for gh to work in Actions
+        process = subprocess.run(cmd, capture_output=True, text=True, check=True, encoding='utf-8')
+        logging.info(f"Successfully commented on issue #{issue_number}. GH CLI Output:\n{process.stdout}")
         return True
     except subprocess.CalledProcessError as e:
-        logging.error(f"Error creating comment on issue #{issue_number}. Return code: {e.returncode}")
-        logging.error(f"GH CLI STDERR:\n{e.stderr}")
-        logging.error(f"GH CLI STDOUT:\n{e.stdout}")
+        logging.error(f"Error creating comment on issue #{issue_number} using 'gh' CLI. Return code: {e.returncode}")
+        if e.stdout: logging.error(f"GH CLI STDOUT:\n{e.stdout}")
+        if e.stderr: logging.error(f"GH CLI STDERR:\n{e.stderr}")
         return False
     except Exception as e:
-        logging.error(f"An unexpected error occurred when trying to comment on issue #{issue_number}: {e}")
+        logging.error(f"An unexpected error occurred when trying to comment via 'gh' CLI: {e}")
         return False
 
+# --- Main Processing Logic ---
 def main():
     if len(sys.argv) < 4:
-        logging.error("Usage: python process_issue.py <issue_title> <issue_body> <issue_number>")
+        print("Usage: python process_issue.py <issue_title> <issue_body_base64_encoded> <issue_number>")
+        logging.error("Insufficient arguments. Expected title, body (base64), and issue number.")
         sys.exit(1)
         
     issue_title = sys.argv[1]
-    issue_body = sys.argv[2]
-    issue_number = int(sys.argv[3])
+    # Assuming issue_body is passed base64 encoded from GH Actions to handle special chars
+    import base64
+    try:
+        issue_body_encoded = sys.argv[2]
+        issue_body = base64.b64decode(issue_body_encoded).decode('utf-8')
+    except Exception as e:
+        logging.error(f"Failed to decode base64 issue body: {e}")
+        print("Error: Issue body could not be decoded from base64.")
+        sys.exit(1)
+
+    try:
+        issue_number = int(sys.argv[3])
+    except ValueError:
+        logging.error(f"Invalid issue number: {sys.argv[3]}. Must be an integer.")
+        print(f"Error: Invalid issue number '{sys.argv[3]}'.")
+        sys.exit(1)
     
-    logging.info(f"Processing GitHub issue #{issue_number}: \"{issue_title}\"")
+    logging.info(f"--- Starting processing for GitHub Issue #{issue_number}: \"{issue_title}\" ---")
     
+    # 1. Extract information from the issue
     question_info = extract_question_info(issue_title, issue_body)
     
-    logging.info(f"Initial extracted info from issue: {json.dumps(question_info, indent=2)}")
-    
-    # Attempt to find the question file and ID if not already explicitly found
-    if not question_info["id"] or not question_info["domain"]:
-        logging.info("Attempting to find question file/ID as it was not fully extracted from issue content.")
-        # Log the full issue body for debugging (with sensitive info redacted if any)
-        safe_body = re.sub(r'token\s*[:=]\s*[^\s]+', 'token=REDACTED', issue_body) # Example redaction
-        logging.debug(f"Full issue body provided to find_question_file (debugging):\n{safe_body}")
-        
-        result_find_file = find_question_file(
-            question_id=question_info["id"], # Pass current ID (might be None)
-            question_text=question_info["question_text"],
-            correct_answer=question_info["correct_answer"]
+    # 2. If ID not found by direct extraction, try to find it in files
+    if question_info["id"] is None and (question_info["question_text"] or question_info["correct_answer"]):
+        logging.info("Question ID not directly extracted from issue. Attempting to find in files using text/answer.")
+        # Pass the domain extracted from the issue (if any) as a hint to narrow down search
+        # The domain in question_info might be the mapped, proper-case one, or the normalized one.
+        # find_question_in_files can handle this by checking common filename patterns.
+        find_result = find_question_in_files(
+            text_to_find=question_info["question_text"],
+            answer_to_find=question_info["correct_answer"],
+            domain_to_search=question_info["domain"] # Pass domain as a hint
         )
-        
-        if result_find_file:
-            found_domain, found_id = result_find_file
-            logging.info(f"find_question_file succeeded: Domain='{found_domain}', ID='{found_id}'")
-            question_info["domain"] = found_domain # Prioritize domain from find_question_file
-            if found_id is not None and question_info["id"] is None: # Only update ID if not already set and find_question_file provides one
-                question_info["id"] = found_id
-            logging.info(f"Question info after find_question_file: {json.dumps(question_info, indent=2)}")
-        else:
-            logging.warning("find_question_file did not return a result.")
-            # If domain was manually extracted by extract_question_info but ID is still missing, that's an issue.
-            # The 'clear_domain_markers' logic was here, but it's better if extract_question_info handles domain.
-            # If domain is present but ID is missing after all attempts, it's a critical issue for targeted fixes.
-            if question_info["domain"] and question_info["id"] is None:
-                 logging.error(f"Domain '{question_info['domain']}' identified, but specific Question ID could not be determined.")
-                 error_msg = (f"❌ Automation failed for issue #{issue_number}: "
-                              f"The domain '{question_info['domain']}' was identified, but the specific Question ID is missing.\n\n"
-                              "Please ensure the issue body contains enough information to identify the question (e.g., full question text) "
-                              "or explicitly mention the Question ID (e.g., `Question ID: 123`).")
-                 create_comment_on_issue(issue_number, error_msg)
-                 sys.exit(1)
+        if find_result:
+            found_domain_filename, found_id = find_result
+            logging.info(f"Question identified in file: {found_domain_filename}.mjs, ID: {found_id}")
+            question_info["id"] = found_id
+            # If find_question_in_files used a filename to derive domain, update if more specific
+            # We need to ensure question_info["domain"] is the mapped/proper case one for scripts
+            if question_info["domain"] and found_domain_filename.lower().replace('_',' ') != question_info["domain"].lower().replace('_',' '):
+                 logging.warning(f"Domain from issue body ('{question_info['domain']}') differs from filename ('{found_domain_filename}'). Trusting domain from file if ID found there.")
+                 # Re-map domain based on filename if metadata exists
+                 if os.path.exists(METADATA_FILE):
+                    try:
+                        with open(METADATA_FILE, "r", encoding="utf-8") as f:
+                            domains_data = json.load(f)
+                        mapped_domain = None
+                        for proper_case_domain in domains_data.keys():
+                            if found_domain_filename.lower().replace('_',' ') == proper_case_domain.lower().replace('_',' '):
+                                mapped_domain = proper_case_domain
+                                break
+                        if mapped_domain:
+                            question_info["domain"] = mapped_domain
+                            logging.info(f"Updated domain to '{mapped_domain}' based on file where ID was found.")
+                        else:
+                             question_info["domain"] = found_domain_filename # Fallback to filename if no mapping
+                    except Exception as e:
+                        logging.error(f"Error re-mapping domain from filename: {e}")
+                        question_info["domain"] = found_domain_filename # Fallback
+                 else:
+                    question_info["domain"] = found_domain_filename
 
-    # Final check for essential info: domain is always needed. ID is needed for refine/review of specific q.
+
+    # 3. Validate necessary information
     if not question_info["domain"]:
-        logging.error("Could not determine the domain for this question. Processing cannot continue.")
-        error_msg = (f"❌ Automation failed for issue #{issue_number}: Could not determine the question's domain.\n\n"
-                      "Please specify the domain in the issue body (e.g., `Domain: Kubernetes_Security_Fundamentals`)."
-                      f"\n\n**Debug information extracted:**\n{json.dumps(question_info, indent=2)}")
-        create_comment_on_issue(issue_number, error_msg)
+        logging.error("Critical: Domain could not be determined. Cannot proceed.")
+        create_comment_on_issue_wrapper(issue_number,
+            f"❌ Automation Error for Issue #{issue_number}:\n"
+            "The question's domain/category could not be determined from the issue body or file search. "
+            "Please ensure the issue clearly states the domain (e.g., `Domain: Kubernetes_Security_Fundamentals`).")
         sys.exit(1)
 
-    # If ID is still None at this point, it means we are processing a domain generally,
-    # not a specific question identified by ID. Scripts should handle ID=None.
-    if question_info["id"] is None:
-        logging.warning(f"Proceeding without a specific Question ID for domain '{question_info['domain']}'. "
-                        "Scripts will operate on the category/revision level.")
+    if question_info["id"] is None and (question_info["error_type"] != "content" or question_info["needs_review"]):
+        # If it's a specific error report (answer, explanation, specific question) or needs full review, an ID is usually expected.
+        # "content" errors might sometimes be general without an ID if it's about adding a new question.
+        logging.warning(f"Proceeding for domain '{question_info['domain']}' but no specific question ID was identified. "
+                        "Processing will be at the category/general level if supported by the downstream script.")
+        # For certain operations like "Error on answer", an ID is vital.
+        if question_info["error_type"] == "answer":
+             logging.error(f"Critical: An 'answer' error was reported for domain '{question_info['domain']}', but a specific Question ID could not be identified. This type of error requires a specific question target.")
+             create_comment_on_issue_wrapper(issue_number,
+                f"❌ Automation Error for Issue #{issue_number} (Error on Answer):\n"
+                f"While processing an error related to an answer in the '{question_info['domain']}' domain, "
+                "the specific Question ID could not be identified. "
+                "Please ensure the issue body contains enough information to find the question (e.g., full question text, or ideally the Question ID like `Question ID: 123`).")
+             sys.exit(1)
 
-    success = False
-    if question_info["needs_review"]:
-        success = run_review_script(question_info["domain"], question_info["id"])
+
+    # 4. Run the appropriate processing script (refine or review)
+    script_to_run_path = REVIEW_SCRIPT if question_info["needs_review"] else REFINE_SCRIPT
+    script_name_friendly = "Review" if question_info["needs_review"] else "Refine"
+    
+    logging.info(f"Preparing to run {script_name_friendly} script for domain '{question_info['domain']}'" +
+                 (f" and question ID {question_info['id']}" if question_info['id'] is not None else " (general domain processing)."))
+
+    script_success, script_output = run_script(script_to_run_path,
+                                               question_info["domain"],
+                                               question_info["id"])
+
+    if not script_success:
+        logging.error(f"{script_name_friendly} script execution failed.")
+        create_comment_on_issue_wrapper(issue_number,
+            f"❌ Automation Error for Issue #{issue_number}:\n"
+            f"The {script_name_friendly.lower()} script for domain '{question_info['domain']}' "
+            f"{('and question ID ' + str(question_info['id'])) if question_info['id'] is not None else ''} "
+            "encountered an error. Please check the workflow logs for details.")
+        sys.exit(1)
+
+    # 5. Run Node.js scripts for DB update and export
+    if not run_node_scripts_wrapper():
+        logging.error("Node.js scripts (update/export) failed.")
+        create_comment_on_issue_wrapper(issue_number,
+            f"❌ Automation Error for Issue #{issue_number}:\n"
+            "The question was processed, but there was an error during the database update or export step. "
+            "Please check the workflow logs.")
+        sys.exit(1)
+
+    # 6. Success
+    final_comment = (f"✅ Automated processing for Issue #{issue_number} completed successfully for domain '{question_info['domain']}'.\n"
+                     f"Type of operation: {script_name_friendly} script.\n")
+    if question_info["id"] is not None:
+        final_comment += f"Specific Question ID targeted: #{question_info['id']}.\n"
     else:
-        success = run_refine_script(question_info["domain"], question_info["id"])
+        final_comment += "General processing was performed for the domain (no specific question ID identified for targeting).\n"
+    final_comment += "Please review any generated Pull Requests and workflow logs for details."
     
-    if not success:
-        logging.error("Script execution (refine/review) failed.")
-        create_comment_on_issue(
-            issue_number,
-            f"❌ Automation failed for issue #{issue_number}: There was an error running the question processing script for domain '{question_info['domain']}'"
-            + (f" and question ID {question_info['id']}" if question_info['id'] else "")
-            + ". Please check the workflow logs."
-        )
-        sys.exit(1)
-    
-    if not run_node_scripts():
-        logging.error("Node scripts execution failed.")
-        create_comment_on_issue(
-            issue_number,
-            f"❌ Automation failed for issue #{issue_number}: There was an error updating the database/exporting questions after processing. Please check the workflow logs."
-        )
-        sys.exit(1)
-    
-    comment_message = f"✅ Question processing completed for issue #{issue_number} concerning domain '{question_info['domain']}'."
-    if question_info["id"]:
-        comment_message += f" Specific question ID targeted: #{question_info['id']}."
-    else:
-        comment_message += " General processing was performed for the domain."
-    comment_message += "\nCheck workflow logs and any resulting PRs for details."
-
-    create_comment_on_issue(issue_number, comment_message)
-    logging.info("Issue processing completed successfully.")
+    create_comment_on_issue_wrapper(issue_number, final_comment)
+    logging.info(f"--- Successfully completed processing for GitHub Issue #{issue_number} ---")
 
 if __name__ == "__main__":
+    # Example of how to call this from GH Action (ensure body is base64 encoded)
+    # ISSUE_BODY_RAW="..."
+    # ISSUE_BODY_B64=$(echo "$ISSUE_BODY_RAW" | base64 -w 0)
+    # python .github/scripts/process_issue.py "$ISSUE_TITLE" "$ISSUE_BODY_B64" "$ISSUE_NUMBER"
     main()
