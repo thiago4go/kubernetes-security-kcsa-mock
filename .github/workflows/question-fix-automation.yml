@@ -49,6 +49,11 @@ jobs:
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Extract domain from issue body as fallback
+          DOMAIN=$(echo "${{ github.event.issue.body }}" | grep -i "domain:" | head -n 1 | sed -E 's/.*[Dd]omain:\s*([^()\n]*).*/\1/' | tr -d '[:punct:]' | tr ' ' '_' | tr '[:upper:]' '[:lower:]')
+          echo "Extracted domain: $DOMAIN"
+          
+          # Run the script with extracted info
           python .github/scripts/process_issue.py "${{ github.event.issue.title }}" "${{ github.event.issue.body }}" "${{ github.event.issue.number }}"
           echo "Processing completed"
 

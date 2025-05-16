@@ -35,6 +35,7 @@ if not os.path.exists(NODE_UPDATE_SCRIPT):
 if not os.path.exists(NODE_EXPORT_SCRIPT):
     NODE_EXPORT_SCRIPT = "src/admin/db-tools/export_questions.mjs"
 
+
 def extract_question_info(title, body):
     """Extract question information from issue title and body."""
     logging.info("Extracting question information from issue")
@@ -59,13 +60,22 @@ def extract_question_info(title, body):
         if id_match:
             question_info["id"] = int(id_match.group(1))
     
-    # Look for domain information in the body
-    domain_match = re.search(r'Domain:\s*([A-Za-z_\s]+)', body, re.IGNORECASE)
-    if domain_match:
-        domain = domain_match.group(1).strip()
-        # Convert spaces to underscores and ensure proper format
-        domain = domain.replace(' ', '_')
-        question_info["domain"] = domain
+    # Look for domain information in the body (improved regex pattern)
+    domain_patterns = [
+        r'Domain:\s*([^\n]+)',
+        r'Domain[^\w]*\s*(\w[\w\s_-]+)',
+        r'domain[^\w]*\s*(\w[\w\s_-]+)'
+    ]
+    
+    for pattern in domain_patterns:
+        domain_match = re.search(pattern, body, re.IGNORECASE)
+        if domain_match:
+            domain = domain_match.group(1).strip()
+            # Format domain name correctly for file matching
+            domain = domain.lower().replace(' ', '_')
+            question_info["domain"] = domain
+            logging.info(f"Found domain: {domain}")
+            break
     
     # Extract the question text itself (useful for identifying questions without IDs)
     question_match = re.search(r'Question:\s*(.+?)(?:\n|Your answer:|$)', body, re.DOTALL | re.IGNORECASE)
@@ -89,7 +99,20 @@ def extract_question_info(title, body):
     elif "question" in title.lower() or "question text" in body.lower():
         question_info["error_type"] = "question"
     
+    # Map common domain variations to standard file names
+    domain_mapping = {
+        'kubernetes_security_fundamentals': 'kubernetes_security',
+        'kubernetes_security': 'kubernetes_security'
+        # Add more mappings as needed
+    }
+    
+    if question_info["domain"] and question_info["domain"] in domain_mapping:
+        question_info["domain"] = domain_mapping[question_info["domain"]]
+        logging.info(f"Mapped domain to: {question_info['domain']}")
+    
     return question_info
+
+
 
 def find_question_file(question_id=None, question_text=None, correct_answer=None):
     """
@@ -343,8 +366,15 @@ def main():
     # Extract question information
     question_info = extract_question_info(issue_title, issue_body)
     
+    # Debug output to help diagnose issues
+    logging.info(f"Extracted info: {json.dumps(question_info, indent=2)}")
+    
     # Try to identify the domain and question using multiple methods
     if not question_info["domain"] or not question_info["id"]:
+        # Log the full issue body for debugging (with sensitive info redacted)
+        safe_body = re.sub(r'token\s*[:=]\s*[^\s]+', 'token=REDACTED', issue_body)
+        logging.info(f"Full issue body (for debugging domain extraction):\n{safe_body}")
+        
         result = find_question_file(
             question_id=question_info["id"],
             question_text=question_info["question_text"],
@@ -358,31 +388,58 @@ def main():
                 question_info["id"] = found_id
             logging.info(f"Identified question as being in domain: {domain_name}, ID: {found_id}")
         else:
-            logging.error("Could not identify which domain contains this question")
+            # Attempt to manually extract domain from clear text references
+            clear_domain_markers = [
+                "Domain is", "domain:", "Domain -", "Domain:", 
+                "Category:", "category:", "Topic:", "topic:"
+            ]
             
-            # Create detailed error message with extracted info for debugging
-            error_msg = "❌ Automation failed: Could not determine which file contains this question.\n\n"
-            error_msg += "**Debug information extracted:**\n"
-            
-            if question_info["id"]:
-                error_msg += f"- Question ID: #{question_info['id']}\n"
-            else:
-                error_msg += "- No question ID found in issue\n"
+            for marker in clear_domain_markers:
+                if marker.lower() in issue_body.lower():
+                    # Find the position of the marker
+                    pos = issue_body.lower().find(marker.lower())
+                    # Extract the rest of that line
+                    line_end = issue_body.find("\n", pos)
+                    if line_end == -1:  # No newline found
+                        line_end = len(issue_body)
+                    
+                    domain_text = issue_body[pos + len(marker):line_end].strip()
+                    logging.info(f"Found manual domain marker: '{marker}' with value: '{domain_text}'")
+                    
+                    # Basic cleaning and normalization
+                    clean_domain = re.sub(r'[^\w\s]', '', domain_text).lower().strip()
+                    clean_domain = re.sub(r'\s+', '_', clean_domain)
+                    
+                    logging.info(f"Setting domain to: {clean_domain}")
+                    question_info["domain"] = clean_domain
+                    break
+                        
+            if not question_info["domain"]:
+                logging.error("Could not identify which domain contains this question")
                 
-            if question_info["question_text"]:
-                error_msg += f"- Question text: '{question_info['question_text'][:100]}...'\n"
-            else:
-                error_msg += "- No question text found in issue\n"
+                # Create detailed error message with extracted info for debugging
+                error_msg = "❌ Automation failed: Could not determine which file contains this question.\n\n"
+                error_msg += "**Debug information extracted:**\n"
                 
-            if question_info["correct_answer"]:
-                error_msg += f"- Correct answer: '{question_info['correct_answer'][:100]}...'\n"
-            else:
-                error_msg += "- No correct answer found in issue\n"
+                if question_info["id"]:
+                    error_msg += f"- Question ID: #{question_info['id']}\n"
+                else:
+                    error_msg += "- No question ID found in issue\n"
+                    
+                if question_info["question_text"]:
+                    error_msg += f"- Question text: '{question_info['question_text'][:100]}...'\n"
+                else:
+                    error_msg += "- No question text found in issue\n"
+                    
+                if question_info["correct_answer"]:
+                    error_msg += f"- Correct answer: '{question_info['correct_answer'][:100]}...'\n"
+                else:
+                    error_msg += "- No correct answer found in issue\n"
+                    
+                error_msg += "\nPlease specify the domain in the issue body or include more details about the question."
                 
-            error_msg += "\nPlease specify the domain in the issue body or include more details about the question."
-            
-            create_comment_on_issue(issue_number, error_msg)
-            sys.exit(1)
+                create_comment_on_issue(issue_number, error_msg)
+                sys.exit(1)
     
     # Run the appropriate script
     success = False
