@@ -101,7 +101,16 @@ The questions are organized based on the official KCSA exam domains:
 
 Here is the current metadata for our questions:
 <place-holder for question metadata>
-
+```json
+{
+  "Kubernetes_Security_Fundamentals": 99,
+  "Kubernetes_Cluster_Component_Security": 89,
+  "Cloud_Native_Security": 36,
+  "Compliance_and_Security_Frameworks": 30,
+  "Platform_Security": 34,
+  "Kubernetes_Threat_Model": 22
+}
+```
 <end of place-holder>
 
 ## 🤝 Contributing
