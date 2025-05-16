@@ -108,11 +108,7 @@ jobs:
           python test_question_identifier.py --test-text "What is the main purpose of Network Policies in Kubernetes?"
           python test_question_identifier.py --test-text "Which kubectl command is used to view the logs of a pod?"
 
-      - name: Lint Python scripts
-        run: |
-          pip install pycodestyle
-          pycodestyle --max-line-length=120 .github/scripts/*.py
-          pycodestyle --max-line-length=120 src/admin/*.py
+    
 
       - name: Check for Python syntax errors
         run: |

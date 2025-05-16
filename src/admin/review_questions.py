@@ -27,72 +27,49 @@ NODE_EXPORT_SCRIPT = "db-tools/export_questions.mjs"
 # --- Prompt Template ---
 # Note: Ensure the JSON placeholder is exactly where the batch goes.
 PROMPT_TEMPLATE = """
-Please analyze the provided JSON array of question objects. Your primary goal is to revise each question to align closely with the style, content, and difficulty level of the Kubernetes and Cloud Native Security Associate (KCSA) exam.
+Please analyze the provided JSON array of question objects and improve the quality of each question as described below.
 
-For each question object, perform the following enhancements:
+1. **Enhance Question Clarity and Context:** Ensure the question is clear, concise, and unambiguous. Provide sufficient context for the question to be understood by the target audience. If necessary, rephrase the question for better clarity.
 
-1.  **KCSA Alignment & Question Clarity:**
-    * **Relevance:** Ensure the question directly tests knowledge or skills outlined in the official KCSA exam curriculum domains (e.g., Cluster Setup, Cluster Hardening, System Hardening, Minimize Microservice Vulnerabilities, Supply Chain Security, Monitoring, Logging, and Runtime Security).
-    * **Scenario-Based (where appropriate):** If the original question can be framed as a practical scenario a KCSA candidate might encounter, revise it accordingly.
-    * **Clarity and Precision:** The question must be unambiguous, concise, and use terminology consistent with Kubernetes and cloud-native security best practices. Clearly define the context or environment if necessary.
-    * **Target Audience:** Assume the question is for individuals preparing for the KCSA exam.
+2. **Improve Explanation Quality:** Enhance the explanation to provide a more in-depth understanding of the correct answers and why the other options are incorrect. The explanation should be informative and easy to understand.
 
-2.  **Option and Distractor Quality (KCSA Focus):**
-    * **Correct Answers:** Verify the correctness of the indicated answer(s) based on current Kubernetes and cloud-native security principles.
-    * **Plausible Distractors:** Ensure incorrect options (distractors) are plausible but clearly wrong. They should reflect common misunderstandings or misconfigurations relevant to KCSA-level knowledge. Avoid trivially incorrect options.
-    * **Uniqueness:** Each option should be distinct.
+3. **Add Relevant Sources:** Include at least two reputable sources that support the question, correct answers, and explanation. Sources should be authoritative and relevant to the topic. Prefer official documentation, academic papers, or well-respected industry resources.
 
-3.  **Explanation Enhancement (KCSA Context):**
-    * **Conceptual Depth:** Improve the explanation to thoroughly clarify *why* the correct answer(s) are correct from a KCSA perspective. Explain the underlying Kubernetes security concepts or mechanisms involved.
-    * **Distractor Rationale:** Clearly explain *why each incorrect option is wrong*, referencing specific KCSA domain knowledge or best practices.
-    * **Practical Implications:** Where relevant, briefly mention the security implications or benefits related to the correct answer.
+4. **Output Structured JSON:** The output must be a valid JSON object containing ONLY the revised questions. The structure for EACH revised question object within the response array should be:
 
-4.  **Authoritative KCSA-Relevant Sources:**
-    * **Minimum Two Sources:** Include at least two reputable and current sources that directly support the question's topic, the correct answer(s), and the explanation.
-    * **Prioritize Official Documentation:** Strongly prefer sources like the official Kubernetes documentation (kubernetes.io/docs/), CNCF (Cloud Native Computing Foundation) publications, and well-respected security blogs or resources focused on Kubernetes and cloud-native technologies (e.g., NSA/CISA Kubernetes Hardening Guide, Falco documentation, Trivy documentation, etc.).
-    * **Specificity:** Link to specific pages or sections where possible, not just the root domain.
-
-5.  **Strict JSON Output Structure:**
-    * The output must be a single, valid JSON array containing ONLY the revised question objects.
-    * Adhere precisely to the following structure for EACH revised question object:
-
-    ```json
+```json
+{
+  "id": <question_id>,
+  "question": "<improved_question_text>",
+  "options": [
+    "<option_1_text>",
+    "<option_2_text>",
+    "<option_3_text>",
+    "<option_4_text>",
+    "<option_5_text>"
+  ],
+  "correct_answers": [ <correct_option_index_1>, <correct_option_index_2>, ... ],
+  "explanation": "<improved_explanation_text>",
+  "question_type": "<question_type>",
+  "domain": "<domain>",
+  "subdomain": "<subdomain>",
+  "sources": [
     {
-      "id": "<original_question_id_or_new_uuid_if_not_present>",
-      "question": "<KCSA_aligned_improved_question_text>",
-      "options": [
-        "<option_1_text>",
-        "<option_2_text>",
-        "<option_3_text>",
-        "<option_4_text>",
-        "<option_5_text>" // Include 4 to 5 options, typical for KCSA
-      ],
-      "correct_answers": [ <0-indexed_correct_option_index_1>, <0-indexed_correct_option_index_2>, ... ],
-      "explanation": "<KCSA_contextual_improved_explanation_text>",
-      "question_type": "<single-choice|multiple-choice>", // Reflect KCSA exam style
-      "domain": "<KCSA_Exam_Domain_e.g.,_Cluster_Hardening>", // Map to official KCSA domains
-      "subdomain": "<Specific_topic_within_the_KCSA_domain_e.g.,_Network_Policies>",
-      "sources": [
-        {
-          "name": "<source_1_name_e.g.,_Kubernetes_Documentation_-_Network_Policies>",
-          "url": "<source_1_url>"
-        },
-        {
-          "name": "<source_2_name_e.g.,_CNCF_Blog_-_Securing_Your_Cluster>",
-          "url": "<source_2_url>"
-        }
-        // Add more sources if highly relevant
-      ],
-      "revision": 1, // Set revision to 1 for this iteration
-      "revision_date": "<current_date_YYYY-MM-DD>" // Set to today's date
-    }
-    ```
+      "name": "<source_1_name>",
+      "url": "<source_1_url>"
+    },
+    {
+      "name": "<source_2_name>",
+      "url": "<source_2_url>"
+    },
+    ...
+  ],
+  "revision": 1, // Set revision to 1
+  "revision_date": "<revision_date_YYYY-MM-DD>" // Set to today's date
+}
+```
 
-6.  **Pull Request (PR) Messages:**
-    * After the JSON block, provide a concise PR message for *each* revised question.
-    * Prefix this section with "--- PR MESSAGES ---".
-    * Each message should summarize the key improvements made to the question, specifically highlighting how it now better aligns with the KCSA exam objectives (e.g., "Revised question to focus on RBAC, a key KCSA topic in Cluster Hardening. Improved distractors to test common RBAC misconfigurations. Added official Kubernetes RBAC documentation as a source.").
-    * Separate PR messages with double newlines (`\n\n`).
+5. **Generate PR Messages:** Create a concise and informative pull request (PR) message for each question, summarizing the changes made. Return these PR messages separately after the JSON block, perhaps prefixed with "--- PR MESSAGES ---" and separated by double newlines (\n\n).
 
 ---
 Input JSON Array of Questions:
@@ -377,27 +354,165 @@ def run_node_script(script_path):
     except Exception as e:
         logging.error(f"An unexpected error occurred running {script_path}: {e}")
         return False
+    
+def review_single_question(category_name, question_id):
+    """
+    Process a single question by ID using the AI refinement process.
+    This is a targeted version of the main refinement workflow.
+    
+    Args:
+        category_name (str): The name of the category (domain) file
+        question_id (int): The ID of the specific question to refine
+        target_revision (int): The revision number to target (default: 1)
+    
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    logging.info(f"Processing single question: {question_id} in category: {category_name}")
+    
+    # Set up filepaths
+    filepath = os.path.join(INPUT_DIR, f"{category_name}.mjs")
+    backup_filepath = filepath + ".bak"
+    output_filepath = os.path.join(OUTPUT_DIR, f"{category_name}.mjs") 
+    
+    # Check if file exists
+    if not os.path.exists(filepath):
+        logging.error(f"Input file not found: {filepath}")
+        return False
+    
+    # Get API Key
+    try:
+        api_key = get_api_key()
+    except ValueError as e:
+        logging.error(e)
+        return False
+    
+    # Backup original file
+    try:
+        shutil.copy2(filepath, backup_filepath)
+        logging.info(f"Created backup: {backup_filepath}")
+    except Exception as e:
+        logging.error(f"Failed to create backup file for {filepath}: {e}")
+        return False
+    
+    try:
+        # Parse original file
+        header_comments, variable_name, original_questions = parse_mjs_file(filepath)
+        if not original_questions or not variable_name:
+            logging.error(f"Failed to parse original file {filepath}. Restoring from backup.")
+            raise Exception("Parsing failed")
+        
+        # Find the specific question by ID
+        target_question = filter_questions_by_id(original_questions, question_id)
+        if not target_question:
+            logging.error(f"Question ID {question_id} not found in {filepath}.")
+            return False
+        
+        # Process single question via API
+        prompt = format_prompt(target_question)
+        api_response = call_perplexity_api(api_key, prompt, 1)  # Process just 1 question
+        
+        if not api_response:
+            logging.error(f"API call failed for question {question_id}.")
+            raise Exception("API call failed")
+        
+        # Parse API response
+        revised_questions, pr_messages = parse_api_response(api_response)
+        if not revised_questions:
+            logging.warning(f"API call completed, but no revised question was successfully parsed.")
+            # Not marking as failure - might just mean no revision was needed
+            return True
+        
+        # Ensure the output directory exists
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        
+        # Merge results - replace the original question with the revised one
+        updated_questions = []
+        revision_count = 0
+        revised_map = {q['id']: q for q in revised_questions}
+        
+        for q in original_questions:
+            if q['id'] == question_id and question_id in revised_map:
+                updated_questions.append(revised_map[question_id])
+                revision_count += 1
+            else:
+                updated_questions.append(q)
+        
+        logging.info(f"Processed {revision_count} questions with revisions.")
+        
+        # Save the updated file
+        if not reconstruct_and_save_mjs(output_filepath, header_comments, variable_name, updated_questions):
+            raise Exception(f"Failed to save updated file: {output_filepath}")
+        
+        # Save PR messages
+        if pr_messages:
+            save_pr_messages(OUTPUT_DIR, category_name, pr_messages)
+        
+        # Success - don't remove backup yet
+        logging.info(f"Successfully processed question ID {question_id} in category: {category_name}")
+        return True
+        
+    except Exception as e:
+        logging.error(f"An error occurred while processing question {question_id}: {e}")
+        # Restore backup if needed
+        try:
+            if os.path.exists(backup_filepath):
+                shutil.copy2(backup_filepath, filepath)
+                logging.info(f"Restored original file {filepath} from {backup_filepath}")
+        except Exception as restore_e:
+            logging.error(f"Failed to restore backup: {restore_e}")
+        
+        return False
+
+def filter_questions_by_id(questions, question_id):
+    """
+    Filter questions to find a specific question by ID.
+    Returns a list containing just that question, or empty list if not found.
+    """
+    for q in questions:
+        if q.get("id") == question_id:
+            return [q]
+    
+    logging.error(f"Question ID {question_id} not found")
+    return []
+
 
 
 # --- Main Execution ---
+
+
 
 def main():
     """Main function to orchestrate the question review process."""
     parser = argparse.ArgumentParser(description="Review and update Kubernetes security questions using Perplexity API.")
     parser.add_argument("--category", required=True, help="The category name (e.g., Kubernetes_Security_Fundamentals) corresponding to the .mjs file.")
+    parser.add_argument("--question-id", type=int, help="Specific question ID to refine (optional)")
     args = parser.parse_args()
-
+    
     category_name = args.category
+    question_id = args.question_id
     filepath = os.path.join(INPUT_DIR, f"{category_name}.mjs")
     backup_filepath = filepath + ".bak"
     overall_success = False # Flag to track if all steps succeed for cleanup
 
     logging.info(f"Starting question review process for category: {category_name}")
 
-    # --- 1. Check if file exists ---
-    if not os.path.exists(filepath):
-        logging.error(f"Input file not found: {filepath}")
-        return
+ # Process single question if question-id is provided
+    if question_id is not None:
+        success = review_single_question(category_name, question_id)
+        if success:
+            logging.info(f"Successfully processed question ID {question_id}")
+            # Run Node scripts for database update
+            if run_node_script(NODE_UPDATE_SCRIPT) and run_node_script(NODE_EXPORT_SCRIPT):
+                overall_success = True
+        else:
+            logging.error(f"Failed to process question ID {question_id}")
+    else:
+        # --- 1. Check if file exists ---
+        if not os.path.exists(filepath):
+            logging.error(f"Input file not found: {filepath}")
+            return
+
 
     # --- 2. Get API Key ---
     try:

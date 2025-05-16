@@ -16,7 +16,7 @@ jobs:
       - name: Add label to question error issues
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GH_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issue = context.payload.issue;
             
@@ -36,7 +36,7 @@ jobs:
         if: ${{ contains(github.event.issue.title, '#') && !contains(github.event.issue.body, 'Domain:') }}
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GH_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issue = context.payload.issue;
             
