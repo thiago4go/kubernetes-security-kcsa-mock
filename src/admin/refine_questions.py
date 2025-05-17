@@ -6,31 +6,29 @@ import datetime
 import time
 import logging
 import argparse
-import subprocess
-import shutil # For backup
+import shutil
 
 # --- Configuration ---
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
-MODEL_NAME = "sonar-pro" # Reverted to potentially valid name
-BATCH_SIZE = 5
-INPUT_DIR = os.path.join("src", "exported-questions")
-OUTPUT_DIR = os.path.join("src", "revised-questions")
-# Delay between API calls in seconds (to avoid rate limits if necessary)
-API_CALL_DELAY = 1
+MODEL_NAME = "sonar-pro"
+BATCH_SIZE = 5  # Number of questions to process in a single API call for batch mode
+# INPUT_DIR is relative to the project root (where the script is expected to be called from)
+INPUT_DIR_RELATIVE_TO_ROOT = os.path.join("src", "exported-questions")
+# TEMP_ARTIFACTS_DIR is also relative to project root, used for debug outputs
+TEMP_ARTIFACTS_DIR_RELATIVE_TO_ROOT = os.path.join("src", "revised-questions-temp-artifacts")
+API_CALL_DELAY_SECONDS = 1  # Delay between API calls in batch mode
 
 # --- Logging Setup ---
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-# Paths to Node.js scripts, also relative to project root
-# These scripts are called by refine_questions.py, which has CWD = project_root,
-# but the scripts themselves are in src/admin/db-tools/
-# So, the path for subprocess.run inside refine_questions.py for these node scripts
-# also needs to be relative to project_root.
-NODE_DB_TOOLS_DIR = "src/admin/db-tools" # Relative to project root
-NODE_UPDATE_SCRIPT = os.path.join(NODE_DB_TOOLS_DIR, "update_questions.mjs")
-NODE_EXPORT_SCRIPT = os.path.join(NODE_DB_TOOLS_DIR, "export_questions.mjs")
+# The calling script (process_issue.py) already configures logging.
+# If this script is run standalone, basicConfig will apply.
+# Using a specific logger for this module can be helpful if process_issue.py also uses logging.
+logger = logging.getLogger(__name__)
+if not logger.handlers: # Avoid adding multiple handlers if process_issue.py already set it up
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s')
 
 
 # --- Prompt Template ---
+# Note: {current_date_iso} will be replaced with the actual current date.
 PROMPT_TEMPLATE = """
 Please analyze the provided JSON array of question objects. Your primary task is to meticulously identify and revise questions *only* if they meet specific criteria: factual incorrectness, lack of clarity for a KCSA-level audience, or the use of significantly deprecated Kubernetes information. You must *not* make stylistic changes or rephrase content that is already accurate, clear, and current.
 
@@ -56,7 +54,7 @@ Please analyze the provided JSON array of question objects. Your primary task is
 
 5.  **Output Structured JSON (Strict Adherence):**
     The output MUST be a single, valid JSON array containing *all* question objects from the input batch.
-    * For questions that were revised, update the `revision` field by incrementing its previous value (or setting to `1` if it was `0` or `null`). Set `revision_date` to **2025-05-16**.
+    * For questions that were revised, update the `revision` field by incrementing its previous value (or setting to `1` if it was `0` or `null`). Set `revision_date` to **current_date**.
     * For questions *not* revised, all fields, including `revision` and `revision_date`, must remain identical to the input.
 
     The structure for EACH question object (whether revised or original) in the response array must strictly follow:
@@ -92,7 +90,7 @@ Please analyze the provided JSON array of question objects. Your primary task is
         * The `id` of the question.
         * The *specific reason* for the revision (e.g., "Corrected factual error regarding etcd backup procedures in explanation.", "Clarified ambiguous wording in question related to NetworkPolicy ingress rules.", "Updated deprecated `kubectl run` flag to current equivalent.", "Replaced outdated API version for PodSecurityPolicy with information on Pod Security Admission.").
         * A brief summary of the change (e.g., "Explanation now states X instead of Y.", "Question rephrased for clarity.", "Option C updated from Z to A and relevant source added.").
-    * Separate PR messages with double newlines (`\n\n`). Do *not* generate PR messages for unchanged questions.
+    * Separate PR messages with double newlines (`\\n\\n`). Do *not* generate PR messages for unchanged questions.
 
 ---
 Input JSON Array of Questions:
@@ -107,20 +105,9 @@ def get_api_key():
     """Retrieves the Perplexity API key from environment variables."""
     api_key = os.environ.get("PERPLEXITY_API_KEY")
     if not api_key:
+        logger.critical("PERPLEXITY_API_KEY environment variable not set.")
         raise ValueError("PERPLEXITY_API_KEY environment variable not set.")
     return api_key
-
-def find_mjs_files(directory):
-    """Finds all .mjs files in the specified directory."""
-    mjs_files = []
-    if not os.path.isdir(directory):
-        logging.error(f"Input directory not found: {directory}")
-        return mjs_files
-    for filename in os.listdir(directory):
-        if filename.endswith(".mjs"):
-            mjs_files.append(os.path.join(directory, filename))
-    logging.info(f"Found {len(mjs_files)} .mjs files in {directory}")
-    return mjs_files
 
 def parse_mjs_file(filepath):
     """
@@ -134,69 +121,66 @@ def parse_mjs_file(filepath):
         with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        # Regex to find the variable name and the array
         match = re.search(r'export const (\w+) = (\[.*?\]);', content, re.DOTALL | re.MULTILINE)
         if match:
             variable_name = match.group(1)
             json_string = match.group(2)
-
-            # Extract header comments (lines before the export statement)
             header_match = re.search(r'^(.*?)\nexport const', content, re.DOTALL | re.MULTILINE)
             if header_match:
                 header_comments = header_match.group(1).strip()
-
-            # Basic cleaning: Remove trailing commas before closing brackets/braces if any
-            json_string = re.sub(r',\s*([\]}])', r'\1', json_string)
+            json_string = re.sub(r',\s*([\]}])', r'\1', json_string) # Remove trailing commas
             questions = json.loads(json_string)
-            logging.info(f"Successfully parsed {len(questions)} questions, variable '{variable_name}', and headers from {filepath}")
+            logger.info(f"Successfully parsed {len(questions)} questions, variable '{variable_name}', from {filepath}")
             return header_comments, variable_name, questions
         else:
-            logging.warning(f"Could not find questions array pattern 'export const VarName = [...]' in {filepath}")
+            logger.warning(f"Could not find questions array pattern in {filepath}")
             return None, None, None
     except FileNotFoundError:
-        logging.error(f"File not found: {filepath}")
+        logger.error(f"MJS file not found: {filepath}")
         return None, None, None
     except json.JSONDecodeError as e:
-        logging.error(f"Error decoding JSON from {filepath}: {e}")
-        # Optionally log the problematic string part:
-        # logging.error(f"Problematic JSON string snippet: {json_string[:500]}...")
+        logger.error(f"Error decoding JSON from {filepath}: {e}")
         return None, None, None
     except Exception as e:
-        logging.error(f"An unexpected error occurred parsing {filepath}: {e}")
-        return []
-    except json.JSONDecodeError as e:
-        logging.error(f"Error decoding JSON from {filepath}: {e}")
-        # Optionally log the problematic string part:
-        # logging.error(f"Problematic JSON string snippet: {json_string[:500]}...")
-        return []
-    except Exception as e:
-        logging.error(f"An unexpected error occurred parsing {filepath}: {e}")
+        logger.error(f"An unexpected error occurred parsing {filepath}: {e}")
         return None, None, None
 
-def filter_questions_for_revision(questions, target_revision):
-    """Filters questions based on the target revision number."""
-    if not questions: # Handle case where parsing failed
-        return []
-    filtered = [
-        q for q in questions
-        if q.get('revision') == target_revision
-    ]
-    logging.info(f"Filtered {len(filtered)} questions with revision number {target_revision}.")
-    return filtered
+def reconstruct_and_save_mjs(filepath, header_comments, variable_name, updated_questions):
+    """Reconstructs the .mjs file content and saves it, overwriting the original."""
+    try:
+        json_string = json.dumps(updated_questions, indent=2, ensure_ascii=False)
+        new_content = ""
+        if header_comments:
+            new_content += header_comments + "\n"
+        new_content += f"export const {variable_name} = {json_string};\n"
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+        logger.info(f"Successfully updated and saved {filepath}")
+        return True
+    except IOError as e:
+        logger.error(f"Error writing updated content to {filepath}: {e}")
+        return False
+    except Exception as e:
+        logger.error(f"An unexpected error occurred reconstructing/saving {filepath}: {e}")
+        return False
 
-def format_prompt(questions_batch):
-    """Formats the prompt with the current batch of questions."""
-    today_date = datetime.date.today().strftime("%Y-%m-%d")
-    """Formats the prompt with the current batch of questions and today's date."""
-    today_date = datetime.date.today().strftime("%Y-%m-%d")
-    # Prepare questions for JSON embedding
+def _format_prompt_with_questions(questions_batch, current_date_iso):
+    """Formats the API prompt with the current batch of questions and current date."""
     batch_json_string = json.dumps(questions_batch, indent=2)
-    # Inject batch JSON and today's date into the main prompt template
-    prompt = PROMPT_TEMPLATE.replace("{questions_json}", batch_json_string).replace("{today_date}", today_date)
+    prompt = PROMPT_TEMPLATE.replace("{questions_json}", batch_json_string)
+    prompt = prompt.replace("{current_date_iso}", current_date_iso)
+    # The prompt uses {{ and }} for JSON examples, which is fine for f-strings/format.
+    # However, the {current_date_iso} in the "revision_date" example line needs to be escaped
+    # if we were using .format() on the whole PROMPT_TEMPLATE directly with other placeholders.
+    # Since we are doing targeted .replace(), it's okay.
+    # Ensure the example JSON in the prompt correctly shows the dynamic date too.
+    # "revision_date": "<{current_date_iso}_or_original_revision_date>"
+    # This part in the prompt is an example for the AI, so it should show the placeholder name.
+    # The AI is instructed to set revision_date to the *actual* current_date_iso.
     return prompt
 
-def call_perplexity_api(api_key, prompt, batch_size_info):
-    """Calls the Perplexity API with the given prompt."""
+def _call_perplexity_api(api_key, prompt, batch_info_for_logging):
+    """Calls the Perplexity API."""
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
@@ -205,525 +189,329 @@ def call_perplexity_api(api_key, prompt, batch_size_info):
     payload = {
         "model": MODEL_NAME,
         "messages": [
-            {"role": "system", "content": "You are an AI assistant helping to review and improve Kubernetes security questions."},
+            {"role": "system", "content": "You are an AI assistant helping to review and improve Kubernetes security questions according to strict guidelines."},
             {"role": "user", "content": prompt}
         ],
-        "max_tokens": 4000, # Adjust as needed, consider response size
-        "temperature": 0.3, # Lower temperature for more deterministic output
+        "max_tokens": 8000, # Increased based on potential verbosity of question objects and PR messages
+        "temperature": 0.2, # Low temperature for more deterministic and factual output
     }
-
-    logging.info(f"Calling Perplexity API for a batch of {batch_size_info} questions...")
+    logger.info(f"Calling Perplexity API for {batch_info_for_logging}...")
     try:
-        response = requests.post(PERPLEXITY_API_URL, headers=headers, json=payload, timeout=300) # Increased timeout further
-        response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
-        logging.info("API call successful.")
+        response = requests.post(PERPLEXITY_API_URL, headers=headers, json=payload, timeout=360) # Increased timeout
+        response.raise_for_status()
+        logger.info(f"API call successful for {batch_info_for_logging}.")
         return response.json()
     except requests.exceptions.RequestException as e:
-        logging.error(f"Error calling Perplexity API: {e}")
+        logger.error(f"Error calling Perplexity API for {batch_info_for_logging}: {e}")
         if hasattr(e, 'response') and e.response is not None:
-            logging.error(f"API Response Status Code: {e.response.status_code}")
-            logging.error(f"API Response Body: {e.response.text}")
+            logger.error(f"API Response Status Code: {e.response.status_code}, Body: {e.response.text[:500]}")
         return None
     except Exception as e:
-        logging.error(f"An unexpected error occurred during API call: {e}")
+        logger.error(f"An unexpected error occurred during API call for {batch_info_for_logging}: {e}")
         return None
 
-def parse_api_response(api_response_json):
+def _parse_api_response_content(api_response_content_string, temp_artifacts_dir, category_name, batch_num_str=""):
     """
-    Parses the API response to extract revised questions and PR messages.
-    This function makes assumptions about the response format based on the prompt.
-    It might need significant adjustments after seeing actual API output.
+    Parses the string content from an API response to extract revised questions (JSON) and PR messages.
+    Saves raw content and parsed PR messages to temp_artifacts_dir for debugging.
     """
-    revised_questions = []
-    pr_messages = ""
+    revised_questions_list = []
+    pr_messages_string = ""
 
-    if not api_response_json or 'choices' not in api_response_json or not api_response_json['choices']:
-        logging.error("Invalid or empty API response received.")
-        return revised_questions, pr_messages
-
+    # Save raw API response content for debugging
+    raw_response_filename = f"api_response_raw_{category_name}{batch_num_str}.txt"
     try:
-        content = api_response_json['choices'][0]['message']['content']
-
-        # Attempt to extract the JSON block first
-        json_match = re.search(r'```json\s*(\[.*?\])\s*```', content, re.DOTALL | re.IGNORECASE)
-        if json_match:
-            json_string = json_match.group(1)
-            try:
-                revised_questions = json.loads(json_string)
-                logging.info(f"Successfully parsed {len(revised_questions)} revised questions from API response.")
-            except json.JSONDecodeError as e:
-                logging.error(f"Failed to decode JSON from API response: {e}")
-                logging.error(f"Problematic JSON string snippet: {json_string[:500]}...")
-                # Keep content for PR message extraction attempt
-        else:
-            logging.warning("Could not find JSON block ```json [...] ``` in API response.")
-            # Try parsing the whole content as JSON as a fallback
-            try:
-                potential_json = json.loads(content)
-                if isinstance(potential_json, list):
-                     revised_questions = potential_json
-                     logging.info(f"Parsed {len(revised_questions)} revised questions from fallback (full content).")
-                else:
-                    logging.warning("Fallback JSON parse resulted in non-list data.")
-            except json.JSONDecodeError:
-                 logging.warning("Fallback JSON parse of full content also failed.")
-
-
-        # Attempt to extract PR messages (assuming they follow the JSON block)
-        pr_match = re.search(r'--- PR MESSAGES ---\s*(.*)', content, re.DOTALL | re.IGNORECASE)
-        if pr_match:
-            pr_messages = pr_match.group(1).strip()
-            logging.info("Extracted PR messages.")
-        else:
-            # Fallback: Maybe PR messages are just after the JSON block without the marker?
-            if json_match:
-                potential_pr_part = content[json_match.end():].strip()
-                if potential_pr_part and len(potential_pr_part) > 20: # Heuristic: avoid grabbing short leftover text
-                    pr_messages = potential_pr_part
-                    logging.info("Extracted PR messages using fallback (text after JSON block).")
-                else:
-                    logging.warning("Could not find PR messages marker or substantial text after JSON block.")
-            else:
-                 logging.warning("Could not find PR messages marker and no JSON block was found.")
-
-
-    except KeyError as e:
-        logging.error(f"Missing expected key in API response: {e}")
+        os.makedirs(temp_artifacts_dir, exist_ok=True)
+        with open(os.path.join(temp_artifacts_dir, raw_response_filename), 'w', encoding='utf-8') as f:
+            f.write(api_response_content_string)
+        logger.info(f"Saved raw API response to {os.path.join(temp_artifacts_dir, raw_response_filename)}")
     except Exception as e:
-        logging.error(f"An unexpected error occurred parsing API response: {e}")
-        logging.error(f"Raw API content snippet: {content[:500]}...")
+        logger.warning(f"Could not save raw API response content: {e}")
 
-
-    # Basic validation of extracted questions
-    if revised_questions and not isinstance(revised_questions, list):
-        logging.warning(f"Parsed 'revised_questions' is not a list: {type(revised_questions)}")
-        revised_questions = [] # Reset if not a list
-
-    return revised_questions, pr_messages
-
-def save_pr_messages(output_dir, category_name, pr_messages):
-    """Saves the PR messages to a file."""
-    if not pr_messages:
-        logging.warning(f"No PR messages to save for {category_name}.")
-        return False
-    try:
-        os.makedirs(output_dir, exist_ok=True)
-        pr_filepath = os.path.join(output_dir, f"pr_messages_{category_name}.txt")
-        with open(pr_filepath, 'w', encoding='utf-8') as f:
-            f.write(pr_messages)
-        logging.info(f"Saved PR messages to {pr_filepath}")
-        return True
-    except IOError as e:
-        logging.error(f"Error writing PR messages for {category_name} to {output_dir}: {e}")
-        return False
-    except Exception as e:
-        logging.error(f"An unexpected error occurred saving PR messages: {e}")
-        return False
-
-def reconstruct_and_save_mjs(filepath, header_comments, variable_name, updated_questions):
-    """Reconstructs the .mjs file content and saves it."""
-    try:
-        # Format the updated questions list as a JSON string with indentation
-        # Using ensure_ascii=False to handle potential non-ASCII characters correctly
-        json_string = json.dumps(updated_questions, indent=2, ensure_ascii=False)
-
-        # Construct the full file content
-        new_content = ""
-        if header_comments:
-            new_content += header_comments + "\n"
-        new_content += f"export const {variable_name} = {json_string};\n"
-
-        # Overwrite the original file
-        with open(filepath, 'w', encoding='utf-8') as f:
-            f.write(new_content)
-        logging.info(f"Successfully updated and saved {filepath}")
-        return True
-    except IOError as e:
-        logging.error(f"Error writing updated content to {filepath}: {e}")
-        return False
-    except Exception as e:
-        logging.error(f"An unexpected error occurred reconstructing/saving {filepath}: {e}")
-        return False
-
-def run_node_script(script_path):
-    """Runs a node script using subprocess and returns True on success."""
-    if not os.path.exists(script_path):
-        logging.error(f"Node script not found: {script_path}")
-        return False
-    try:
-        logging.info(f"Running node script: {script_path}...")
-        # Using 'node' command, assuming it's in the system's PATH
-        result = subprocess.run(['node', script_path], capture_output=True, text=True, check=False, encoding='utf-8') # check=False to handle errors manually
-
-        if result.stdout:
-            logging.info(f"Output from {script_path}:\n{result.stdout}")
-        if result.stderr:
-            # Log stderr as warning or error depending on return code
-            if result.returncode != 0:
-                 logging.error(f"Error output from {script_path}:\n{result.stderr}")
-            else:
-                 logging.warning(f"Stderr output from {script_path} (but script succeeded):\n{result.stderr}")
-
-
-        if result.returncode == 0:
-            logging.info(f"Node script {script_path} executed successfully.")
-            return True
-        else:
-            logging.error(f"Node script {script_path} failed with return code {result.returncode}.")
-            return False
-    except FileNotFoundError:
-         logging.error("Error: 'node' command not found. Please ensure Node.js is installed and in your PATH.")
-         return False
-    except Exception as e:
-        logging.error(f"An unexpected error occurred running {script_path}: {e}")
-        return False
-
-
-# --- Main Execution ---
-
-def refine_single_question(category_name, question_id, target_revision=1):
-    """
-    Process a single question by ID using the AI refinement process.
-    This is a targeted version of the main refinement workflow.
-    
-    Args:
-        category_name (str): The name of the category (domain) file
-        question_id (int): The ID of the specific question to refine
-        target_revision (int): The revision number to target (default: 1)
-    
-    Returns:
-        bool: True if successful, False otherwise
-    """
-    logging.info(f"Processing single question: {question_id} in category: {category_name}")
-    
-    # Set up filepaths
-    filepath = os.path.join(INPUT_DIR, f"{category_name}.mjs")
-    backup_filepath = filepath + ".bak"
-    output_filepath = os.path.join(OUTPUT_DIR, f"{category_name}.mjs") 
-    
-    # Check if file exists
-    if not os.path.exists(filepath):
-        logging.error(f"Input file not found: {filepath}")
-        return False
-    
-    # Get API Key
-    try:
-        api_key = get_api_key()
-    except ValueError as e:
-        logging.error(e)
-        return False
-    
-    # Backup original file
-    try:
-        shutil.copy2(filepath, backup_filepath)
-        logging.info(f"Created backup: {backup_filepath}")
-    except Exception as e:
-        logging.error(f"Failed to create backup file for {filepath}: {e}")
-        return False
-    
-    try:
-        # Parse original file
-        header_comments, variable_name, original_questions = parse_mjs_file(filepath)
-        if not original_questions or not variable_name:
-            logging.error(f"Failed to parse original file {filepath}. Restoring from backup.")
-            raise Exception("Parsing failed")
-        
-        # Find the specific question by ID
-        target_question = filter_questions_by_id(original_questions, question_id)
-        if not target_question:
-            logging.error(f"Question ID {question_id} not found in {filepath}.")
-            return False
-        
-        # Process single question via API
-        prompt = format_prompt(target_question)
-        api_response = call_perplexity_api(api_key, prompt, 1)  # Process just 1 question
-        
-        if not api_response:
-            logging.error(f"API call failed for question {question_id}.")
-            raise Exception("API call failed")
-        
-        # Parse API response
-        revised_questions, pr_messages = parse_api_response(api_response)
-        if not revised_questions:
-            logging.warning(f"API call completed, but no revised question was successfully parsed.")
-            # Not marking as failure - might just mean no revision was needed
-            return True
-        
-        # Ensure the output directory exists
-        os.makedirs(OUTPUT_DIR, exist_ok=True)
-        
-        # Merge results - replace the original question with the revised one
-        updated_questions = []
-        revision_count = 0
-        revised_map = {q['id']: q for q in revised_questions}
-        
-        for q in original_questions:
-            if q['id'] == question_id and question_id in revised_map:
-                updated_questions.append(revised_map[question_id])
-                revision_count += 1
-            else:
-                updated_questions.append(q)
-        
-        logging.info(f"Processed {revision_count} questions with revisions.")
-        
-        # Save the updated file
-        if not reconstruct_and_save_mjs(output_filepath, header_comments, variable_name, updated_questions):
-            raise Exception(f"Failed to save updated file: {output_filepath}")
-        
-        # Save PR messages
-        if pr_messages:
-            save_pr_messages(OUTPUT_DIR, category_name, pr_messages)
-        
-        # Success - don't remove backup yet
-        logging.info(f"Successfully processed question ID {question_id} in category: {category_name}")
-        return True
-        
-    except Exception as e:
-        logging.error(f"An error occurred while processing question {question_id}: {e}")
-        # Restore backup if needed
+    # Attempt to extract the JSON block
+    json_match = re.search(r'```json\s*(\[.*?\])\s*```', api_response_content_string, re.DOTALL | re.IGNORECASE)
+    if json_match:
+        json_data_string = json_match.group(1)
         try:
-            if os.path.exists(backup_filepath):
-                shutil.copy2(backup_filepath, filepath)
-                logging.info(f"Restored original file {filepath} from {backup_filepath}")
-        except Exception as restore_e:
-            logging.error(f"Failed to restore backup: {restore_e}")
-        
-        return False
+            revised_questions_list = json.loads(json_data_string)
+            logger.info(f"Successfully parsed {len(revised_questions_list)} questions from API JSON block.")
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to decode JSON from API response block: {e}. JSON string snippet: {json_data_string[:500]}")
+    else:
+        logger.warning("Could not find JSON block ```json [...] ``` in API response. Trying to parse entire content as JSON.")
+        try:
+            potential_json = json.loads(api_response_content_string)
+            if isinstance(potential_json, list):
+                revised_questions_list = potential_json
+                logger.info(f"Successfully parsed {len(revised_questions_list)} questions from entire API content (fallback).")
+            else:
+                logger.warning("Entire API content parsed as JSON, but it's not a list.")
+        except json.JSONDecodeError:
+            logger.error("Failed to parse entire API content as JSON. No questions extracted.")
 
-def filter_questions_by_id(questions, question_id):
+    # Attempt to extract PR messages
+    pr_match = re.search(r'--- PR MESSAGES ---\s*(.*)', api_response_content_string, re.DOTALL | re.IGNORECASE)
+    if pr_match:
+        pr_messages_string = pr_match.group(1).strip()
+        logger.info("Extracted PR messages using '--- PR MESSAGES ---' marker.")
+    elif json_match: # If JSON block was found, try to get text after it as PR messages
+        text_after_json = api_response_content_string[json_match.end():].strip()
+        if text_after_json and len(text_after_json) > 20: # Heuristic to avoid short leftovers
+            pr_messages_string = text_after_json
+            logger.info("Extracted PR messages from text following JSON block (fallback).")
+        else:
+            logger.info("No '--- PR MESSAGES ---' marker found, and no substantial text after JSON block.")
+    else:
+        logger.info("No '--- PR MESSAGES ---' marker found and no JSON block to delimit PR messages.")
+
+    # Save parsed PR messages for debugging
+    if pr_messages_string:
+        pr_messages_filename = f"api_pr_messages_{category_name}{batch_num_str}.txt"
+        try:
+            with open(os.path.join(temp_artifacts_dir, pr_messages_filename), 'w', encoding='utf-8') as f:
+                f.write(pr_messages_string)
+            logger.info(f"Saved parsed PR messages to {os.path.join(temp_artifacts_dir, pr_messages_filename)}")
+        except Exception as e:
+            logger.warning(f"Could not save parsed PR messages: {e}")
+
+    if revised_questions_list and not isinstance(revised_questions_list, list):
+        logger.warning(f"Parsed 'revised_questions_list' is not a list: {type(revised_questions_list)}. Resetting to empty.")
+        revised_questions_list = []
+
+    return revised_questions_list, pr_messages_string
+
+
+def _process_questions_with_api(questions_to_process_list, api_key, temp_artifacts_dir, category_name_for_debug):
     """
-    Filter questions to find a specific question by ID.
-    Returns a list containing just that question, or empty list if not found.
+    Processes a list of questions (single or batch) with the Perplexity API.
+    Returns a tuple: (list_of_api_returned_questions, aggregated_pr_messages_string).
+    The list_of_api_returned_questions contains question objects as returned by the API.
     """
-    for q in questions:
-        if q.get("id") == question_id:
-            return [q]
-    
-    logging.error(f"Question ID {question_id} not found")
-    return []
+    all_api_returned_questions = []
+    aggregated_pr_messages_parts = []
+    current_date_iso = datetime.date.today().strftime("%Y-%m-%d") # Get current date once
+
+    # Determine if it's single question mode (list has 1 item) or batch mode
+    is_single_question_mode = len(questions_to_process_list) == 1
+
+    if is_single_question_mode:
+        question_to_process = questions_to_process_list[0]
+        q_id_for_log = question_to_process.get('id', 'UnknownID')
+        batch_info_log = f"single question ID {q_id_for_log}"
+        prompt = _format_prompt_with_questions([question_to_process], current_date_iso)
+        api_response_json = _call_perplexity_api(api_key, prompt, batch_info_log)
+
+        if api_response_json and 'choices' in api_response_json and api_response_json['choices']:
+            content_str = api_response_json['choices'][0]['message']['content']
+            parsed_qs, pr_msg = _parse_api_response_content(content_str, temp_artifacts_dir, category_name_for_debug, f"_qid{q_id_for_log}")
+            if parsed_qs: # API should return the question, revised or not
+                all_api_returned_questions.extend(parsed_qs)
+            if pr_msg:
+                aggregated_pr_messages_parts.append(pr_msg)
+        else:
+            logger.error(f"API call or response structure invalid for question ID {q_id_for_log}.")
+            # Depending on desired robustness, could raise an exception here or return empty
+            return [], "" # Indicates failure for this single question
+    else: # Batch mode
+        num_total_questions_for_api = len(questions_to_process_list)
+        for i in range(0, num_total_questions_for_api, BATCH_SIZE):
+            batch_of_questions = questions_to_process_list[i:i + BATCH_SIZE]
+            batch_num = (i // BATCH_SIZE) + 1
+            total_batches = (num_total_questions_for_api + BATCH_SIZE - 1) // BATCH_SIZE
+            batch_info_log = f"batch {batch_num}/{total_batches} for category {category_name_for_debug} (size: {len(batch_of_questions)})"
+
+            prompt = _format_prompt_with_questions(batch_of_questions, current_date_iso)
+            api_response_json = _call_perplexity_api(api_key, prompt, batch_info_log)
+
+            if api_response_json and 'choices' in api_response_json and api_response_json['choices']:
+                content_str = api_response_json['choices'][0]['message']['content']
+                parsed_qs, pr_msg = _parse_api_response_content(content_str, temp_artifacts_dir, category_name_for_debug, f"_batch{batch_num}")
+                if parsed_qs: # API should return all questions in the batch, revised or not
+                    all_api_returned_questions.extend(parsed_qs)
+                if pr_msg:
+                    aggregated_pr_messages_parts.append(pr_msg)
+            else:
+                logger.error(f"API call or response structure invalid for {batch_info_log}. Stopping processing for this category.")
+                # Return what has been processed so far, but signal that it wasn't fully complete if needed by caller
+                break # Exit batch loop for this category
+
+            if API_CALL_DELAY_SECONDS > 0 and (i + BATCH_SIZE) < num_total_questions_for_api:
+                logger.info(f"Waiting for {API_CALL_DELAY_SECONDS}s before next API call...")
+                time.sleep(API_CALL_DELAY_SECONDS)
+
+    # Join PR messages with a clear separator if multiple parts exist
+    final_pr_messages_string = "\n\n---\n\n".join(filter(None, aggregated_pr_messages_parts))
+    return all_api_returned_questions, final_pr_messages_string
 
 def main():
-    """Main function to orchestrate the question review process."""
-    parser = argparse.ArgumentParser(description="Review and update Kubernetes security questions using Perplexity API.")
-    parser.add_argument("--category", required=True, help="The category name (e.g., Kubernetes_Security_Fundamentals) corresponding to the .mjs file.")
-    parser.add_argument("--question-id", type=str, help="Specific question ID (string or int) to refine (optional)")
+    """Main function to orchestrate the question refinement process."""
+    parser = argparse.ArgumentParser(description="Refine Kubernetes security questions using Perplexity API.")
+    parser.add_argument("--category", required=True,
+                        help="Category name (e.g., Kubernetes_Security_Fundamentals) which corresponds to the .mjs filename.")
+    parser.add_argument("--question-id", type=str, default=None,
+                        help="Specific question ID to refine. If not provided, processes questions in batch mode based on filtering logic (e.g., all questions).")
     args = parser.parse_args()
-    
+
     category_name = args.category
-    question_id_str = args.question_id
+    question_id_to_refine_str = args.question_id
 
-    # --- 0. Always clean and ensure output directory exists at the start ---
-    if os.path.exists(OUTPUT_DIR):
+    # Construct full paths based on CWD (expected to be project root)
+    input_dir_abs = os.path.abspath(INPUT_DIR_RELATIVE_TO_ROOT)
+    temp_artifacts_dir_abs = os.path.abspath(TEMP_ARTIFACTS_DIR_RELATIVE_TO_ROOT)
+
+    mjs_filepath = os.path.join(input_dir_abs, f"{category_name}.mjs")
+    backup_filepath = mjs_filepath + ".refine_bak"
+
+    overall_processing_success = False
+    final_pr_message_for_stdout = ""
+
+    # --- 0. Initial Setup & Validation ---
+    logger.info(f"Starting question refinement for category: {category_name}" +
+                (f", specific QID: {question_id_to_refine_str}" if question_id_to_refine_str else ", batch mode."))
+
+    if os.path.exists(temp_artifacts_dir_abs):
         try:
-            shutil.rmtree(OUTPUT_DIR)
-            logging.info(f"Successfully deleted output directory at start: {OUTPUT_DIR}")
+            shutil.rmtree(temp_artifacts_dir_abs)
+            logger.info(f"Cleaned up existing temp artifacts directory: {temp_artifacts_dir_abs}")
         except Exception as e:
-            logging.error(f"Failed to delete output directory {OUTPUT_DIR} at start: {e}")
+            logger.warning(f"Could not clean up temp artifacts directory {temp_artifacts_dir_abs}: {e}")
     try:
-        os.makedirs(OUTPUT_DIR, exist_ok=True)
-        logging.info(f"Ensured output directory {OUTPUT_DIR} exists at start.")
+        os.makedirs(temp_artifacts_dir_abs, exist_ok=True)
     except Exception as e:
-        logging.error(f"Failed to create output directory {OUTPUT_DIR} at start: {e}")
-        return 
+        logger.error(f"Could not create temp artifacts directory {temp_artifacts_dir_abs}: {e}. Exiting.")
+        return
 
+    if not os.path.exists(mjs_filepath):
+        logger.error(f"Input MJS file not found: {mjs_filepath}. Exiting.")
+        return
 
-    filepath = os.path.join(INPUT_DIR, f"{category_name}.mjs")
-    backup_filepath = filepath + ".main_app.bak" 
-    overall_processing_success = False 
-    pr_message_to_output = "" # Initialize variable to store PR message for stdout
-
-    if not os.path.exists(filepath):
-        logging.error(f"Input file not found: {filepath}")
+    # --- 1. Backup original MJS file ---
+    try:
+        shutil.copy2(mjs_filepath, backup_filepath)
+        logger.info(f"Created backup of input file: {backup_filepath}")
+    except Exception as e:
+        logger.error(f"Failed to create backup for {mjs_filepath}: {e}. Exiting.")
         return
 
     try:
-        shutil.copy2(filepath, backup_filepath)
-        logging.info(f"Created main backup of input file: {backup_filepath}")
-    except Exception as e:
-        logging.error(f"Failed to create main backup for {filepath}: {e}")
-        return 
-
-    try:
         api_key = get_api_key()
+        header_comments, variable_name, all_questions_from_file = parse_mjs_file(mjs_filepath)
 
-        if question_id_str is not None:
-            logging.info(f"Starting single question processing for ID: {question_id_str} in category: {category_name}")
-            
-            question_id_to_process = None
-            try:
-                question_id_to_process = int(question_id_str)
-            except ValueError:
-                question_id_to_process = question_id_str
-                logging.info(f"Processing single question ID as string: {question_id_to_process}")
+        if not all_questions_from_file or not variable_name:
+            # parse_mjs_file logs specifics
+            raise Exception(f"Failed to parse MJS file: {mjs_filepath}")
 
-            header_comments, variable_name, original_questions = parse_mjs_file(filepath)
-            if not original_questions or not variable_name:
-                raise Exception(f"Parsing failed for {filepath} in single question mode")
+        questions_for_api_processing = []
+        is_single_q_mode = bool(question_id_to_refine_str)
 
-            target_question_list = filter_questions_by_id(original_questions, question_id_to_process)
-            if not target_question_list:
-                raise Exception(f"Question ID {question_id_to_process} not found in {filepath}")
-            
-            prompt = format_prompt(target_question_list)
-            api_response_json = call_perplexity_api(api_key, prompt, 1)
-
-            if not api_response_json:
-                raise Exception(f"API call failed for single question ID {question_id_to_process}")
-
-            revised_single_q_list, pr_messages_single = parse_api_response(api_response_json) # Renamed to avoid conflict
-
-            if not revised_single_q_list or len(revised_single_q_list) != 1:
-                if pr_messages_single:
-                    logging.warning(f"PR messages found but question parsing failed for QID {question_id_to_process}: {pr_messages_single}")
-                raise Exception(f"Expected 1 revised question from API for ID {question_id_to_process}, got {len(revised_single_q_list) if revised_single_q_list else 'None'}")
-            
-            revised_single_question = revised_single_q_list[0]
-
-            updated_all_questions = []
-            question_was_updated_in_list = False
-            for q_orig in original_questions:
-                if str(q_orig.get('id')) == str(question_id_to_process):
-                    updated_all_questions.append(revised_single_question)
-                    question_was_updated_in_list = True
-                else:
-                    updated_all_questions.append(q_orig)
-            
-            if not question_was_updated_in_list:
-                raise Exception(f"Question ID {question_id_to_process} was filtered but not found for replacement during merge.")
-
-            if not reconstruct_and_save_mjs(filepath, header_comments, variable_name, updated_all_questions):
-                raise Exception(f"Failed to save updated data to {filepath} for single question ID {question_id_to_process}")
-            
-            logging.info(f"Successfully updated {filepath} with revised question ID {question_id_to_process}.")
-
-            if pr_messages_single:
-                save_pr_messages(OUTPUT_DIR, f"{category_name}_qid_{question_id_to_process}", pr_messages_single)
-                pr_message_to_output = pr_messages_single # Capture for stdout
-
-            if run_node_script(NODE_UPDATE_SCRIPT) and run_node_script(NODE_EXPORT_SCRIPT):
-                logging.info(f"Node scripts executed successfully for single question ID {question_id_to_process}.")
-                overall_processing_success = True
+        if is_single_q_mode:
+            target_found = False
+            for q in all_questions_from_file:
+                # Compare IDs as strings for robustness, as API might return them as strings
+                if str(q.get("id", "")).strip() == question_id_to_refine_str.strip():
+                    questions_for_api_processing.append(q)
+                    target_found = True
+                    break
+            if not target_found:
+                raise Exception(f"Question ID '{question_id_to_refine_str}' not found in {mjs_filepath}")
+            logger.info(f"Prepared single question (ID: {question_id_to_refine_str}) for API processing.")
+        else: # Batch mode
+            # For now, batch mode sends ALL questions from the file.
+            # The AI is instructed to only revise if necessary and return others unchanged.
+            # Add filtering here if only a subset (e.g., revision: 0) should be sent.
+            questions_for_api_processing = all_questions_from_file
+            if not questions_for_api_processing:
+                logger.info(f"No questions found in {mjs_filepath} to process in batch mode. Exiting as success.")
+                overall_processing_success = True # No work needed is a form of success
+                # Skip to finally block by returning or letting try complete
             else:
-                logging.error(f"Node script(s) failed for single question ID {question_id_to_process}. File {filepath} was updated but DB sync might be an issue.")
-                overall_processing_success = False 
-            
-            logging.info("Single question processing finished.")
+                logger.info(f"Prepared {len(questions_for_api_processing)} questions for API batch processing from {category_name}.")
 
+
+        if not questions_for_api_processing: # Handles case where single QID not found or batch list is empty after filtering
+            if not overall_processing_success: # If not already marked success (e.g. empty file for batch)
+                 raise Exception("No questions selected for API processing.")
         else:
-            # --- Batch Processing Path ---
-            logging.info(f"Starting batch question review process for category: {category_name}")
+            api_returned_questions, pr_messages_from_api = _process_questions_with_api(
+                questions_for_api_processing, api_key, temp_artifacts_dir_abs, category_name
+            )
+            final_pr_message_for_stdout = pr_messages_from_api
+
+            # --- Merge API results back into the full list from the file ---
+            # The AI is expected to return all questions it was sent (revised or original).
+            api_returned_map = {str(q.get("id", "")): q for q in api_returned_questions}
             
-            header_comments, variable_name, original_questions = parse_mjs_file(filepath)
-            if not original_questions or not variable_name:
-                raise Exception("Parsing failed for batch processing")
+            updated_full_question_list = []
+            questions_effectively_changed_count = 0
 
-            questions_to_revise = filter_questions_for_revision(original_questions)
-            if not questions_to_revise:
-                logging.info(f"No questions require revision in {filepath} for batch processing.")
-                overall_processing_success = True 
-            else:
-                all_revised_from_api = []
-                all_pr_messages_for_file = []
-                api_call_succeeded_overall = True 
-
-                for i in range(0, len(questions_to_revise), BATCH_SIZE):
-                    batch = questions_to_revise[i:i + BATCH_SIZE]
-                    batch_number = i // BATCH_SIZE + 1
-                    total_batches = (len(questions_to_revise) + BATCH_SIZE - 1) // BATCH_SIZE
-                    logging.info(f"Processing batch {batch_number}/{total_batches} for {category_name} (size: {len(batch)})")
-
-                    prompt = format_prompt(batch)
-                    api_response = call_perplexity_api(api_key, prompt, len(batch))
-
-                    if api_response:
-                        revised_batch, pr_batch = parse_api_response(api_response)
-                        if revised_batch:
-                            all_revised_from_api.extend(revised_batch)
-                        if pr_batch: 
-                            all_pr_messages_for_file.append(pr_batch)
-                    else:
-                        logging.error(f"API call failed for batch {batch_number}. Stopping batch processing for this file.")
-                        api_call_succeeded_overall = False
-                        break 
-
-                    if API_CALL_DELAY > 0 and i + BATCH_SIZE < len(questions_to_revise):
-                         logging.info(f"Waiting for {API_CALL_DELAY} seconds before next API call...")
-                         time.sleep(API_CALL_DELAY)
-
-                if not api_call_succeeded_overall:
-                     raise Exception("One or more API calls failed during batch processing")
-
-                if not all_revised_from_api and questions_to_revise: 
-                     logging.warning("API calls completed for all batches, but no questions were successfully parsed as revised/returned.")
+            for original_q_in_file in all_questions_from_file:
+                original_q_id_str = str(original_q_in_file.get("id", ""))
                 
-                revised_map = {str(q.get('id')): q for q in all_revised_from_api}
-                updated_questions = []
-                revision_count = 0
-                for q_orig in original_questions:
-                    q_id_str_map = str(q_orig.get('id'))
-                    if q_id_str_map in revised_map:
-                        updated_questions.append(revised_map[q_id_str_map])
-                        revision_count += 1 
-                    else:
-                        updated_questions.append(q_orig)
-                logging.info(f"Merged {revision_count} questions that were present in API response batches with original data.")
-
-                if not reconstruct_and_save_mjs(filepath, header_comments, variable_name, updated_questions):
-                    raise Exception("Failed to save updated .mjs file during batch processing")
-
-                if not run_node_script(NODE_UPDATE_SCRIPT):
-                     raise Exception("Node update script failed during batch processing")
-
-                if not run_node_script(NODE_EXPORT_SCRIPT):
-                     raise Exception("Node export script failed during batch processing")
-
-                combined_pr_messages = "\n\n---\n\n".join(msg for msg in all_pr_messages_for_file if msg)
-                if combined_pr_messages:
-                    save_pr_messages(OUTPUT_DIR, category_name + "_batch", combined_pr_messages)
-                    pr_message_to_output = combined_pr_messages # Capture for stdout
+                # Check if this question was part of the batch processed by the API
+                # This is important if questions_for_api_processing was a SUBSET of all_questions_from_file
+                # For the current logic (single ID or ALL for batch), original_q_id_str should usually be in api_returned_map
+                # if it was part of questions_for_api_processing.
+                
+                if original_q_id_str in api_returned_map:
+                    # This question was processed by the API. Use the version from the API.
+                    api_version_q = api_returned_map[original_q_id_str]
+                    updated_full_question_list.append(api_version_q)
+                    # Check if the content actually changed to count revisions
+                    # Comparing JSON strings is a simple way if order is consistent or sorted
+                    original_json = json.dumps(original_q_in_file, sort_keys=True)
+                    api_json = json.dumps(api_version_q, sort_keys=True)
+                    if original_json != api_json:
+                        questions_effectively_changed_count += 1
+                        logger.info(f"Question ID {original_q_id_str} was modified by the API.")
                 else:
-                    logging.info(f"No PR messages to save for batch processing of category {category_name}.")
-                
-                overall_processing_success = True 
-            logging.info("Batch question review process finished.")
-        
+                    # This question was not processed by the API (e.g., filtered out before sending)
+                    # So, keep the original version from the file.
+                    updated_full_question_list.append(original_q_in_file)
+            
+            logger.info(f"Total questions in file: {len(all_questions_from_file)}. Questions returned by API: {len(api_returned_questions)}. Effective changes made: {questions_effectively_changed_count}.")
+
+            if not reconstruct_and_save_mjs(mjs_filepath, header_comments, variable_name, updated_full_question_list):
+                raise Exception(f"Failed to save updated MJS file: {mjs_filepath}")
+            
+            logger.info(f"Successfully updated MJS file: {mjs_filepath}")
+            overall_processing_success = True
+
+    except ValueError as ve: # Specifically for get_api_key
+        logger.critical(str(ve)) # Already logged by get_api_key
+        overall_processing_success = False
     except Exception as e:
-        logging.error(f"An error occurred during the main processing: {e}")
-        overall_processing_success = False 
+        logger.error(f"An error occurred during main processing for category '{category_name}': {e}", exc_info=True)
+        overall_processing_success = False
     finally:
         if overall_processing_success:
-            try:
-                if os.path.exists(backup_filepath):
+            if os.path.exists(backup_filepath):
+                try:
                     os.remove(backup_filepath)
-                    logging.info(f"Successfully processed. Removed main backup of input file: {backup_filepath}")
-            except Exception as clean_e:
-                logging.warning(f"Failed to remove main backup of input file {backup_filepath} after successful processing: {clean_e}")
+                    logger.info(f"Processing successful. Removed backup: {backup_filepath}")
+                except Exception as e:
+                    logger.warning(f"Processing successful but failed to remove backup {backup_filepath}: {e}")
+            if os.path.exists(temp_artifacts_dir_abs):
+                try:
+                    shutil.rmtree(temp_artifacts_dir_abs)
+                    logger.info(f"Processing successful. Removed temp artifacts directory: {temp_artifacts_dir_abs}")
+                except Exception as e:
+                    logger.warning(f"Processing successful but failed to remove temp artifacts dir {temp_artifacts_dir_abs}: {e}")
             
-            try:
-                if os.path.exists(OUTPUT_DIR):
-                    shutil.rmtree(OUTPUT_DIR)
-                    logging.info(f"Successfully processed. Removed output directory at end: {OUTPUT_DIR}")
-            except Exception as e:
-                logging.warning(f"Successfully processed, but failed to remove output directory {OUTPUT_DIR} at end: {e}")
-            
-            # Print PR message content to stdout if available
-            if pr_message_to_output:
-                print(f"PR_BODY_CONTENT::{pr_message_to_output}") # Ensure this is the very last thing printed on success with messages
-            elif overall_processing_success: # If successful but no specific PR message, print a generic success marker or nothing
-                logging.info("Processing successful, no specific PR message content generated by the script for stdout.")
-
-
-        else: # Processing failed
-            if os.path.exists(backup_filepath): 
-                logging.warning(f"Processing failed or was incomplete. Main backup of input file kept at: {backup_filepath}")
+            if final_pr_message_for_stdout:
+                print(f"PR_BODY_CONTENT::{final_pr_message_for_stdout}")
+                logger.info("Printed PR message content to stdout.")
             else:
-                logging.warning("Processing failed, and no main backup file was found (it might have failed during creation or an early exit occurred).")
-            logging.warning(f"Processing failed or was incomplete. Output directory {OUTPUT_DIR} (if it contains files) is kept for review.")
-            # Optionally, print an error marker to stdout if needed by the action on failure
-            # print("PR_BODY_CONTENT::Error during script execution. Check logs.")
-    
-    logging.info("Overall question review process finished.")
+                logger.info("Processing successful, but no specific PR message content was generated/found from API.")
+        else:
+            logger.error(f"Processing FAILED for category '{category_name}'.")
+            if os.path.exists(backup_filepath):
+                logger.warning(f"Backup file kept at: {backup_filepath}")
+            if os.path.exists(temp_artifacts_dir_abs):
+                logger.warning(f"Temp artifacts directory kept for review: {temp_artifacts_dir_abs}")
+            # Optionally print an error marker to stdout for the GitHub Action
+            # print("PR_BODY_CONTENT::Error: Question refinement script failed. Check workflow logs.")
 
+    logger.info(f"Overall question refinement process finished for category: {category_name}.")
 
 if __name__ == "__main__":
     main()
