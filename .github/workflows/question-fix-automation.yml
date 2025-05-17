@@ -50,27 +50,46 @@ jobs:
         env:
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LOG_LEVEL: INFO # Or DEBUG for more verbose output from the Python script
+          LOG_LEVEL: INFO 
         run: |
           echo "Attempting to process issue #${{ github.event.issue.number }} titled: ${{ github.event.issue.title }}"
           
-          # Encode the issue body to Base64
           ISSUE_BODY_B64=$(echo "${{ github.event.issue.body }}" | base64 -w 0)
           if [ -z "$ISSUE_BODY_B64" ]; then
             echo "Warning: Issue body is empty after base64 encoding attempt."
-            # Decide if you want to pass an empty string or handle differently
           fi
           
-          # Run the Python script with title, BASE64 ENCODED BODY, and issue number
-          # Ensure the path to process_issue.py is correct
-          python .github/scripts/process_issue.py "${{ github.event.issue.title }}" "$ISSUE_BODY_B64" "${{ github.event.issue.number }}"
+          # Execute the Python script and capture its full output
+          SCRIPT_OUTPUT=$(python .github/scripts/process_issue.py "${{ github.event.issue.title }}" "$ISSUE_BODY_B64" "${{ github.event.issue.number }}")
+          
+          # Echo the full script output for debugging (optional, can be verbose)
+          echo "Full script output:"
+          echo "$SCRIPT_OUTPUT"
+          echo "End of full script output."
+
+          # Extract the PR message content
+          # Using sed: find the line with PR_BODY_CONTENT::, then print from that line to the end, then remove the prefix from the first line.
+          PR_MESSAGE_LINES=$(echo "$SCRIPT_OUTPUT" | sed -n '/PR_BODY_CONTENT::/,$p')
+          PR_MESSAGE_FINAL_CONTENT=$(echo "$PR_MESSAGE_LINES" | sed '1s/PR_BODY_CONTENT:://')
+
+          # Fallback message if PR_MESSAGE_FINAL_CONTENT is empty after extraction
+          if [ -z "$PR_MESSAGE_FINAL_CONTENT" ]; then
+            echo "No specific PR message content found in script output. Using fallback."
+            PR_MESSAGE_FINAL_CONTENT="AI-assisted refinement might have been applied. Database and exported question files were updated based on the issue."
+          else
+            echo "Extracted PR message content successfully."
+          fi
+          
+          # Set the output for use in other steps
+          echo "pr_message_content<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$PR_MESSAGE_FINAL_CONTENT" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
           
           echo "Python script processing step completed for issue #${{ github.event.issue.number }}"
 
       - name: Create Pull Request if changes were made
-        # This step will only run if the previous steps successfully modified files
-        # and those files are part of the git repository.
-        uses: peter-evans/create-pull-request@v6 # Consider v6
+        id: create_pr # Added an ID here for potential future reference
+        uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "fix(question): Update from issue #${{ github.event.issue.number }}"
@@ -78,19 +97,12 @@ jobs:
           body: |
             This PR addresses issue #${{ github.event.issue.number }}: "${{ github.event.issue.title }}".
 
-            The question content was processed and updated based on the report.
-            
-            - AI-assisted refinement might have been applied.
-            - Database and exported question files were updated.
+            ${{ steps.process_issue.outputs.pr_message_content }}
             
             This PR was created automatically. Please review the changes before merging.
           labels: "question-fix, automated-pr"
           branch: "fix/question-issue-${{ github.event.issue.number }}"
-          delete-branch: true # Deletes the branch once the PR is merged or closed
-          # add-paths: | # Uncomment and specify if you only want to include changes from specific paths
-          #   src/exported-questions/
-          #   src/questions_metadata.json 
-          #   src/your-database-file.sqlite # If applicable
+          delete-branch: true
 
       - name: Comment on issue if processing completed but no PR was created
         # This can happen if the Python script ran but made no file changes detectable by create-pull-request

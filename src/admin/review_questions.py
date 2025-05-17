@@ -13,8 +13,8 @@ import shutil # For backup
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
 MODEL_NAME = "sonar-pro" # Reverted to potentially valid name
 BATCH_SIZE = 5
-INPUT_DIR = "src/exported-questions"
-OUTPUT_DIR = "src/revised-questions"
+INPUT_DIR = "exported-questions"
+OUTPUT_DIR = "revised-questions"
 # Delay between API calls in seconds (to avoid rate limits if necessary)
 API_CALL_DELAY = 1
 
@@ -486,166 +486,182 @@ def filter_questions_by_id(questions, question_id):
 
 # --- Main Execution ---
 
-
-
 def main():
     """Main function to orchestrate the question review process."""
     parser = argparse.ArgumentParser(description="Review and update Kubernetes security questions using Perplexity API.")
     parser.add_argument("--category", required=True, help="The category name (e.g., Kubernetes_Security_Fundamentals) corresponding to the .mjs file.")
-    parser.add_argument("--question-id", type=int, help="Specific question ID to refine (optional)")
+    # Changed type to str to allow for non-integer IDs initially, and to match the logic from the previous version
+    parser.add_argument("--question-id", type=str, help="Specific question ID (string or int) to refine (optional)")
     args = parser.parse_args()
     
     category_name = args.category
-    question_id = args.question_id
-    filepath = os.path.join(INPUT_DIR, f"{category_name}.mjs")
-    backup_filepath = filepath + ".bak"
-    overall_success = False # Flag to track if all steps succeed for cleanup
+    question_id_str = args.question_id # Store CLI arg as string
+    # Note: target_revision is not an argument in this version of main.
+    # If review_single_question or filter_questions_for_revision need it,
+    # they must use a default or it needs to be reintroduced.
 
-    logging.info(f"Starting question review process for category: {category_name}")
+    # --- Single Question Processing Path ---
+    if question_id_str is not None:
+        logging.info(f"Starting single question review process for ID: {question_id_str} in category: {category_name}")
+        
+        question_id_to_process = None
+        try:
+            # Attempt to convert to int if the ID is purely numeric
+            question_id_to_process = int(question_id_str)
+        except ValueError:
+            # If conversion fails (e.g., ID is like "CIS-1.1.1"), use the string directly
+            question_id_to_process = question_id_str
+            logging.info(f"Processing question ID as string: {question_id_to_process}")
 
- # Process single question if question-id is provided
-    if question_id is not None:
-        success = review_single_question(category_name, question_id)
-        if success:
-            logging.info(f"Successfully processed question ID {question_id}")
+        # This variable will track success specifically for the single question path
+        single_question_overall_success = False
+        success_review = review_single_question(category_name, question_id_to_process) # Assuming review_single_question handles its own backup/output
+        
+        if success_review:
+            logging.info(f"Successfully reviewed question ID {question_id_to_process}")
             # Run Node scripts for database update
+            # Assuming review_single_question doesn't run these, and they should run after it.
+            # If review_single_question *does* run them, this might be redundant or need adjustment.
             if run_node_script(NODE_UPDATE_SCRIPT) and run_node_script(NODE_EXPORT_SCRIPT):
-                overall_success = True
+                single_question_overall_success = True
+                logging.info(f"Node scripts run successfully for single question ID {question_id_to_process}.")
+            else:
+                logging.error(f"Node script(s) failed for single question ID {question_id_to_process}.")
         else:
-            logging.error(f"Failed to process question ID {question_id}")
-    else:
-        # --- 1. Check if file exists ---
-        if not os.path.exists(filepath):
-            logging.error(f"Input file not found: {filepath}")
-            return
+            logging.error(f"Failed to process/review single question ID {question_id_to_process}.")
+        
+        logging.info("Single question review process finished.")
+        return # IMPORTANT: Exit after single question processing.
 
+    # --- Batch Processing Path (only if question_id_str was None) ---
+    logging.info(f"Starting batch question review process for category: {category_name}")
+    
+    filepath = os.path.join(INPUT_DIR, f"{category_name}.mjs")
+    # Use a distinct backup filename for batch mode
+    backup_filepath = filepath + ".bak_batch" 
+    batch_overall_success = False # Flag for batch processing success
 
-    # --- 2. Get API Key ---
+    if not os.path.exists(filepath):
+        logging.error(f"Input file not found for batch processing: {filepath}")
+        return
+
     try:
         api_key = get_api_key()
     except ValueError as e:
         logging.error(e)
         return
 
-    # --- 3. Backup Original File ---
+    # Create backup for batch processing
     try:
         shutil.copy2(filepath, backup_filepath)
-        logging.info(f"Created backup: {backup_filepath}")
+        logging.info(f"Created backup for batch processing: {backup_filepath}")
     except Exception as e:
-        logging.error(f"Failed to create backup file for {filepath}: {e}")
+        logging.error(f"Failed to create backup file for batch processing {filepath}: {e}")
         return # Stop if backup fails
 
     try:
-        # --- 4. Parse Original File ---
+        # Parse original file for batch processing
         header_comments, variable_name, original_questions = parse_mjs_file(filepath)
         if not original_questions or not variable_name:
-            logging.error(f"Failed to parse original file {filepath}. Restoring from backup.")
-            raise Exception("Parsing failed") # Jump to finally block for restore
+            raise Exception("Parsing failed for batch processing")
 
-        # --- 5. Filter Questions ---
+        # Filter Questions (note: this version of filter_questions_for_revision does not take target_revision)
         questions_to_revise = filter_questions_for_revision(original_questions)
         if not questions_to_revise:
-            logging.info(f"No questions require revision in {filepath}.")
-            overall_success = True # Mark as success as no action needed beyond parsing
+            logging.info(f"No questions require revision in {filepath} for batch processing.")
+            batch_overall_success = True 
             return # Exit gracefully
 
-        # --- 6. Process Revisions via API ---
+        # Process Revisions via API in batches
         all_revised_from_api = []
         all_pr_messages_for_file = []
-        api_call_succeeded = True
+        api_call_succeeded_overall = True 
+
         for i in range(0, len(questions_to_revise), BATCH_SIZE):
             batch = questions_to_revise[i:i + BATCH_SIZE]
-            logging.info(f"Processing batch {i // BATCH_SIZE + 1}/{ (len(questions_to_revise) + BATCH_SIZE - 1) // BATCH_SIZE } for {category_name} (size: {len(batch)})")
+            batch_number = i // BATCH_SIZE + 1
+            total_batches = (len(questions_to_revise) + BATCH_SIZE - 1) // BATCH_SIZE
+            logging.info(f"Processing batch {batch_number}/{total_batches} for {category_name} (size: {len(batch)})")
 
             prompt = format_prompt(batch)
-            # Pass batch length for logging inside call_perplexity_api
             api_response = call_perplexity_api(api_key, prompt, len(batch))
 
             if api_response:
                 revised_batch, pr_batch = parse_api_response(api_response)
-                if revised_batch: # Check if parsing yielded questions
+                if revised_batch:
                     all_revised_from_api.extend(revised_batch)
                 else:
-                    logging.warning(f"Batch {i // BATCH_SIZE + 1}: API called but no revised questions parsed successfully.")
-                    # Decide if this is a critical failure - for now, we continue but won't have revisions for this batch
-                if pr_batch:
+                    logging.warning(f"Batch {batch_number}: API called but no revised questions parsed successfully.")
+                if pr_batch: 
                     all_pr_messages_for_file.append(pr_batch)
             else:
-                logging.error(f"API call failed for batch {i // BATCH_SIZE + 1}. Stopping processing for this file.")
-                api_call_succeeded = False
-                break # Stop processing batches for this file if one fails
+                logging.error(f"API call failed for batch {batch_number}. Stopping batch processing for this file.")
+                api_call_succeeded_overall = False
+                break 
 
-            # Optional delay
             if API_CALL_DELAY > 0 and i + BATCH_SIZE < len(questions_to_revise):
                  logging.info(f"Waiting for {API_CALL_DELAY} seconds before next API call...")
                  time.sleep(API_CALL_DELAY)
 
-        if not api_call_succeeded:
-             raise Exception("API call failed") # Jump to finally for restore
+        if not api_call_succeeded_overall:
+             raise Exception("One or more API calls failed during batch processing")
 
-        if not all_revised_from_api:
-             logging.warning("API calls completed, but no revised questions were successfully parsed/returned.")
-             # Decide if this is an error or just means nothing was revised. Let's treat as non-fatal for now.
-             # We won't update the file or run node scripts if nothing was revised.
-             overall_success = True # Consider it success if API ran but returned no valid revisions
-             return
-
-
-        # --- 7. Merge Results ---
-        revised_map = {q['id']: q for q in all_revised_from_api}
+        if not all_revised_from_api and questions_to_revise:
+             logging.warning("API calls completed for all batches, but no questions were successfully parsed as revised/returned.")
+        
+        # Merge Results
+        # Using string IDs for map keys for robustness, assuming IDs can be int or string
+        revised_map = {str(q.get('id')): q for q in all_revised_from_api}
         updated_questions = []
         revision_count = 0
-        for q in original_questions:
-            if q['id'] in revised_map:
-                updated_questions.append(revised_map[q['id']])
-                revision_count += 1
+        for q_orig in original_questions:
+            q_id_str_map = str(q_orig.get('id'))
+            if q_id_str_map in revised_map:
+                updated_questions.append(revised_map[q_id_str_map])
+                # Add logic here if you need to count actual changes vs just presence in API output
+                revision_count += 1 
             else:
-                updated_questions.append(q)
-        logging.info(f"Merged {revision_count} revised questions with original data.")
+                updated_questions.append(q_orig)
+        logging.info(f"Merged {revision_count} questions that were present in API response batches with original data.")
 
-        # --- 8. Reconstruct and Save .mjs ---
+        # Reconstruct and Save .mjs (overwrites original filepath in INPUT_DIR)
         if not reconstruct_and_save_mjs(filepath, header_comments, variable_name, updated_questions):
-            raise Exception("Failed to save updated .mjs file") # Jump to finally for restore
+            raise Exception("Failed to save updated .mjs file during batch processing")
 
-        # --- 9. Run Node Update Script ---
+        # Run Node Update Script
         if not run_node_script(NODE_UPDATE_SCRIPT):
-             raise Exception("Node update script failed") # Jump to finally for restore
+             raise Exception("Node update script failed during batch processing")
 
-        # --- 10. Run Node Export Script ---
+        # Run Node Export Script
         if not run_node_script(NODE_EXPORT_SCRIPT):
-             raise Exception("Node export script failed") # Jump to finally for restore
+             raise Exception("Node export script failed during batch processing")
 
-        # --- 11. Save PR Messages ---
-        combined_pr_messages = "\n\n---\n\n".join(all_pr_messages_for_file)
-        save_pr_messages(OUTPUT_DIR, category_name, combined_pr_messages) # Save PR messages regardless of node script success
-
-        # --- If we reach here, all critical steps succeeded ---
-        overall_success = True
-        logging.info(f"Successfully processed category: {category_name}")
+        # Save PR Messages
+        combined_pr_messages = "\n\n---\n\n".join(msg for msg in all_pr_messages_for_file if msg)
+        if combined_pr_messages:
+            save_pr_messages(OUTPUT_DIR, category_name + "_batch", combined_pr_messages)
+        else:
+            logging.info(f"No PR messages to save for batch processing of category {category_name}.")
+        
+        batch_overall_success = True
+        logging.info(f"Successfully completed batch processing for category: {category_name}")
 
     except Exception as e:
-        logging.error(f"An error occurred during processing: {e}. Attempting to restore original file from backup.")
-        try:
-            shutil.copy2(backup_filepath, filepath)
-            logging.info(f"Restored original file {filepath} from {backup_filepath}")
-        except Exception as restore_e:
-            logging.error(f"CRITICAL ERROR: Failed to restore original file from backup: {restore_e}")
-            logging.error(f"Backup file is still available at: {backup_filepath}")
-
+        logging.error(f"An error occurred during batch processing: {e}. Original file may be restored from backup.")
     finally:
-        # --- 12. Cleanup Backup ---
-        if overall_success:
+        if batch_overall_success:
             try:
                 if os.path.exists(backup_filepath):
                     os.remove(backup_filepath)
-                    logging.info(f"Removed backup file: {backup_filepath}")
+                    logging.info(f"Removed batch backup file: {backup_filepath}")
             except Exception as clean_e:
-                logging.warning(f"Failed to remove backup file {backup_filepath}: {clean_e}")
+                logging.warning(f"Failed to remove batch backup file {backup_filepath}: {clean_e}")
         else:
-            if os.path.exists(backup_filepath):
-                logging.warning(f"Processing failed. Backup file kept at: {backup_filepath}")
-
-    logging.info("Question review process finished.")
+            if 'backup_filepath' in locals() and os.path.exists(backup_filepath):
+                logging.warning(f"Batch processing failed. Backup file kept at: {backup_filepath}")
+            else:
+                logging.warning("Batch processing failed, and no backup file was applicable or created for this path, or an error occurred before backup creation.")
+    logging.info("Batch question review process finished.")
 
 
 if __name__ == "__main__":
