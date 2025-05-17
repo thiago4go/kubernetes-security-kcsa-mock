@@ -13,8 +13,8 @@ import shutil # For backup
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
 MODEL_NAME = "sonar-pro" # Reverted to potentially valid name
 BATCH_SIZE = 5
-INPUT_DIR = "exported-questions"
-OUTPUT_DIR = "revised-questions"
+INPUT_DIR = os.path.join("src", "exported-questions")
+OUTPUT_DIR = os.path.join("src", "revised-questions")
 # Delay between API calls in seconds (to avoid rate limits if necessary)
 API_CALL_DELAY = 1
 
