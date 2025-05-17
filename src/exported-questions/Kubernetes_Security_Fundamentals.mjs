@@ -1250,7 +1250,7 @@ export const KubernetesSecurityFundamentalsQuestions = [
       "kubectl create secret tls-secret --type=tls --cert=tls.crt --key=tls.key"
     ],
     "correct_answers": [
-      2
+      1
     ],
     "explanation": "The correct command to create a TLS secret in Kubernetes is 'kubectl create secret tls' followed by the secret name and the paths to the certificate and key files using the --cert and --key flags.",
     "question_type": "single-choice",
@@ -1266,8 +1266,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#create-secret"
       }
     ],
-    "revision": 3,
-    "revision_date": "2025-04-18 17:38:29"
+    "revision": 4,
+    "revision_date": "2025-05-17 01:41:24"
   },
   {
     "id": 165,
