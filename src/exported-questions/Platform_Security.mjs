@@ -1,6 +1,6 @@
 
 // Exported 34 questions for domain: Platform Security
-// Last revision date: 2025-04-22 20:19:59
+// Last revision date: 2025-05-17 14:37:10
 export const PlatformSecurityQuestions = [
   {
     "id": 11,
@@ -304,7 +304,7 @@ export const PlatformSecurityQuestions = [
   },
   {
     "id": 144,
-    "question": "Which kubectl command allows you to view the events occurring in a Kubernetes cluster, such as pod lifecycle changes and errors?",
+    "question": "Which kubectl command allows you to view the events occurring in a Kubernetes cluster, such as pod lifecycle changes and errors, using the most current recommended method?",
     "options": [
       "kubectl get events",
       "kubectl describe events",
@@ -313,9 +313,9 @@ export const PlatformSecurityQuestions = [
       "kubectl get logs"
     ],
     "correct_answers": [
-      0
+      3
     ],
-    "explanation": "'kubectl get events' lists all recent events in the cluster, including warnings and normal lifecycle events for pods, nodes, and other resources. 'kubectl describe events' is not a valid command; 'kubectl describe' is used with resource types but not directly with 'events'. 'kubectl list events' and 'kubectl events' are not valid commands. 'kubectl get logs' is used to fetch logs from pods, not cluster events.",
+    "explanation": "'kubectl events' is the newer and recommended command for viewing events in a Kubernetes cluster, including pod lifecycle changes, warnings, and errors. It provides enhanced filtering and output options compared to the traditional 'kubectl get events'. 'kubectl describe events' is not a valid command; 'kubectl describe' is used with specific resource types but not directly with 'events'. 'kubectl list events' is not a valid command. 'kubectl get logs' is used to fetch logs from pods, not cluster events.",
     "question_type": "single-choice",
     "domain": "Platform Security",
     "subdomain": "Observability",
@@ -325,12 +325,12 @@ export const PlatformSecurityQuestions = [
         "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/event-logging/"
       },
       {
-        "name": "Kubernetes Official Documentation - kubectl get",
-        "url": "https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get"
+        "name": "Kubernetes Official Documentation - kubectl events",
+        "url": "https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#events"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 18:17:45"
+    "revision": 2,
+    "revision_date": "2025-05-17 14:37:10"
   },
   {
     "id": 151,
