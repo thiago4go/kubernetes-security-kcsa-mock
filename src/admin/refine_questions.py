@@ -25,7 +25,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # but the scripts themselves are in src/admin/db-tools/
 # So, the path for subprocess.run inside refine_questions.py for these node scripts
 # also needs to be relative to project_root.
-NODE_DB_TOOLS_DIR = "admin/db-tools" # Relative to project root
+NODE_DB_TOOLS_DIR = "src/admin/db-tools" # Relative to project root
 NODE_UPDATE_SCRIPT = os.path.join(NODE_DB_TOOLS_DIR, "update_questions.mjs")
 NODE_EXPORT_SCRIPT = os.path.join(NODE_DB_TOOLS_DIR, "export_questions.mjs")
 

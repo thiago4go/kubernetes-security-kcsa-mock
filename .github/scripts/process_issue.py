@@ -136,8 +136,19 @@ def extract_question_info(title, body):
                 for proper_case_key_from_metadata in domains_data.keys():
                     # Normalize the key from metadata for comparison
                     metadata_key_normalized = proper_case_key_from_metadata.lower().replace(' ', '_')
+                    # Try exact match first
                     if extracted_domain_normalized == metadata_key_normalized:
                         mapped_domain_proper_case = proper_case_key_from_metadata
+                        break
+                    # Try adding 's' to extracted if metadata has 's'
+                    elif extracted_domain_normalized + "s" == metadata_key_normalized:
+                        mapped_domain_proper_case = proper_case_key_from_metadata
+                        logger.info(f"Matched by adding 's' to extracted: {extracted_domain_normalized} -> {metadata_key_normalized}")
+                        break
+                    # Try removing 's' from extracted if metadata does not have 's' (less common for this case but general idea)
+                    elif extracted_domain_normalized.endswith("s") and extracted_domain_normalized[:-1] == metadata_key_normalized:
+                        mapped_domain_proper_case = proper_case_key_from_metadata
+                        logger.info(f"Matched by removing 's' from extracted: {extracted_domain_normalized} -> {metadata_key_normalized}")
                         break
                 
                 if mapped_domain_proper_case:
