@@ -13,16 +13,22 @@ import shutil # For backup
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
 MODEL_NAME = "sonar-pro" # Reverted to potentially valid name
 BATCH_SIZE = 5
-INPUT_DIR = "../../src/exported-questions"
-OUTPUT_DIR = "../../src/revised-questions"
+INPUT_DIR = "src/exported-questions"
+OUTPUT_DIR = "src/revised-questions"
 # Delay between API calls in seconds (to avoid rate limits if necessary)
 API_CALL_DELAY = 1
 
 # --- Logging Setup ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# Paths to Node.js scripts, also relative to project root
+# These scripts are called by refine_questions.py, which has CWD = project_root,
+# but the scripts themselves are in src/admin/db-tools/
+# So, the path for subprocess.run inside refine_questions.py for these node scripts
+# also needs to be relative to project_root.
+NODE_DB_TOOLS_DIR = "src/admin/db-tools" # Relative to project root
+NODE_UPDATE_SCRIPT = os.path.join(NODE_DB_TOOLS_DIR, "update_questions.mjs")
+NODE_EXPORT_SCRIPT = os.path.join(NODE_DB_TOOLS_DIR, "export_questions.mjs")
 
-NODE_UPDATE_SCRIPT = "db-tools/update_questions.mjs"
-NODE_EXPORT_SCRIPT = "db-tools/export_questions.mjs"
 
 # --- Prompt Template ---
 # Note: Ensure the JSON placeholder is exactly where the batch goes.
