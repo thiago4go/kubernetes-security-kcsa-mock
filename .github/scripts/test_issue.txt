@@ -1,9 +1,0 @@
-Question: How do Network Policies work in Kubernetes?
-
-Your answer: They use iptables rules to control pod communication
-
-Correct answer: They are enforced by the kube-scheduler
-
-Explanation: Network Policies in Kubernetes use iptables rules to control communication between pods. This allows administrators to define which pods can communicate with each other, enhancing network security. By default, pods can communicate freely unless restricted by a Network Policy.
-
-Domain: Kubernetes Security Fundamentals
