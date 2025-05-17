@@ -1,6 +1,6 @@
 
 // Exported 99 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-04-18 17:38:29
+// Last revision date: 2025-05-17 11:10:54
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -190,7 +190,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
       "Access depends solely on RBAC permissions, regardless of privileged mode"
     ],
     "correct_answers": [
-      1
+      1,
+      4
     ],
     "explanation": "Setting 'privileged: true' on a pod grants the container elevated privileges on the host system, such as access to devices and kernel capabilities, but it does not inherently grant access to Kubernetes Secrets. Access to Secrets is controlled by Kubernetes Role-Based Access Control (RBAC) policies and namespace scoping.",
     "question_type": "multiple-choice",
@@ -206,8 +207,8 @@ export const KubernetesSecurityFundamentalsQuestions = [
         "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
       }
     ],
-    "revision": 2,
-    "revision_date": "2025-04-18 17:30:24"
+    "revision": 3,
+    "revision_date": "2025-05-17 11:10:54"
   },
   {
     "id": 20,
