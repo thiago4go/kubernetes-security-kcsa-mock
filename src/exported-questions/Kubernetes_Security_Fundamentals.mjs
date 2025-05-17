@@ -1,6 +1,6 @@
 
 // Exported 99 questions for domain: Kubernetes Security Fundamentals
-// Last revision date: 2025-05-17 11:10:54
+// Last revision date: 2025-05-17 11:25:03
 export const KubernetesSecurityFundamentalsQuestions = [
   {
     "id": 1,
@@ -155,29 +155,33 @@ export const KubernetesSecurityFundamentalsQuestions = [
   },
   {
     "id": 13,
-    "question": "How do Network Policies work in Kubernetes?",
+    "question": "Which statement accurately describes how Kubernetes Network Policies control pod-to-pod communication within a cluster?",
     "options": [
-      "By default, they block all traffic between pods",
-      "They use iptables rules to control pod communication",
-      "They are enforced by the kube-scheduler",
-      "They manage access to the Kubernetes API",
-      "They control storage access for pods"
+      "By default, they block all traffic between pods.",
+      "They use iptables rules (via the CNI plugin) to control pod communication.",
+      "They are enforced by the kube-scheduler.",
+      "They manage access to the Kubernetes API.",
+      "They control storage access for pods."
     ],
     "correct_answers": [
-      2
+      1
     ],
-    "explanation": "Network Policies in Kubernetes use iptables rules to control communication between pods. This allows administrators to define which pods can communicate with each other, enhancing network security. By default, pods can communicate freely unless restricted by a Network Policy.",
+    "explanation": "Kubernetes Network Policies define how groups of pods are allowed to communicate with each other and with other network endpoints. These policies are enforced by the Container Network Interface (CNI) plugin used in the cluster. Most CNI plugins implement network policies using iptables or similar mechanisms to control traffic at the network level. By default, if no Network Policy is applied, all pods can communicate freely. Network Policies do not block all traffic by default, nor are they enforced by the kube-scheduler. They do not manage API or storage access.",
     "question_type": "single-choice",
     "domain": "Kubernetes Security Fundamentals",
     "subdomain": "Network Policy",
     "sources": [
       {
-        "name": "Kubernetes Network Policies",
+        "name": "Kubernetes Network Policies (Official Documentation)",
         "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/"
+      },
+      {
+        "name": "Kubernetes Security Best Practices (Mirantis)",
+        "url": "https://www.mirantis.com/blog/kubernetes-security-best-practices/"
       }
     ],
-    "revision": 3,
-    "revision_date": "2025-04-18 17:38:29"
+    "revision": 5,
+    "revision_date": "2025-05-17 11:25:03"
   },
   {
     "id": 16,
