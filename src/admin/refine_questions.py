@@ -33,10 +33,11 @@ PROMPT_TEMPLATE = """
 Please analyze the provided JSON array of question objects. Your primary task is to meticulously identify and revise questions *only* if they meet specific criteria: factual incorrectness, lack of clarity for a KCSA-level audience, or the use of significantly deprecated Kubernetes information. You must *not* make stylistic changes or rephrase content that is already accurate, clear, and current.
 
 1.  **Identify Necessary Revisions (Strict Criteria):**
-    Carefully examine each question object. Propose revisions *only* if the question, its options, the designated correct answers, or the explanation meet one or more of the following conditions:
+    Carefully examine each question object. Propose revisions *only* if the question, its options, the designated correct answers, sources, or the explanation meet one or more of the following conditions:
     * **Incorrect:** Contains factually inaccurate information regarding Kubernetes concepts, features, security best practices, or KCSA-relevant tooling.
     * **Unclear/Ambiguous:** The question is worded in a way that is ambiguous, lacks crucial context for understanding by someone with KCSA-level knowledge, or could be easily misinterpreted, thereby failing to accurately assess knowledge.
     * **Deprecated Information:** Refers to Kubernetes features, API versions (e.g., beta APIs that have long graduated or been removed), commands, or practices that are significantly outdated (e.g., deprecated for more than 1-2 years or superseded by clear, widely adopted alternatives) and no longer relevant for current Kubernetes versions (assume target is recent stable versions, e.g., v1.27+ as of May 2025) or KCSA exam objectives.
+    * **Sources:** The sources provided are broken, outdated, no longer authoritative, or do not support the claims made in the question or explanation. This includes links to deprecated documentation or blogs that are no longer maintained or relevant.
 
 2.  **Perform Minimal, Targeted Revisions:**
     * If a question meets the criteria above, revise *only the specific parts* (e.g., a single option, a sentence in the explanation, the question phrasing) that are incorrect, unclear, or deprecated.
