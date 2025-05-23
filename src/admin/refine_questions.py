@@ -109,7 +109,6 @@ Input JSON Array of Questions:
 # --- Helper Functions ---
 
 def get_api_key():
-I'll remain cautious about source verification, prioritizing accuracy and conservative documentation updates.
     """Retrieves the Perplexity API key from environment variables."""
     api_key = os.environ.get("PERPLEXITY_API_KEY")
     if not api_key:
