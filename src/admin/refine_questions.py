@@ -32,13 +32,13 @@ if not logger.handlers: # Avoid adding multiple handlers if process_issue.py alr
 PROMPT_TEMPLATE = """
 Task: Given a JSON array of Kubernetes exam question objects, perform a comprehensive review and targeted fixes—but only where strictly necessary. Your goal is to catch and correct all the following classes of issues:
 
+Checking the validity of the source links url and finding a valid replacement if it is broken, Insufficient, or Non-Authoritative Sources: URLs that 404, link to deprecated content, or fail to back up the claim.
+
 Factual Errors: Any statement in the question stem, options, correct-answer keys, or explanation that is no longer accurate for Kubernetes v1.27+ or KCSA-level knowledge.
 
 Ambiguity & Clarity: Wording that could be misinterpreted, lacks essential context, or fails to precisely assess the intended concept.
 
 Deprecated & Outdated Content: References to removed/obsolete APIs, flags, commands, or best practices superseded more than 1–2 years ago.
-
-Broken, Insufficient, or Non-Authoritative Sources: URLs that 404, link to deprecated content, or fail to back up the claim.
 
 Styling, Grammar & Formatting: Spelling mistakes, inconsistent terminology (e.g., mixing “Pods” vs. “pods”), uneven option formatting, missing punctuation, or JSON metadata errors (e.g., wrong question_type, missing domain/subdomain).
 
