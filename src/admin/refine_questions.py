@@ -33,7 +33,7 @@ PROMPT_TEMPLATE = """
 Task: Given a JSON array of Kubernetes exam question objects, perform a comprehensive review and targeted fixes—but only where strictly necessary. Your goal is to catch and correct all the following classes of issues:
 
 Checking the validity of the source links url and finding a valid replacement if it is broken, Insufficient, or Non-Authoritative Sources: URLs that 404, link to deprecated content, or fail to back up the claim.
-I'll remain cautious about source verification, prioritizing accuracy and conservative documentation updates. Visiting each url and checking the content is not required, but if you find a broken link, please replace it with a valid one.
+Remain cautious about source verification, prioritizing accuracy and conservative documentation updates. Visiting each url and checking the content is not required, but if you find a broken link, please replace it with a valid one.
 
 Factual Errors: Any statement in the question stem, options, correct-answer keys, or explanation that is no longer accurate for Kubernetes v1.27+ or KCSA-level knowledge.
 
