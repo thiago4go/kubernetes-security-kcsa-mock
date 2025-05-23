@@ -1,6 +1,6 @@
 
 // Exported 22 questions for domain: Kubernetes Threat Model
-// Last revision date: 2025-04-18 18:09:53
+// Last revision date: 2025-05-23 21:51:47
 export const KubernetesThreatModelQuestions = [
   {
     "id": 15,
@@ -96,7 +96,7 @@ export const KubernetesThreatModelQuestions = [
   },
   {
     "id": 48,
-    "question": "Which combination of capabilities can allow a compromised Kubernetes pod to access and modify the host system? (Select all that apply)",
+    "question": "Which combination of pod configurations can allow a compromised Kubernetes pod to access and potentially modify the host system? (Select all that apply)",
     "options": [
       "Running the pod in privileged mode",
       "Mounting the host filesystem into the pod",
@@ -109,7 +109,7 @@ export const KubernetesThreatModelQuestions = [
       1,
       2
     ],
-    "explanation": "Running a pod in privileged mode grants it almost unrestricted access to the host, enabling it to perform operations that can compromise host security. Mounting the host filesystem exposes the host's files to the pod, allowing modification or data theft. Using host networking gives the pod access to the host's network stack, which can be exploited. Conversely, dropping Linux capabilities and running as a non-root user reduce the pod's privileges and help mitigate risks.",
+    "explanation": "Running a pod in privileged mode grants it broad permissions, including the ability to access host resources and perform actions that can compromise the host system. Mounting the host filesystem into the pod exposes sensitive files and allows the pod to read or modify host data, which is a significant security risk. Using host networking gives the pod direct access to the host's network stack, increasing the risk of network-based attacks or eavesdropping. In contrast, dropping all Linux capabilities and running as a non-root user are security best practices that reduce the attack surface and limit the pod's ability to affect the host, making these options incorrect.",
     "question_type": "multiple-choice",
     "domain": "Kubernetes Threat Model",
     "subdomain": "Privilege Escalation",
@@ -119,12 +119,16 @@ export const KubernetesThreatModelQuestions = [
         "url": "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
       },
       {
+        "name": "Kubernetes Official Documentation - Privileged Mode",
+        "url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/#privileged"
+      },
+      {
         "name": "CNCF Security Whitepaper - Privilege Escalation",
         "url": "https://github.com/cncf/sig-security/blob/main/security-whitepaper/privilege_escalation.md"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 18:09:53"
+    "revision": 2,
+    "revision_date": "2025-05-23 21:51:47"
   },
   {
     "id": 49,
