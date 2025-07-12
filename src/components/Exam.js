@@ -60,8 +60,9 @@ function Exam({
     <div className="exam">
       <div className="timer">Time left: {formatTime(timeLeft)}</div>
       <div className="exam-content">
-        <button className="toggle-menu-btn" onClick={toggleSideMenu}>
-          {isSideMenuOpen ? 'Close Menu' : 'Open Menu'}
+        <button className="menu-toggle" onClick={toggleSideMenu} aria-label="Toggle question menu">
+          <span className="menu-icon">☰</span>
+          <span className="menu-text">{isSideMenuOpen ? 'Close Menu' : 'Questions'}</span>
         </button>
         <SideMenu
           questions={questions}

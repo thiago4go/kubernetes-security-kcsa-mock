@@ -168,7 +168,9 @@ function Results({ questions, userAnswers, onRestart }) {
 
         </motion.div>
       ))}
-      <button onClick={onRestart} style={{ marginTop: '20px' }}>Restart Exam</button>
+      <button className="btn btn-primary btn-lg" onClick={onRestart} style={{ marginTop: '20px' }}>
+        Restart Exam
+      </button>
     </div>
   );
 }

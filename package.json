@@ -43,6 +43,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-env": "^7.26.7",
     "@babel/preset-react": "^7.26.3",
     "@craco/craco": "^7.1.0",

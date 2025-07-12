@@ -1,15 +1,15 @@
 /* General App Styles */
 .App {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-family-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   max-width: 900px;
   margin: 0 auto;
-  padding: 20px;
-  color: #1d1d1f; /* Darker text */
-  background-color: #fff;
+  padding: var(--space-5);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-elevated);
+  transition: background-color var(--transition-base) var(--ease-in-out),
+              color var(--transition-base) var(--ease-in-out);
 }
 
 .text-center {
@@ -18,7 +18,7 @@
 
 /* Homepage Specific Styles */
 .homepage-container {
-  padding: 20px 0;
+  padding: var(--space-5) 0;
 }
 
 /* Add space between top setup section and others */
@@ -27,23 +27,24 @@
 }
 
 .exam-title {
-  font-size: 2.5em;
-  font-weight: 600;
-  margin-bottom: 40px; /* Increased margin */
-  color: #1d1d1f;
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-10);
+  color: var(--color-text-primary);
   text-align: center;
 }
 
 /* Exam Setup Card Styles */
 .exam-setup-card {
-  background-color: #f5f5f7; /* Apple-like light grey */
-  border: 1px solid #d2d2d7; /* Apple-like border */
-  border-radius: 18px; /* More rounded corners */
-  padding: 30px 35px;
-  max-width: 550px; /* Slightly wider */
-  margin: 0 auto; /* Center the card */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Softer shadow */
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-8);
+  max-width: 550px;
+  margin: 0 auto;
+  box-shadow: var(--shadow-md);
   text-align: center;
+  transition: all var(--transition-base) var(--ease-in-out);
 }
 
 /* New style for the top row */
@@ -63,29 +64,31 @@
 }
 
 .input-label {
-  /* display: block; Ensure this is not active */
-  font-size: 1em; /* Slightly larger label */
-  color: #1d1d1f; /* Darker label text */
-  /* margin-bottom: 5px; Removed */
-  font-weight: 500;
-  /* white-space: nowrap; Ensure this is not active */
-  /* No margin needed, gap handles spacing */
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
 }
 
 .question-input {
-  padding: 12px 18px; /* Increased padding */
-  border: 1px solid #d2d2d7;
-  border-radius: 10px; /* More rounded input */
-  font-size: 1.1em; /* Larger input text */
-  width: 100px; /* Re-added fixed width */
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-lg);
+  width: 100px;
   text-align: center;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.question-input:hover {
+  border-color: var(--color-neutral-400);
 }
 
 .question-input:focus {
-  border-color: #007aff;
-  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.25); /* Adjusted focus shadow */
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(9, 132, 255, 0.15);
   outline: none;
 }
 
@@ -101,12 +104,13 @@
 .options-toggle-button {
   background: none;
   border: none;
-  color: #007aff;
+  color: var(--color-primary-500);
   cursor: pointer;
-  font-size: 0.95em; /* Slightly larger toggle text */
-  padding: 5px;
-  text-decoration: none; /* Remove underline */
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  padding: var(--space-1);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast) var(--ease-in-out);
 }
 
 .options-toggle-button:hover {
@@ -115,29 +119,30 @@
 
 /* Domain Options Card Styles */
 .domain-options-card {
-  border: 1px solid #e5e5e5;
-  background-color: #fff; /* White background for contrast */
-  padding: 20px 25px;
-  border-radius: 12px;
-  margin-top: 20px;
-  margin-bottom: 30px; /* Increased spacing */
-  text-align: left; /* Align content left */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-elevated);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-8);
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base) var(--ease-in-out);
 }
 
 .domain-selection-title {
-  font-size: 1.2em;
-  font-weight: 600;
-  color: #1d1d1f;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-3);
 }
 
 .domain-selection-description {
-  font-size: 0.9em;
-  color: #6e6e73;
-  margin-bottom: 20px;
-  line-height: 1.4;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-5);
+  line-height: var(--line-height-normal);
 }
 
 .domain-checkboxes {
@@ -154,48 +159,48 @@
 .domain-checkbox {
   margin-right: 8px;
   cursor: pointer;
-  /* Consider custom checkbox styles for full Apple look */
-  accent-color: #007aff; /* Style checkbox color */
+  accent-color: var(--color-primary-500);
   width: 16px;
   height: 16px;
 }
 
 .domain-label {
-  font-size: 0.95em;
-  color: #1d1d1f;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
   cursor: pointer;
-  /* Capitalize text via CSS */
   text-transform: capitalize;
 }
 
 /* Start Button Styles */
 .start-button {
-  background-color: #007aff; /* Apple blue */
+  background-color: var(--color-primary-500);
   color: white;
   border: none;
-  border-radius: 10px; /* Match input radius */
-  padding: 12px 30px; /* Generous padding */
-  font-size: 1.1em;
-  font-weight: 500;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-7);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
-  /* display: inline-block; Removed */
-  margin-top: 0; /* Ensure no extra top margin */
-  /* The parent's align-items: center should handle vertical alignment */
+  transition: all var(--transition-base) var(--ease-in-out);
+  margin-top: 0;
 }
 
-.start-button:hover {
-  background-color: #005ecf; /* Darker blue on hover */
+.start-button:hover:not(:disabled) {
+  background-color: var(--color-primary-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
-.start-button:active {
-  transform: scale(0.98); /* Slight shrink on click */
+.start-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 .start-button:disabled {
-  background-color: #d2d2d7; /* Disabled grey */
+  background-color: var(--color-neutral-400);
+  color: var(--color-neutral-600);
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 
@@ -204,10 +209,11 @@
 
 /* Example: Results Component Styles (Keep/Adjust existing) */
 .results {
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  margin-top: 20px;
+  padding: var(--space-5);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-5);
+  transition: all var(--transition-base) var(--ease-in-out);
 }
 .results h2 {
   text-align: center;
@@ -218,33 +224,39 @@
   line-height: 1.5;
 }
 .domain-scores {
-  margin: 20px 0;
-  padding: 15px; /* Increased padding */
-  border: 1px solid #e0e0e0; /* Slightly softer border */
-  border-radius: 8px; /* Consistent radius */
-  background-color: #fff; /* White background */
+  margin: var(--space-5) 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-elevated);
+  transition: all var(--transition-base) var(--ease-in-out);
 }
 .domain-scores h3 {
   margin-top: 0;
   margin-bottom: 15px; /* More space */
-  font-size: 1.1em;
-  color: #333;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
 }
 .domain-scores p {
   margin: 8px 0; /* Adjust spacing */
   font-size: 0.95em;
 }
 .domain-scores strong {
-  color: #1d1d1f; /* Darker text for domain name */
+  color: var(--color-text-primary);
 }
 
 .question-review {
-  background-color: #fff; /* White background for review cards */
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.question-review:hover {
+  box-shadow: var(--shadow-md);
 }
 .question-review h3 {
   margin-top: 0;
@@ -257,21 +269,22 @@
   line-height: 1.5;
 }
 .question-review strong { /* Style for bold labels */
-  font-weight: 600;
-  color: #333;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
 }
 .sources-section button {
-  background-color: #e9e9eb; /* Lighter grey button */
-  color: #333;
-  border: 1px solid #d2d2d7;
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 0.85em;
+  background-color: var(--color-neutral-100);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all var(--transition-fast) var(--ease-in-out);
 }
 .sources-section button:hover {
-  background-color: #dcdce0;
+  background-color: var(--color-neutral-200);
+  transform: translateY(-1px);
 }
 .sources-section ul {
   text-align: left; /* Ensure list is left-aligned */
@@ -284,8 +297,9 @@
   font-size: 0.9em;
 }
 .sources-section a {
-  color: #007aff;
+  color: var(--color-primary-500);
   text-decoration: none;
+  transition: color var(--transition-fast) var(--ease-in-out);
 }
 .sources-section a:hover {
   text-decoration: underline;
@@ -300,7 +314,7 @@
   font-weight: bold;
   margin-bottom: 15px;
   font-size: 1.1em;
-  color: #555;
+  color: var(--color-text-secondary);
 }
 .exam-content {
   display: flex;
@@ -309,38 +323,86 @@
 .main-content {
   flex-grow: 1; /* Allow main content to take available space */
 }
-.toggle-menu-btn {
-  /* Basic styling for the toggle button */
-  padding: 8px 12px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
-  /* display: inline-block; Removed as flex item behavior is sufficient */
-  margin-top: 0; /* Ensure no extra top margin */
-  /* Align self might be needed if flex-end isn't enough, but try parent first */
-  /* align-self: flex-end; */
+/* Modern Exam Layout */
+.exam {
+  min-height: 100vh;
+  padding: var(--space-4);
+  background-color: var(--color-background);
+  transition: background-color var(--transition-base) var(--ease-in-out);
+}
+
+.timer {
+  text-align: right;
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.exam-content {
+  display: flex;
+  gap: var(--space-5);
+  align-items: flex-start;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .exam-content {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0; /* Allows flex item to shrink */
+}
+
+/* Menu Toggle Button (already defined above) */
+.menu-toggle {
+  margin-bottom: var(--space-3);
+}
+
+.menu-icon {
+  font-size: var(--font-size-lg);
+  line-height: 1;
+}
+
+.menu-text {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+@media (max-width: 640px) {
+  .menu-text {
+    display: none;
+  }
 }
 
 .side-menu {
   /* Styles for the side menu */
-  min-width: 200px; /* Example width */
-  border-right: 1px solid #eee;
-  padding-right: 15px;
+  min-width: 200px;
+  border-right: 1px solid var(--color-border);
+  padding-right: var(--space-4);
 }
 
 .progress-bar {
   /* Styles for the progress bar */
   width: 100%;
   height: 10px;
-  background-color: #e0e0e0;
-  border-radius: 5px;
+  background-color: var(--color-neutral-200);
+  border-radius: var(--radius-full);
   overflow: hidden;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
 }
 .progress-bar div {
   height: 100%;
-  background-color: #007aff; /* Apple blue progress */
-  transition: width 0.3s ease;
+  background-color: var(--color-primary-500);
+  transition: width var(--transition-slow) var(--ease-out);
 }
 
 .navigation {
@@ -350,32 +412,38 @@
   margin-top: 20px;
 }
 .navigation button {
-  padding: 10px 20px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #f8f8f8;
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
   cursor: pointer;
-  font-size: 0.95em;
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-base) var(--ease-in-out);
 }
-.navigation button:hover {
-  background-color: #eee;
+.navigation button:hover:not(:disabled) {
+  background-color: var(--color-neutral-100);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 .navigation button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 .navigation .flag-button.flagged {
-  background-color: #ffdddd; /* Indicate flagged state */
-  border-color: #ffaaaa;
+  background-color: var(--color-danger-light);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
 }
 
 .question {
   /* Styles for the question display area */
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #eee;
-  margin-bottom: 20px;
+  background-color: var(--color-surface-elevated);
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--space-5);
+  transition: all var(--transition-base) var(--ease-in-out);
 }
 .question h2 {
   margin-top: 0;
@@ -394,72 +462,298 @@
 }
 .question input[type="radio"],
 .question input[type="checkbox"] {
-  margin-right: 10px;
+  margin-right: var(--space-3);
   cursor: pointer;
-  accent-color: #007aff; /* Style radio/checkbox color */
-  width: 18px; /* Slightly larger */
+  accent-color: var(--color-primary-500);
+  width: 18px;
   height: 18px;
 }
 
 /* Styles for About, Creator, Community sections (Add or adjust as needed) */
 .about-container, .creator-container, .community-container {
-  background-color: #f9f9f9;
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
-  padding: 20px 25px;
-  margin-top: 30px; /* Ensure spacing */
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  margin-top: var(--space-8);
+  transition: all var(--transition-base) var(--ease-in-out);
 }
 .section-title {
-  font-size: 1.5em;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e5e5e5;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
 }
 .about-text, .creator-content p, .community-content p {
-  font-size: 0.95em;
-  line-height: 1.6;
-  color: #333;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
 }
 .github-link, .link {
-  color: #007aff;
+  color: var(--color-primary-500);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast) var(--ease-in-out);
 }
 .github-link:hover, .link:hover {
   text-decoration: underline;
 }
 .creator-details dt, .community-details dt {
-  font-weight: 600;
-  color: #1d1d1f;
-  margin-bottom: 5px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
 }
 .creator-details dd, .community-details dd {
   margin-left: 0;
-  margin-bottom: 15px;
-  font-size: 0.95em;
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-sm);
 }
 .image-container {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
 }
 .responsive-image {
   max-width: 150px; /* Control image size */
   height: auto;
   border-radius: 50%; /* Circular image */
-  border: 3px solid #fff;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border: 3px solid var(--color-surface-elevated);
+  box-shadow: var(--shadow-sm);
 }
 .links {
   display: flex;
-  gap: 15px;
+  gap: var(--space-4);
 }
 .community-logo img {
   max-width: 100px;
   height: auto;
-  margin-top: 10px;
+  margin-top: var(--space-3);
 }
 
 /* Utility classes */
-.mt-2 { margin-top: 0.5rem; } /* Example utility class */
+.mt-2 { margin-top: var(--space-2); } /* Example utility class */
+
+/* Theme Toggle Button Styles */
+.theme-toggle {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--space-4);
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-xl);
+  cursor: pointer;
+  transition: all var(--transition-base) var(--ease-in-out);
+  z-index: var(--z-tooltip);
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-md);
+}
+
+/* Loading States - Skeleton Screens */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-neutral-200) 25%,
+    var(--color-neutral-100) 50%,
+    var(--color-neutral-200) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+[data-theme="dark"] .skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-neutral-700) 25%,
+    var(--color-neutral-600) 50%,
+    var(--color-neutral-700) 75%
+  );
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Skeleton Variants */
+.skeleton-text {
+  height: 1em;
+  margin-bottom: var(--space-2);
+}
+
+.skeleton-title {
+  height: 1.5em;
+  width: 60%;
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-sm);
+}
+
+/* Skeleton Button */
+.skeleton-button {
+  height: 2.5em;
+  width: 120px;
+  margin: var(--space-4) 0;
+  border-radius: var(--radius-md);
+}
+
+/* Spinner */
+.spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--color-neutral-200);
+  border-top-color: var(--color-primary-500);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Utility Classes */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.focus-ring {
+  outline: none;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.transition-all {
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.transition-colors {
+  transition: background-color var(--transition-base) var(--ease-in-out),
+              border-color var(--transition-base) var(--ease-in-out),
+              color var(--transition-base) var(--ease-in-out);
+}
+
+.transition-transform {
+  transition: transform var(--transition-base) var(--ease-in-out);
+}
+
+/* Page Transition Animation */
+.page-enter {
+  animation: fadeIn var(--transition-slow) var(--ease-out);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design Utilities */
+@media (max-width: 640px) {
+  .App {
+    padding: var(--space-3);
+  }
+  
+  .exam-setup-card {
+    padding: var(--space-6);
+  }
+  
+  .setup-top-row {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  
+  .domain-checkboxes {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark Mode Specific Adjustments */
+[data-theme="dark"] .question label:hover {
+  background-color: var(--color-neutral-100);
+}
+
+[data-theme="dark"] .nav-button:hover:not(:disabled) {
+  background-color: var(--color-neutral-100);
+}
+
+[data-theme="dark"] .sources-section button:hover {
+  background-color: var(--color-neutral-100);
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .btn {
+    border-width: 2px;
+  }
+  
+  .question input[type="radio"] + label::before,
+  .question input[type="checkbox"] + label::before {
+    border-width: 2px;
+  }
+  
+  .progress-bar {
+    border: 1px solid var(--color-text-primary);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .skeleton {
+    animation: none;
+    background: var(--color-neutral-200);
+  }
+  
+  .progress-glow {
+    animation: none;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .theme-toggle,
+  .menu-toggle,
+  .sidebar,
+  .sidebar-overlay,
+  .navigation {
+    display: none !important;
+  }
+  
+  .App {
+    background: white;
+    color: black;
+  }
+  
+  .question {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

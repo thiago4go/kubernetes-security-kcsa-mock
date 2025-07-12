@@ -4,6 +4,7 @@ import Results from './components/Results';
 import ReviewFlagged from './components/ReviewFlagged';
 import HomePage from './components/HomePage';
 import { getAllQuestions, getAvailableDomains } from './questionsDatabase'; // adjust the path as needed
+import { ThemeToggle } from './contexts/ThemeContext'; // Import ThemeToggle for testing
 
 import useLocalStorage from './hooks/useLocalStorage';
 import { Analytics } from "@vercel/analytics/react"
@@ -164,6 +165,8 @@ function App() {
 
   return (
     <div className="App">
+      {/* Temporary theme toggle for testing */}
+      <ThemeToggle />
      
       {!examStarted && !examFinished && !reviewingFlagged ? (
         <HomePage
