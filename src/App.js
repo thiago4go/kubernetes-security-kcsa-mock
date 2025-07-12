@@ -3,8 +3,8 @@ import Exam from './components/Exam';
 import Results from './components/Results';
 import ReviewFlagged from './components/ReviewFlagged';
 import HomePage from './components/HomePage';
+import Header from './components/Header';
 import { getAllQuestions, getAvailableDomains } from './questionsDatabase'; // adjust the path as needed
-import { ThemeToggle } from './contexts/ThemeContext'; // Import ThemeToggle for testing
 
 import useLocalStorage from './hooks/useLocalStorage';
 import { Analytics } from "@vercel/analytics/react"
@@ -165,9 +165,8 @@ function App() {
 
   return (
     <div className="App">
-      {/* Temporary theme toggle for testing */}
-      <ThemeToggle />
-     
+      <Header />
+      
       {!examStarted && !examFinished && !reviewingFlagged ? (
         <HomePage
           numQuestions={numQuestions}
@@ -182,7 +181,6 @@ function App() {
         />
       ) : (
         <>
-          <h1>Kubernetes Security KCSA Mock Exam</h1>
           {examStarted && !reviewingFlagged && (
             <Exam
               questions={examQuestions}

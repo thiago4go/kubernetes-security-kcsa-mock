@@ -98,79 +98,103 @@ function Results({ questions, userAnswers, onRestart }) {
 
   return (
     <div className="results">
-      <h2>Exam Results</h2>
-      {/* Display Overall Score */}
-      <p>Overall Score: {overallScoreData.score} out of {questions.length} ({overallScoreData.percentage}%)</p>
+      <div className="results-header">
+        <h2 className="results-title">Exam Results</h2>
+        <div className="overall-score">
+          <span className="score-label">Overall Score:</span>
+          <span className="score-value">{overallScoreData.score} out of {questions.length}</span>
+          <span className="score-percentage">({overallScoreData.percentage}%)</span>
+        </div>
+      </div>
 
       {/* Display Domain Scores */}
-      <div className="domain-scores" style={{ margin: '20px 0', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
-        <h3>Score by Domain:</h3>
-        {Object.entries(domainScores)
-          .sort(([domainA], [domainB]) => domainA.localeCompare(domainB)) // Sort domains alphabetically
-          .map(([domain, score]) => (
-          <p key={domain} style={{ margin: '5px 0' }}>
-            <strong>{domain.replace(/_/g, ' ')}:</strong> {score.correct} / {score.total} ({score.percentage}%)
-          </p>
-        ))}
+      <div className="domain-scores">
+        <h3 className="domain-scores-title">Score by Domain:</h3>
+        <div className="domain-scores-grid">
+          {Object.entries(domainScores)
+            .sort(([domainA], [domainB]) => domainA.localeCompare(domainB)) // Sort domains alphabetically
+            .map(([domain, score]) => (
+            <div key={domain} className="domain-score-item">
+              <span className="domain-name">{domain.replace(/_/g, ' ')}</span>
+              <span className="domain-score">{score.correct} / {score.total} ({score.percentage}%)</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Review Section Title */}
-      <h3 style={{ marginTop: '30px' }}>Review Your Answers:</h3>
+      <h3 className="review-title">Review Your Answers:</h3>
 
       {/* Map through questions for review */}
-      {questions.map((question) => (
-        <motion.div
-          key={question.id} // Ensure key is still here
-          className="question-review"
-          style={{
-            backgroundColor: isCorrect(question) ? 'lightgreen' : 'lightcoral',
-          }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h3>{question.question}</h3>
-          {/* Added <strong> tags and reordered */}
-          <p><strong>Your answer:</strong> {(userAnswers[question.id] || []).map((index) => question.options[index]).join(', ')}</p>
-          <p><strong>Correct answer:</strong> {question.correct_answers.map((index) => question.options[index]).join(', ')}</p>
-          <p><strong>Explanation:</strong> {question.explanation}</p>
-          {/* Moved Domain to the end */}
-          <p><strong>Domain:</strong> {question.domain ? question.domain.replace(/_/g, ' ') : 'N/A'}</p>
-
-
-          {/* Sources Section - Added text-align: right to container */}
-          {question.sources && Array.isArray(question.sources) && question.sources.length > 0 && (
-            <div className="sources-section" style={{ marginTop: '10px', textAlign: 'right' }}>
-              <button
-                onClick={() => toggleSources(question.id)}
-                style={{ marginBottom: '5px', cursor: 'pointer', display: 'inline-block' }} // Ensure button is inline-block for text-align to work
-              >
-                {showSourcesMap[question.id] ? 'Hide Sources' : 'Show Sources'}
-              </button>
-              {showSourcesMap[question.id] && (
-                <ul style={{ listStyle: 'disc', marginLeft: '20px', paddingLeft: '0' }}>
-                  {question.sources.map((source, index) => (
-                    <li key={index}>
-                      {source.url ? (
-                        <a href={source.url} target="_blank" rel="noopener noreferrer">
-                          {source.name || source.url}
-                        </a>
-                      ) : (
-                        source.name || 'Unnamed source'
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
+      <div className="questions-review">
+        {questions.map((question) => (
+          <motion.div
+            key={question.id}
+            className={`question-review ${isCorrect(question) ? 'correct' : 'incorrect'}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h3 className="question-text">{question.question}</h3>
+            
+            <div className="answer-section">
+              <p className="answer-item">
+                <strong>Your answer:</strong>
+                <span className="answer-value">
+                  {(userAnswers[question.id] || []).map((index) => question.options[index]).join(', ')}
+                </span>
+              </p>
+              <p className="answer-item">
+                <strong>Correct answer:</strong>
+                <span className="answer-value correct-answer">
+                  {question.correct_answers.map((index) => question.options[index]).join(', ')}
+                </span>
+              </p>
+              <p className="answer-item">
+                <strong>Explanation:</strong>
+                <span className="explanation-text">{question.explanation}</span>
+              </p>
+              <p className="answer-item">
+                <strong>Domain:</strong>
+                <span className="domain-text">{question.domain ? question.domain.replace(/_/g, ' ') : 'N/A'}</span>
+              </p>
             </div>
-          )}
-          {/* End Sources Section */}
 
-        </motion.div>
-      ))}
-      <button className="btn btn-primary btn-lg" onClick={onRestart} style={{ marginTop: '20px' }}>
-        Restart Exam
-      </button>
+            {/* Sources Section */}
+            {question.sources && Array.isArray(question.sources) && question.sources.length > 0 && (
+              <div className="sources-section">
+                <button
+                  className="sources-toggle-btn"
+                  onClick={() => toggleSources(question.id)}
+                >
+                  {showSourcesMap[question.id] ? 'Hide Sources' : 'Show Sources'}
+                </button>
+                {showSourcesMap[question.id] && (
+                  <ul className="sources-list">
+                    {question.sources.map((source, index) => (
+                      <li key={index} className="source-item">
+                        {source.url ? (
+                          <a href={source.url} target="_blank" rel="noopener noreferrer" className="source-link">
+                            {source.name || source.url}
+                          </a>
+                        ) : (
+                          <span className="source-name">{source.name || 'Unnamed source'}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </motion.div>
+        ))}
+      </div>
+      
+      <div className="results-actions">
+        <button className="restart-btn" onClick={onRestart}>
+          Restart Exam
+        </button>
+      </div>
     </div>
   );
 }

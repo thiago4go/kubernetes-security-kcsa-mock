@@ -1,8 +1,11 @@
-export default {
-  transform: {},
-  extensionsToTreatAsEsm: [".mjs", ".js"],
-  moduleNameMapper: {
-    "^(\\.{1,2}/.*)\\.mjs$": "$1.js", // Allows Jest to recognize .mjs imports
+module.exports = {
+  transform: {
+    "^.+\\.[jt]sx?$": "babel-jest",
+    "^.+\\.mjs$": "babel-jest"
   },
-  testEnvironment: "node",
+  moduleNameMapper: {
+    "\\.css$": "identity-obj-proxy"
+  },
+  testEnvironment: "jsdom",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"]
 };
