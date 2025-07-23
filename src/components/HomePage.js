@@ -30,8 +30,8 @@ function HomePage({
       <div className="homepage-inner">
         {/* Removed text-center class from the main wrapper */}
         <div>
-          <h1 className="exam-title text-center">Kubernetes Security KCSA Mock Exam</h1>
-
+          <h1 className="exam-title text-center">Ace the Exam with Practice</h1>
+          <hr className="setup-separator" />
           {/* Exam Setup Card */}
           <div className="exam-setup-card">
 

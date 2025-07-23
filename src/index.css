@@ -220,7 +220,7 @@ input[type="number"]:focus {
 .homepage-container {
   min-height: 100vh;
   background-color: var(--color-background);
-  padding: var(--space-12) var(--space-4);
+  padding: var(--space-6) var(--space-4);
 }
 
 .homepage-inner {

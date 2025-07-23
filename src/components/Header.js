@@ -21,7 +21,7 @@ const Header = () => {
       <div className="header-container">
         <div className="header-brand">
           <h1 className="header-title">
-            Kubernetes Security KCSA Mock Exam
+            Kubernetes Security KCSA Practice Exam 
           </h1>
         </div>
         
