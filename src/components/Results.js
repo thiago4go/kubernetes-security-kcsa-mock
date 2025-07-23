@@ -1,9 +1,32 @@
-import React, { useMemo, useState } from 'react'; // Import useMemo and useState
+import React, { useMemo, useState, useEffect } from 'react'; // Import useEffect
 import { motion } from 'framer-motion';
+import './Results.css'; // Import the Results-specific CSS
 
 function Results({ questions, userAnswers, onRestart }) {
   // State to manage visibility of sources for each question
   const [showSourcesMap, setShowSourcesMap] = useState({});
+
+  // Debug function to log computed styles
+  useEffect(() => {
+    // Wait for DOM to be ready
+    setTimeout(() => {
+      const correctElements = document.querySelectorAll('.question-review.correct');
+      const incorrectElements = document.querySelectorAll('.question-review.incorrect');
+      
+      console.log('Correct elements found:', correctElements.length);
+      console.log('Incorrect elements found:', incorrectElements.length);
+      
+      if (correctElements.length > 0) {
+        const computedStyle = window.getComputedStyle(correctElements[0]);
+        console.log('Correct element computed background:', computedStyle.backgroundColor);
+      }
+      
+      if (incorrectElements.length > 0) {
+        const computedStyle = window.getComputedStyle(incorrectElements[0]);
+        console.log('Incorrect element computed background:', computedStyle.backgroundColor);
+      }
+    }, 1000);
+  }, []);
 
   // Toggle sources visibility for a specific question ID
   const toggleSources = (questionId) => {

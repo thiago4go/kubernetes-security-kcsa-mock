@@ -48,16 +48,25 @@
   display: flex;
   align-items: center;
   gap: var(--space-4);
+  margin-left: auto; /* Push to the right */
 }
 
 .theme-toggle-btn {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  padding: var(--space-2);
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast) var(--ease-in-out);
+}
+
+.theme-toggle-btn:hover {
+  color: var(--color-primary-500);
+}
   color: var(--color-text-primary);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
@@ -216,13 +225,13 @@
 }
 
 .question-review.correct {
-  background-color: var(--color-success-light);
-  border: 1px solid var(--color-success);
+  background-color: var(--color-success-light) !important;
+  border: 1px solid var(--color-success) !important;
 }
 
 .question-review.incorrect {
-  background-color: var(--color-danger-light);
-  border: 1px solid var(--color-danger);
+  background-color: var(--color-danger-light) !important;
+  border: 1px solid var(--color-danger) !important;
 }
 
 .question-text {
@@ -451,13 +460,18 @@
   justify-content: center; /* Center items horizontally */
   align-items: center; /* Vertically center the items in the row */
   gap: 20px; /* Space between items */
-  margin-bottom: 25px; /* Space below the top row */
-  /* flex-wrap: wrap; Removed to force items onto one line */
+  margin-bottom: 40px; /* Increased space below the top row */
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+  text-align: center; /* Center text content */
 }
 
 .number-input-group {
   display: flex; /* Arrange label and input horizontally */
   align-items: center; /* Vertically align label and input */
+  justify-content: center; /* Center horizontally */
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  text-align: center; /* Center text */
+}
   gap: 10px; /* Space between label and input */
 }
 
@@ -492,27 +506,30 @@
 
 /* Extra Options Toggle Styles */
 .extra-options-toggle {
-  margin: 25px auto; /* Increased spacing */
-  align-items: center; /* Center items vertically  make all center*/
-  display: flex; /* Use flexbox for alignment */
-  justify-content: center; /* Center items horizontally */
-  gap: 10px; /* Space between items */
+  margin: 40px auto 25px; /* Increased top margin */
+  text-align: center; /* Center text */
+  width: 100%; /* Ensure full width */
 }
 
 .options-toggle-button {
   background: none;
-  border: none;
+  border: 1px solid var(--color-primary-500);
+  border-radius: var(--radius-md);
   color: var(--color-primary-500);
   cursor: pointer;
   font-size: var(--font-size-sm);
-  padding: var(--space-1);
+  padding: var(--space-2) var(--space-4);
   text-decoration: none;
   font-weight: var(--font-weight-medium);
-  transition: color var(--transition-fast) var(--ease-in-out);
+  transition: all var(--transition-fast) var(--ease-in-out);
+  margin: 0 auto; /* Center horizontally */
+  display: inline-block; /* Changed to inline-block */
 }
 
 .options-toggle-button:hover {
-  text-decoration: underline; /* Underline on hover */
+  background-color: var(--color-primary-500);
+  color: white;
+  text-decoration: none; /* No underline on hover */
 }
 
 /* Domain Options Card Styles */
@@ -643,7 +660,7 @@
   color: var(--color-text-primary);
 }
 
-.question-review {
+.question-review:not(.correct):not(.incorrect) {
   background-color: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -1329,3 +1346,17 @@
     font-size: var(--font-size-sm);
   }
 }
+/* New updated classes to force rebuild */
+.header-nav-updated {
+  margin-left: auto !important; /* Force right alignment */
+}
+
+.theme-toggle-btn-updated {
+  background: none !important;
+  border: none !important;
+  color: var(--color-text-primary) !important;
+}
+/* 
+ * App.css - Main stylesheet for the Kubernetes Security KCSA Mock Exam
+ * Updated: 2025-07-23
+ */

@@ -31,8 +31,32 @@ module.exports = {
           /Failed to parse source map/, // Example: Ignore source map warnings
         ];
 
+        // Ensure CSS files are processed correctly
+        const cssRule = config.module.rules.find(rule => rule.test && rule.test.toString().includes('.css'));
+        if (cssRule) {
+          // Force CSS modules to be disabled for global CSS files
+          cssRule.use = cssRule.use.map(loader => {
+            if (loader.loader && loader.loader.includes('css-loader')) {
+              return {
+                ...loader,
+                options: {
+                  ...loader.options,
+                  modules: false,
+                  sourceMap: true
+                }
+              };
+            }
+            return loader;
+          });
+        }
 
         return config;
+      },
+    },
+    // Disable cache to ensure fresh builds
+    babel: {
+      loaderOptions: {
+        cacheDirectory: false,
       },
     },
   };

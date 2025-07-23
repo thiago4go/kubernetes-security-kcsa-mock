@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import '../styles/variables.css';
+import './Header.css'; // Import the Header-specific CSS
 
 const Header = () => {
   const { theme, setTheme, resolvedTheme } = useTheme();
@@ -24,9 +25,9 @@ const Header = () => {
           </h1>
         </div>
         
-        <nav className="header-nav">
+        <nav className="header-nav header-nav-updated">
           <button
-            className="theme-toggle-btn"
+            className="theme-toggle-btn theme-toggle-btn-updated"
             onClick={toggleTheme}
             aria-label="Toggle theme"
             title={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}

@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "rm -rf build && rm -rf node_modules/.cache && GENERATE_SOURCEMAP=false craco build",
     "test": "jest --verbose",
     "test:db": "jest tests/questionsIntegrity.test.js"
   },
