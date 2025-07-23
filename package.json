@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "rm -rf build && rm -rf node_modules/.cache && GENERATE_SOURCEMAP=false craco build",
     "test": "jest --verbose",
     "test:db": "jest tests/questionsIntegrity.test.js"
   },
@@ -43,13 +43,16 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-env": "^7.26.7",
     "@babel/preset-react": "^7.26.3",
     "@craco/craco": "^7.1.0",
     "babel-jest": "^29.7.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^27.5.1",
+    "jest-axe": "^10.0.0",
     "sqlite3": "^5.1.7",
     "stream-browserify": "^3.0.0",
     "vm-browserify": "^1.1.2",

@@ -3,6 +3,7 @@ import Exam from './components/Exam';
 import Results from './components/Results';
 import ReviewFlagged from './components/ReviewFlagged';
 import HomePage from './components/HomePage';
+import Header from './components/Header';
 import { getAllQuestions, getAvailableDomains } from './questionsDatabase'; // adjust the path as needed
 
 import useLocalStorage from './hooks/useLocalStorage';
@@ -164,7 +165,8 @@ function App() {
 
   return (
     <div className="App">
-     
+      <Header />
+      
       {!examStarted && !examFinished && !reviewingFlagged ? (
         <HomePage
           numQuestions={numQuestions}
@@ -179,7 +181,6 @@ function App() {
         />
       ) : (
         <>
-          <h1>Kubernetes Security KCSA Mock Exam</h1>
           {examStarted && !reviewingFlagged && (
             <Exam
               questions={examQuestions}

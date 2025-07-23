@@ -1,0 +1,245 @@
+/* Kubernetes Security Mock Exam App - CSS Variables */
+/* Based on the Modern UI Design System */
+
+:root {
+  /* Primary Colors */
+  --color-primary-50: #e6f2ff;
+  --color-primary-100: #bae0ff;
+  --color-primary-200: #7cc4ff;
+  --color-primary-300: #36a3ff;
+  --color-primary-400: #0984ff;
+  --color-primary-500: #0066cc;  /* Main brand color */
+  --color-primary-600: #0052a3;
+  --color-primary-700: #003d7a;
+  --color-primary-800: #002952;
+  --color-primary-900: #001429;
+
+  /* Neutral Colors */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-success-light: #d1fae5;
+  --color-danger: #ef4444;
+  --color-danger-light: #fee2e2;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  --color-info: #3b82f6;
+  --color-info-light: #dbeafe;
+
+  /* Surface Colors */
+  --color-background: #ffffff;
+  --color-surface: #fafafa;
+  --color-surface-elevated: #ffffff;
+  --color-border: #e5e5e5;
+  --color-text-primary: #171717;
+  --color-text-secondary: #525252;
+  --color-text-tertiary: #737373;
+
+  /* Typography - Font Stack */
+  --font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 
+                      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 
+                      'Helvetica Neue', sans-serif;
+  --font-family-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 
+                      'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+
+  /* Type Scale (Modular Scale 1.25) */
+  --font-size-xs: 0.64rem;      /* 10.24px */
+  --font-size-sm: 0.8rem;       /* 12.8px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg: 1.25rem;      /* 20px */
+  --font-size-xl: 1.563rem;     /* 25px */
+  --font-size-2xl: 1.953rem;    /* 31.25px */
+  --font-size-3xl: 2.441rem;    /* 39px */
+  --font-size-4xl: 3.052rem;    /* 48.8px */
+
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing System (Base unit: 4px) */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-7: 1.75rem;   /* 28px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px */
+  --radius-xl: 1rem;      /* 16px */
+  --radius-full: 9999px;  /* Circular */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+               0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+               0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+               0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Transition Durations */
+  --transition-fast: 150ms;
+  --transition-base: 200ms;
+  --transition-slow: 300ms;
+
+  /* Easing Functions */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Z-Index Scale */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-tooltip: 600;
+
+  /* Breakpoints */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] {
+  /* Primary Colors (adjusted for dark backgrounds) */
+  --color-primary-50: #001429;
+  --color-primary-100: #002952;
+  --color-primary-200: #003d7a;
+  --color-primary-300: #0052a3;
+  --color-primary-400: #0066cc;
+  --color-primary-500: #3385ff;  /* Brighter for dark mode */
+  --color-primary-600: #5c9eff;
+  --color-primary-700: #85b8ff;
+  --color-primary-800: #add1ff;
+  --color-primary-900: #d6ebff;
+
+  /* Neutral Colors (inverted) */
+  --color-neutral-50: #171717;
+  --color-neutral-100: #262626;
+  --color-neutral-200: #404040;
+  --color-neutral-300: #525252;
+  --color-neutral-400: #737373;
+  --color-neutral-500: #a3a3a3;
+  --color-neutral-600: #d4d4d4;
+  --color-neutral-700: #e5e5e5;
+  --color-neutral-800: #f5f5f5;
+  --color-neutral-900: #fafafa;
+
+  /* Semantic Colors (adjusted) */
+  --color-success: #34d399;
+  --color-success-light: #064e3b;
+  --color-danger: #f87171;
+  --color-danger-light: #7f1d1d;
+  --color-warning: #fbbf24;
+  --color-warning-light: #78350f;
+  --color-info: #60a5fa;
+  --color-info-light: #1e3a8a;
+
+  /* Surface Colors */
+  --color-background: #0a0a0a;
+  --color-surface: #171717;
+  --color-surface-elevated: #262626;
+  --color-border: #404040;
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #d4d4d4;
+  --color-text-tertiary: #a3a3a3;
+
+  /* Dark Mode Shadows (more subtle) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 
+               0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 
+               0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 
+               0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* System preference detection */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* Primary Colors (adjusted for dark backgrounds) */
+    --color-primary-50: #001429;
+    --color-primary-100: #002952;
+    --color-primary-200: #003d7a;
+    --color-primary-300: #0052a3;
+    --color-primary-400: #0066cc;
+    --color-primary-500: #3385ff;
+    --color-primary-600: #5c9eff;
+    --color-primary-700: #85b8ff;
+    --color-primary-800: #add1ff;
+    --color-primary-900: #d6ebff;
+
+    /* Neutral Colors (inverted) */
+    --color-neutral-50: #171717;
+    --color-neutral-100: #262626;
+    --color-neutral-200: #404040;
+    --color-neutral-300: #525252;
+    --color-neutral-400: #737373;
+    --color-neutral-500: #a3a3a3;
+    --color-neutral-600: #d4d4d4;
+    --color-neutral-700: #e5e5e5;
+    --color-neutral-800: #f5f5f5;
+    --color-neutral-900: #fafafa;
+
+    /* Semantic Colors (adjusted) */
+    --color-success: #34d399;
+    --color-success-light: #064e3b;
+    --color-danger: #f87171;
+    --color-danger-light: #7f1d1d;
+    --color-warning: #fbbf24;
+    --color-warning-light: #78350f;
+    --color-info: #60a5fa;
+    --color-info-light: #1e3a8a;
+
+    /* Surface Colors */
+    --color-background: #0a0a0a;
+    --color-surface: #171717;
+    --color-surface-elevated: #262626;
+    --color-border: #404040;
+    --color-text-primary: #fafafa;
+    --color-text-secondary: #d4d4d4;
+    --color-text-tertiary: #a3a3a3;
+
+    /* Dark Mode Shadows (more subtle) */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 
+                 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 
+                 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 
+                 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  }
+}

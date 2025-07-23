@@ -1,7 +1,17 @@
 import React from 'react';
 
 function Question({ question, onAnswer, userAnswer }) {
-  if (!question) return <p>Loading question...</p>;
+  if (!question) {
+    return (
+      <div className="question">
+        <div className="skeleton skeleton-title"></div>
+        <div className="skeleton skeleton-text"></div>
+        <div className="skeleton skeleton-text"></div>
+        <div className="skeleton skeleton-text"></div>
+        <div className="skeleton skeleton-text"></div>
+      </div>
+    );
+  }
 
   // Removed unused local 'options' variable and try-catch
 

@@ -60,13 +60,14 @@ function HomePage({
             </div>
 
             {/* Separator (Optional) */}
-            {/* <hr className="setup-separator" /> */}
+             <hr className="setup-separator" />
 
             {/* Extra Options Toggle - Moved below top row */}
-            <div className="extra-options-toggle">
+            <div className="extra-options-toggle" style={{ textAlign: 'center' }}>
               <button
                 onClick={() => setShowOptions(!showOptions)}
                 className="options-toggle-button"
+                style={{ display: 'inline-block', margin: '0 auto' }}
               >
                 {showOptions ? 'Hide Extra Options' : 'Show Extra Options'}
               </button>
@@ -106,7 +107,7 @@ function HomePage({
           {/* End Exam Setup Card */}
 
         </div> {/* Close the wrapper div */}
-
+        <hr className="setup-separator" />
 
         {/* Keep About, Creator, Community sections as they were */}
         <div className="about-container">
@@ -156,7 +157,7 @@ function HomePage({
               <div className="detail-row">
                 <dt className="detail-label">Bio</dt>
                 <dd className="detail-content">
-                  Cloud Native BizDevOps | Solutions Engineer | Global Volunteer Advocate | Speaker | Tech Community Leader | Blogger
+                  Tech Leader driving business growth with AI-powered Cloud-Native solutions working with Kubernetes, Open Source, OpenShift and Champion for Green Software!🍀
                 </dd>
               </div>
               <div className="detail-row">
@@ -166,12 +167,9 @@ function HomePage({
                 <dd className="detail-content">
                
  
-                  <p>I'm Thiago, an ICT developer who loves technology, specifically cloud-native applications.</p>
-                  <p className="mt-2">I started coding in high school with assembly language. Even if life took me in other directions, those early days fostered a lifelong interest in computers and programming. 💻</p>
-                  <p className="mt-2">With over a decade of tech expertise, I've explored many technologies, but Kubernetes is my current focus. My international upbringing—born in Brazil, spent years in Japan, and now in Australia—has profoundly impacted my approach to technology and problem-solving. 🌏</p>
-                  <p className="mt-2">I co-host a Kubernetes User Group to discuss and demystify container orchestration. 👨‍💻</p>
-                  <p className="mt-2">When I'm not working, playing Go and solving magic cubes improve my strategic thinking and problem-solving skills. These hobbies not only offer a mental escape but also enhance my technical abilities, which I apply in my day-to-day. 🧠</p>
-               </dd>
+                  <p>Hi, I'm Thiago. I'm a cloud-native developer with a passion for Kubernetes and secure systems. With a background spanning Brazil, Japan, and now Australia, I enjoy tackling complex problems. 💻</p>
+                  <p className="mt-2">I'm an active member of the CNCF Security TAG and co-organizer of the Melbourne Kubernetes User Group. When I'm not coding, I'm usually playing Go or solving a Rubik's cube.</p>
+            </dd>
               </div>
               <div className="detail-row">
                 <dt className="detail-label">Links</dt>
@@ -193,10 +191,20 @@ function HomePage({
           </div>
           <div className="community-content">
             <dl className="community-details">
+                <div className="detail-row">
+                <dt className="detail-label">TAG Security and Compliance</dt>
+                <dd className="detail-content">
+                  <p>Member of TAG Security and Compliance APAC</p>
+                  <a href="https://cloud-native.slack.com/?redir=%2Farchives%2FC08JZ9YLAA3%3Fname%3DC08JZ9YLAA3" className="link">Join the CNCF Slack</a>
+                  <div className="community-logo">
+                    <img src="https://lfx-cdn-prod.s3.us-east-1.amazonaws.com/project-artifacts/tag-security-and-compliance/tag-security-and-compliance-logo.svg" alt="TAG Securrity and Compliance" />
+                  </div>
+                </dd>
+              </div>
               <div className="detail-row">
                 <dt className="detail-label">Cloud Native Melbourne</dt>
                 <dd className="detail-content">
-                  <p>Chapter organiser for Cloud Native Melbourne...</p>
+                  <p>Chapter organiser for Cloud Native Melbourne</p>
                   <a href="https://community.cncf.io/cloud-native-melbourne/" className="link">Visit Cloud Native Melbourne</a>
                   <div className="community-logo">
                     <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/yamljson-lj2aTJhd3a9ui4btKFBp3GeqODqXbP.png" alt="Cloud Native Melbourne Logo" />
@@ -204,12 +212,12 @@ function HomePage({
                 </dd>
               </div>
               <div className="detail-row">
-                <dt className="detail-label">K8SUG</dt>
+                <dt className="detail-label">KSUG</dt>
                 <dd className="detail-content">
-                  <p>Global Volunteer Advocate and Co-host for K8SUG...</p>
-                  <a href="https://www.linkedin.com/company/k8sug/" className="link">Visit K8SUG on LinkedIn</a>
+                  <p>Global Volunteer Advocate and Co-host for KSUG</p>
+                  <a href="https://www.linkedin.com/company/k8sug/" className="link">Visit KSUG on LinkedIn</a>
                   <div className="community-logo">
-                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20k8sug-0pxBTWRLP0tcRUimu7hsY4JHEhv2ca.png" alt="K8SUG Logo" />
+                    <img src="https://ksug.ai/assets/Logo-C22ZmRMJ.jpg" alt="KSUG Logo" />
                   </div>
                 </dd>
               </div>
