@@ -1,6 +1,6 @@
 
 // Exported 34 questions for domain: Platform Security
-// Last revision date: 2025-05-17 14:37:10
+// Last revision date: 2025-08-14 16:32:40
 export const PlatformSecurityQuestions = [
   {
     "id": 11,
@@ -631,8 +631,8 @@ export const PlatformSecurityQuestions = [
         "url": "https://kubernetes.io/docs/setup/release/notes/#feature-apparmor-profile-in-securitycontext"
       }
     ],
-    "revision": 2,
-    "revision_date": "2025-04-18 18:33:20"
+    "revision": 3,
+    "revision_date": "2025-08-14 16:32:40"
   },
   {
     "id": 236,
