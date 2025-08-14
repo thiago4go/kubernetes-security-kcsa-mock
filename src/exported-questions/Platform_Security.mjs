@@ -614,8 +614,8 @@ export const PlatformSecurityQuestions = [
       "Set the profile in the node's AppArmor configuration"
     ],
     "correct_answers": [
-      2,
-      3
+      1,
+      2
     ],
     "explanation": "To apply an AppArmor profile to all containers in a Pod, you can use one of two methods:\n\n1. **Annotations**: Use the annotation `container.apparmor.security.beta.kubernetes.io/<container_name>: <profile_ref>` for each container in the Pod. This method has been traditionally used and is backward-compatible.\n\n2. **`appArmorProfile` field in `securityContext`**: Starting with Kubernetes v1.30, you can specify the AppArmor profile directly in the `securityContext` of a container using the `appArmorProfile` field. This method is more intuitive and avoids relying on annotations.\n\nOther options, such as setting it in the Deployment metadata or node-level configuration, are not valid methods for applying AppArmor profiles to specific containers.",
     "question_type": "multiple-choice",
