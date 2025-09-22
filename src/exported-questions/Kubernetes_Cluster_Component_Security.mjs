@@ -1199,10 +1199,11 @@ export const KubernetesClusterComponentSecurityQuestions = [
       "kubectl delete node <node-name>"
     ],
     "correct_answers": [
-      2
+      0,
+      2,
     ],
-    "explanation": "Tainting a node with `kubectl taint nodes <node-name> key=value:NoSchedule` prevents pods without a matching toleration from being scheduled on it. This is a way to mark nodes as unsuitable for certain workloads without completely removing them from the cluster.",
-    "question_type": "single-choice",
+    "explanation": "Both cordoning and tainting a node with `kubectl taint nodes <node-name> key=value:NoSchedule` prevents pods without a matching toleration from being scheduled on it. This is a way to mark nodes as unsuitable for certain workloads without completely removing them from the cluster.",
+    "question_type": "multiple-choice",
     "domain": "Kubernetes Cluster Component Security",
     "subdomain": "Kubelet",
     "sources": [
