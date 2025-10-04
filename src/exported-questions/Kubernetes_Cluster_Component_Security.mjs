@@ -1,6 +1,6 @@
 
 // Exported 89 questions for domain: Kubernetes Cluster Component Security
-// Last revision date: 2025-04-18 18:43:18
+// Last revision date: 2025-10-04 21:16:44
 export const KubernetesClusterComponentSecurityQuestions = [
   {
     "id": 6,
@@ -1200,7 +1200,7 @@ export const KubernetesClusterComponentSecurityQuestions = [
     ],
     "correct_answers": [
       0,
-      2,
+      2
     ],
     "explanation": "Both cordoning and tainting a node with `kubectl taint nodes <node-name> key=value:NoSchedule` prevents pods without a matching toleration from being scheduled on it. This is a way to mark nodes as unsuitable for certain workloads without completely removing them from the cluster.",
     "question_type": "multiple-choice",
@@ -1216,8 +1216,8 @@ export const KubernetesClusterComponentSecurityQuestions = [
         "url": "https://kubernetes.io/docs/reference/generated/kubectl/commands/taint"
       }
     ],
-    "revision": 1,
-    "revision_date": "2025-04-18 18:43:18"
+    "revision": 2,
+    "revision_date": "2025-10-04 21:16:44"
   },
   {
     "id": 109,
