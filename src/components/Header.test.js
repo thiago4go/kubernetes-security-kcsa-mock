@@ -5,10 +5,14 @@ import Header from './Header';
 import { ThemeProvider } from '../contexts/ThemeContext';
 
 describe('Header accessibility', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   afterEach(cleanup);
 
   test('should have no accessibility violations in light theme', async () => {
-    localStorage.setItem('theme', 'light');
+    localStorage.setItem('theme', JSON.stringify('light'));
     const { container } = render(
       <ThemeProvider>
         <Header />
@@ -24,7 +28,7 @@ describe('Header accessibility', () => {
   });
 
   test('should have no accessibility violations in dark theme', async () => {
-    localStorage.setItem('theme', 'dark');
+    localStorage.setItem('theme', JSON.stringify('dark'));
     const { container } = render(
       <ThemeProvider>
         <Header />
