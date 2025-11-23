@@ -50,6 +50,16 @@ function SideMenu({ questions, currentQuestionIndex, setCurrentQuestionIndex, fl
                         setCurrentQuestionIndex(index);
                         onClose();
                       }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setCurrentQuestionIndex(index);
+                          onClose();
+                        }
+                      }}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`Question ${index + 1}${isFlagged ? ' (flagged)' : ''}${isAnswered ? ' (answered)' : ''}${isActive ? ' (current)' : ''}`}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
