@@ -871,7 +871,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--space-3);
-  transition: all 0.2s ease-in-out;
+  transition: all var(--transition-fast) var(--ease-in-out);
 }
 .question form div:hover {
   border-color: var(--color-primary-300);
