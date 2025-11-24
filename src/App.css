@@ -868,7 +868,7 @@
 }
 .question form div {
   margin-bottom: var(--space-2);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--space-3);
   transition: all var(--transition-fast) var(--ease-in-out);
@@ -879,7 +879,12 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 .question form div:has(input:checked) {
-  border: 2px solid var(--color-primary-500);
+  border-color: var(--color-primary-500);
+  background-color: var(--color-primary-50);
+  box-shadow: 0 2px 6px rgba(9, 132, 255, 0.15);
+}
+.question form div:has(input:checked):hover {
+  border-color: var(--color-primary-500);
   background-color: var(--color-primary-50);
   box-shadow: 0 2px 6px rgba(9, 132, 255, 0.15);
 }
@@ -1264,7 +1269,7 @@
 
 .question-item {
   background-color: var(--color-surface-elevated);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--space-3);
   display: flex;
@@ -1287,9 +1292,18 @@
   box-shadow: 0 0 0 3px rgba(9, 132, 255, 0.15);
 }
 
+.question-item:active {
+  transform: scale(0.98);
+}
+
 .question-item.active {
-  border: 2px solid var(--color-primary-500);
+  border-color: var(--color-primary-500);
   background-color: var(--color-primary-50);
+  box-shadow: 0 2px 8px rgba(9, 132, 255, 0.2);
+}
+
+.question-item.active:hover {
+  border-color: var(--color-primary-500);
   box-shadow: 0 2px 8px rgba(9, 132, 255, 0.2);
 }
 
