@@ -65,7 +65,7 @@ This multi-method approach ensures we can find the relevant question even if the
 
 1. **Issue Identification**:
    - The GitHub Actions workflow is triggered when an issue with the `question-error` label is created or edited.
-   - The workflow passes the issue title, body, and number to the `process_issue.py` script.
+   - The workflow passes the issue title, body, and number to the `process_issue.py` script through environment variables so untrusted issue content is not interpolated directly into the shell script.
 
 2. **Extraction**:
    - The script extracts relevant information from the issue using regular expressions.

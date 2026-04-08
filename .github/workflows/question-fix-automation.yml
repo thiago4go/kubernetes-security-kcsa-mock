@@ -50,17 +50,20 @@ jobs:
         env:
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LOG_LEVEL: INFO 
+          LOG_LEVEL: INFO
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          echo "Attempting to process issue #${{ github.event.issue.number }} titled: ${{ github.event.issue.title }}"
+          echo "Attempting to process issue #$ISSUE_NUMBER"
           
-          ISSUE_BODY_B64=$(echo "${{ github.event.issue.body }}" | base64 -w 0)
+          ISSUE_BODY_B64=$(printf '%s' "$ISSUE_BODY" | base64 | tr -d '\n')
           if [ -z "$ISSUE_BODY_B64" ]; then
             echo "Warning: Issue body is empty after base64 encoding attempt."
           fi
           
           # Execute the Python script and capture its full output
-          SCRIPT_OUTPUT=$(python .github/scripts/process_issue.py "${{ github.event.issue.title }}" "$ISSUE_BODY_B64" "${{ github.event.issue.number }}")
+          SCRIPT_OUTPUT=$(python .github/scripts/process_issue.py "$ISSUE_TITLE" "$ISSUE_BODY_B64" "$ISSUE_NUMBER")
           
           # Echo the full script output for debugging (optional, can be verbose)
           echo "Full script output:"
@@ -85,7 +88,7 @@ jobs:
           echo "$PR_MESSAGE_FINAL_CONTENT" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
           
-          echo "Python script processing step completed for issue #${{ github.event.issue.number }}"
+          echo "Python script processing step completed for issue #$ISSUE_NUMBER"
 
       - name: Create Pull Request if changes were made
         id: create_pr # Added an ID here for potential future reference
