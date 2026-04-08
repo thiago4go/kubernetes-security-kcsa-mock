@@ -34,5 +34,6 @@ describe("question fix automation workflow security", () => {
     expect(runBlock).toBeTruthy();
     expect(runBlock).not.toMatch(/\$\{\{\s*github\.event\.issue\.title\s*\}\}/);
     expect(runBlock).not.toMatch(/\$\{\{\s*github\.event\.issue\.body\s*\}\}/);
+    expect(runBlock).not.toMatch(/\$\{\{\s*github\.event\.issue\.number\s*\}\}/);
   });
 });
