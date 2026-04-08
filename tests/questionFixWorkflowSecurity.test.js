@@ -23,6 +23,9 @@ describe("question fix automation workflow security", () => {
       "ISSUE_BODY: ${{ github.event.issue.body }}"
     );
     expect(processStepSection).toContain(
+      "ISSUE_NUMBER: ${{ github.event.issue.number }}"
+    );
+    expect(processStepSection).toContain(
       'SCRIPT_OUTPUT=$(python .github/scripts/process_issue.py "$ISSUE_TITLE" "$ISSUE_BODY_B64" "$ISSUE_NUMBER")'
     );
 
