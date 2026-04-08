@@ -9,9 +9,11 @@ const workflowPath = path.join(
 describe("question fix automation workflow security", () => {
   test("uses environment variables instead of interpolating issue content into the shell", () => {
     const workflow = fs.readFileSync(workflowPath, "utf8");
-    const processStepSection = workflow.match(
-      /- name: Parse issue content and process question[\s\S]*?(?=\n {6}- name: Create Pull Request if changes were made)/
-    )?.[0];
+    const stepSections =
+      workflow.match(/^\s*-\s+name:.*(?:\n(?!\s*-\s+name:).*)*/gm) ?? [];
+    const processStepSection = stepSections.find((stepSection) =>
+      /\bid:\s*process_issue\b/.test(stepSection)
+    );
 
     expect(processStepSection).toBeTruthy();
     expect(processStepSection).toContain(
