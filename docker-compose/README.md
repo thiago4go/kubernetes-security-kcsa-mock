@@ -15,7 +15,7 @@ If you haven't done so, clone the repository and navigate to the project folder:
 
 ```sh
 git clone https://github.com/your-repo/kubernetes-security-exam.git
-cd kubernetes-security-exam
+cd kubernetes-security-exam/docker-compose
 ```
 
 ### 2️⃣ Build and Start the Containers
